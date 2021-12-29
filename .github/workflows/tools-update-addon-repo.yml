@@ -1,0 +1,25 @@
+name: tools-update-addon-repo
+on:
+  workflow_dispatch:
+    inputs:
+      input_addon-version:
+        description: "Add-on version to update"
+        default: 10.0.0
+        required: true
+        type: string
+
+jobs:
+  create_addon:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          repository: "LibreELEC/actions"
+          path: "actions"
+      - name: Update Add-on repository
+        run: |
+          echo "Updating Add-on version ${{ github.event.inputs.input_addon-version }}"
+          cd "actions/"
+          ssh ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }} -p ${{ secrets.ADDONS_HOST_PORT }} \
+            "bash -s" < ./scripts/update_addon_repo.sh "${{ github.event.inputs.input_addon-version }}" "${{ secrets.ADDONS_REPO_WEBHOOK_URL }}" "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"

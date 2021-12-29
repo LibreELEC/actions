@@ -1,0 +1,38 @@
+name: clean-hotdog-full
+on:
+  workflow_dispatch:
+    inputs:
+      run_clean:
+        description: "Run a hotdog clean"
+        default: no_run_clean
+        required: true
+        type: choice
+        options:
+          - no_run_clean
+          - run_clean
+jobs:
+  clean_hotdog:
+    runs-on: self-hosted
+
+    steps:
+      - name: Run Clean
+        if: github.event.inputs.run_clean == 'run_clean'
+        run: |
+          #ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          #  "mv ${{ secrets.UPLOAD_TARGET }}/Amlogic/* ${{ secrets.UPLOAD_TARGET }}/11.0/Amlogic/"
+          #ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          #  "mv ${{ secrets.UPLOAD_TARGET }}/RPi/* ${{ secrets.UPLOAD_TARGET }}/11.0/RPi/"
+          #ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          #  "mv ${{ secrets.UPLOAD_TARGET }}/Allwinner/* ${{ secrets.UPLOAD_TARGET }}/11.0/Allwinner/"
+          #ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          #  "rmdir ${{ secrets.UPLOAD_TARGET }}/*"
+          #ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          #  "rm ${{ secrets.UPLOAD_TARGET }}/addons/*/*.zip"
+          #ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          #  "rmdir ${{ secrets.UPLOAD_TARGET }}/addons/*"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/*.ova"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/*.tar"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/*.img.gz"
