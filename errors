@@ -1,0 +1,26 @@
+libreelec-Generic.x86_64-addons-all
+
+FAILED ADDONS:
+    docker: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/222.log
+    syncthing: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/360.log
+    audiodecoder.fluidsynth: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/465.log
+    game.libretro.atari800: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/499.log
+    game.libretro.fsuae: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/529.log
+    game.libretro.sameboy: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/575.log
+    visualization.pictureit: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/649.log
+Error: Process completed with exit code 1.
+
+libreelec-Generic-legacy.x86_64-addons-chrome
+
+FAILED ADDONS:
+    chrome: /build-root/build.LibreELEC-Generic-legacy.x86_64-11.0-devel/.threads/logs/146.log
+
+ARMv8
+
+    docker: /build-root/build.LibreELEC-ARMv8.arm-11.0-devel/.threads/logs/233.log
+    syncthing: /build-root/build.LibreELEC-ARMv8.arm-11.0-devel/.threads/logs/359.log
+    audiodecoder.fluidsynth: /build-root/build.LibreELEC-ARMv8.arm-11.0-devel/.threads/logs/463.log
+    game.libretro.atari800: /build-root/build.LibreELEC-ARMv8.arm-11.0-devel/.threads/logs/501.log
+    game.libretro.sameboy: /build-root/build.LibreELEC-ARMv8.arm-11.0-devel/.threads/logs/571.log
+
+

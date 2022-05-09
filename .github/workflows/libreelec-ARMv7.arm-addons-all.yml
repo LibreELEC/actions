@@ -1,0 +1,126 @@
+name: libreelec-ARMv7.arm-addons-all
+on:
+  # allows to run this workflow manually from the actions tab
+  workflow_dispatch:
+    inputs:
+      clean_le:
+        description: 'Should the workflow clean the /build-root'
+        default: false
+        required: true
+        type: boolean
+      upload:
+        description: 'Upload the images to the release server'
+        default: false
+        required: true
+        type: boolean
+      ephemeral_within:
+        description: 'Target and build-root are ephemeral'
+        default: false
+        required: true
+        type: boolean
+
+  workflow_run:
+    workflows: [libreelec-nightly]
+    types: [completed]
+    inputs:
+      clean_le:
+        description: 'Should the workflow clean the /build-root'
+        default: false
+        required: true
+        type: boolean
+      upload:
+        description: 'Upload the images to the release server'
+        default: false
+        required: true
+        type: boolean
+      ephemeral_within:
+        description: 'Target and build-root are ephemeral'
+        default: false
+        required: true
+        type: boolean
+
+env:
+  TZ: Australia/Melbourne
+  BASEDIR: /var/media/DATA/github-actions
+
+concurrency: 
+  group: ARMv7.arm
+  cancel-in-progress: false
+
+jobs:
+  build_libreelec:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+          fetch-depth: 2
+          repository: "LibreELEC/LibreELEC.tv"
+          path: "LibreELEC.tv"
+      - name: Create LE docker image
+        run: |
+          ls
+          pwd
+          cd LibreELEC.tv
+          sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
+          # workaround below until buildsystem does not require local cc
+          sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
+          sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
+          docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
+      - name: Prepare the LibreELEC.tv directory - use /build-root and /target
+        run: |
+          cd LibreELEC.tv
+          # create links that will be used from within the docker containers
+          [ ! -h sources ] && ln -s /sources .
+          [ ! -h target ] && ln -s /target .
+          echo "build_dir=/build-root" >> $GITHUB_ENV
+      - name: Prepare the LibreELEC.tv directory - dont leave files behind
+        if: ${{ github.event.inputs.ephemeral_within == 'true' }}
+        run: |
+          cd LibreELEC.tv
+          # remove target links will be used from within the docker containers
+          [ -h target ] && rm target
+          # overwrite the build_dir=/build
+          echo "build_dir=/build" >> $GITHUB_ENV
+      - name: Display environment
+        run: |
+          cd LibreELEC.tv
+          echo "pwd: $(pwd)"
+          echo "id: $(id)"
+          echo "whoami: $(whoami)"
+          echo "docker images: $(docker images)"
+          echo "ls: $(ls -la)"
+          echo "clean_le: ${{ github.event.inputs.clean_le }}"
+          echo "upload:  ${{ github.event.inputs.upload }}"
+          echo "ephemeral_within:  ${{ github.event.inputs.ephemeral_within }}"
+      - name: Clean LE at docker image
+        if: ${{ github.event.inputs.clean_le == 'true' }}
+        run: |
+          rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-ARMv7.arm-11.0-devel/.stamps
+          rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-ARMv7.arm-11.0-devel/*
+          echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/build.LibreELEC-ARMv7.arm-11.0-devel)"
+      - name: Build LE at docker image
+        run: |
+          cd LibreELEC.tv
+          docker run --rm -v ${{ env.BASEDIR }}/sources:/sources \
+                          -v ${{ env.BASEDIR }}/target:/target \
+                          -v ${{ env.BASEDIR }}/build-root:/build-root \
+                          -v `pwd`:/build \
+                          -w /build -i \
+                          -e PROJECT=ARM \
+                          -e ARCH=arm \
+                          -e DEVICE=ARMv7 \
+                          -e ONELOG=no -e LOGCOMBINE=never \
+                          -e BUILD_DIR=${{ env.build_dir }} \
+                          gh-${{ github.run_id }} scripts/create_addon all
+          docker image rm -f gh-${{ github.run_id }}
+      - name: Upload files
+        if: ${{ github.event.inputs.upload == 'true' }}
+        run: |
+          echo "${{ secrets.KEY }}" > mykey.ssh
+          chmod 600 mykey.ssh
+          scp -i mykey.ssh -o "StrictHostKeyChecking no" \
+              -P ${{ secrets.PORT }} \
+              -p ${{ env.BASEDIR }}/target/addon.zip \
+              ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}

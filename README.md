@@ -1,2 +1,2 @@
-# libreelec-actions
-libreelec github actions
+# actions
+actions
