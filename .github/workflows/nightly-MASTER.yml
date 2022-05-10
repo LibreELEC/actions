@@ -2,12 +2,18 @@ name: nightly-MASTER
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
+#  schedule:
+#    # * is a special character in YAML so you have to quote this string
+#    - cron:  '30 14 * * *'
+
 env:
   TZ: Australia/Melbourne
-  clean_le: false
-  upload: false
-  #upload: true
-  ephemeral_within: true
+  # these ENV variables are not used yet - need to get this working with the with statements below
+  clean_le: no_clean_le
+  debug: debug
+  ephemeral: ephemeral
+  upload: no_upload
+  #upload: upload
       
 jobs:
   check_date:
@@ -37,36 +43,44 @@ jobs:
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-A64_arm.yml@main
     with:
-      clean_le: false
-      upload: false
-      ephemeral_within: true
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: no_upload
+      #upload: upload
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H3_arm.yml@main
     with:
-      clean_le: false
-      upload: false
-      ephemeral_within: true
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: no_upload
+      #upload: upload
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H5_arm.yml@main
     with:
-      clean_le: false
-      upload: false
-      ephemeral_within: true
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: no_upload
+      #upload: upload
   libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H6_arm.yml@main
     with:
-      clean_le: false
-      upload: false
-      ephemeral_within: true
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: no_upload
+      #upload: upload
 
   # Amlogic
   libreelec-AMLGX_arm:
@@ -75,6 +89,8 @@ jobs:
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-AMLGX_arm.yml@main
     with:
-      clean_le: false
-      upload: false
-      ephemeral_within: true
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: no_upload
+      #upload: upload
