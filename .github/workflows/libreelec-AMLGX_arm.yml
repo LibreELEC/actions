@@ -1,4 +1,4 @@
-name: libreelec-AMLGX.arm
+name: libreelec-AMLGX_arm
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
