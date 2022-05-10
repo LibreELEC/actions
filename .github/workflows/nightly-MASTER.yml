@@ -31,13 +31,11 @@ jobs:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: LibreELEC/actions/.github/workflows/libreelec-A64_arm.yml@main
-        with:
-          clean_le: false
-          upload: true
-          ephemeral_within: true
+    uses: LibreELEC/actions/.github/workflows/libreelec-A64_arm.yml@main
+    with:
+      clean_le: false
+      upload: true
+      ephemeral_within: true
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
