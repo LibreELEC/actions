@@ -12,32 +12,30 @@ on:
         description: 'Upload the images to the release server'
         default: false
         required: true
-        type: boolean
+        type: choice
       ephemeral_within:
         description: 'Target and build-root are ephemeral'
         default: false
         required: true
-        type: boolean
+        type: choice
 
-  workflow_run:
-    workflows: [libreelec-nightly]
-    types: [completed]
+  workflow_call:
     inputs:
       clean_le:
         description: 'Should the workflow clean the /build-root'
-        default: false
+        default: no_clean_le
         required: true
-        type: boolean
+        type: string
       upload:
         description: 'Upload the images to the release server'
-        default: false
+        default: no_upload
         required: true
-        type: boolean
+        type: string
       ephemeral_within:
         description: 'Target and build-root are ephemeral'
-        default: false
+        default: ephemeral_within
         required: true
-        type: boolean
+        type: string
 
 env:
   TZ: Australia/Melbourne
