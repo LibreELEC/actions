@@ -2,6 +2,12 @@
 
 - get uploads to work
 - update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX -- these are done...) to updated template.
+- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
+- update nightly-MASTER to include all targets
+- update nightly-LE10 to include all targets
+- create nightly-MASTER-addon.yml
+- create nightly-LE10-addon.yml
+- create release-LE10.yml
 - How can we use "CI=yes"
 - continue-on-error -- addons
 - could be smarter and build the docker base that is then subsequently used with the .config ???
