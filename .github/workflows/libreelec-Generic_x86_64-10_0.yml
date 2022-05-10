@@ -37,7 +37,6 @@ on:
         - upload
         - no_upload
 
-        
   workflow_call:
     inputs:
       clean_le:
@@ -62,7 +61,6 @@ on:
         required: true
         type: string
 
-
 env:
   TZ: Australia/Melbourne
   BASEDIR: /var/media/DATA/github-actions
@@ -70,8 +68,9 @@ env:
   PROJECT: Generic
   ARCH: x86_64
   DEVICE: Generic
+  TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-10.0-devel
 
-concurrency: 
+concurrency:
   group: Generic_x86_64-10_0
   cancel-in-progress: false
 
@@ -96,7 +95,7 @@ jobs:
           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
           docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
-          
+
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         run: |
           cd LibreELEC.tv
@@ -115,9 +114,9 @@ jobs:
           cd LibreELEC.tv
           # create links that will be used from within the docker containers
           [ ! -h target ] && ln -s /target .
-          # set the build_dir=/build-root - 
+          # set the build_dir=/build-root - for NON ephemeral builds
           echo "build_dir=/build-root" >> $GITHUB_ENV
-          
+
       - name: Display environment
         if: inputs.debug == 'debug' || github.event.inputs.debug == 'debug'
         run: |
@@ -137,14 +136,14 @@ jobs:
           echo "github.event.inputs.debug: ${{ github.event.inputs.debug }}"
           echo "github.event.inputs.ephemeral: ${{ github.event.inputs.ephemeral }}"
           echo "github.event.inputs.upload: ${{ github.event.inputs.upload }}"
-          
+
       - name: Clean LE at docker image
         if: inputs.clean_le == 'clean_le' || github.event.inputs.clean_le == 'clean_le'
         run: |
-          rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-Generic.x86_64-10.0-devel/.stamps
-          rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-Generic.x86_64-10.0-devel/*
-          echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/build.LibreELEC-Generic.x86_64-10.0-devel)"
-          
+          rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.stamps
+          rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
+          echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
+
       - name: Build LE using docker
         run: |
           cd LibreELEC.tv
@@ -160,7 +159,7 @@ jobs:
                           -e BUILD_DIR=${{ env.build_dir }} \
                           gh-${{ github.run_id }} make image
           docker image rm -f gh-${{ github.run_id }}
-          
+
       - name: Upload files
         if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
         run: |
