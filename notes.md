@@ -1,19 +1,19 @@
 ### Ideas / TODO - something for the future
 
+- get uploads to work
+- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX -- these are done...) to updated template.
 - How can we use "CI=yes"
 - continue-on-error -- addons
-- I could be smarter and build the docker base that is then subsequently used with the .config ???
+- could be smarter and build the docker base that is then subsequently used with the .config ???
 - Add logic for export CCACHE_DISABLE=1
-- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX -- these are done...) to updated template.
 - hexdump is required for the addon retro builds -- look at util-linux
 - check the commit hash / date logic
-- get uploads to work
 - Do we have need for environments ?
   - Private Repo's dont allow Environments.
 - The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
   - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 - fix the docker execution to use github syntax
-  - parameterise the make image 
+  - parameterise the `make image` 
 
 ```
 --- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
