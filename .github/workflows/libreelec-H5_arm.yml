@@ -74,7 +74,7 @@ jobs:
           [ ! -h target ] && ln -s /target .
           echo "build_dir=/build-root" >> $GITHUB_ENV
       - name: Prepare the LibreELEC.tv directory - dont leave files behind
-        if: ${{ github.event.inputs.ephemeral_within == 'true' }}
+        if: ${{ inputs.ephemeral_within == 'true' }}
         run: |
           cd LibreELEC.tv
           # remove target links will be used from within the docker containers
@@ -89,11 +89,11 @@ jobs:
           echo "whoami: $(whoami)"
           echo "docker images: $(docker images)"
           echo "ls: $(ls -la)"
-          echo "clean_le: ${{ github.event.inputs.clean_le }}"
-          echo "upload:  ${{ github.event.inputs.upload }}"
-          echo "ephemeral_within:  ${{ github.event.inputs.ephemeral_within }}"
+          echo "clean_le: ${{ inputs.clean_le }}"
+          echo "upload:  ${{ inputs.upload }}"
+          echo "ephemeral_within:  ${{ inputs.ephemeral_within }}"
       - name: Clean LE at docker image
-        if: ${{ github.event.inputs.clean_le == 'true' }}
+        if: ${{ inputs.clean_le == 'true' }}
         run: |
           rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-H5.arm-11.0-devel/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-H5.arm-11.0-devel/*
@@ -114,7 +114,7 @@ jobs:
                           gh-${{ github.run_id }} make image
           docker image rm -f gh-${{ github.run_id }}
       - name: Upload files
-        if: ${{ github.event.inputs.upload == 'true' }}
+        if: ${{ inputs.upload == 'true' }}
         run: |
           echo "${{ secrets.KEY }}" > mykey.ssh
           chmod 600 mykey.ssh
