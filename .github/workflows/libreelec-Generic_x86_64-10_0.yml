@@ -1,4 +1,4 @@
-name: libreelec-Generic.x86_64-10.0
+name: libreelec-Generic_x86_64-10_0
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
@@ -44,7 +44,7 @@ env:
   BASEDIR: /var/media/DATA/github-actions
 
 concurrency: 
-  group: Generic.x86_64-10.0
+  group: Generic_x86_64-10_0
   cancel-in-progress: false
 
 jobs:
