@@ -1,9 +1,10 @@
 ### Ideas / TODO - something for the future
+
 - How can we use "CI=yes"
 - continue-on-error -- addons
 - I could be smarter and build the docker base that is then subsequently used with the .config ???
 - Add logic for export CCACHE_DISABLE=1
-
+- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX -- these are done...) to updated template.
 - hexdump is required for the addon retro builds -- look at util-linux
 - check the commit hash / date logic
 - get uploads to work
