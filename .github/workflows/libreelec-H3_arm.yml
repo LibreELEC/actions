@@ -85,7 +85,7 @@ jobs:
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
-      - name: Create LE docker image
+      - name: Create docker image for build - tools/docker/focal
         run: |
           ls
           pwd
@@ -96,7 +96,7 @@ jobs:
           #sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
           docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
 
-      - name: Prepare the LibreELEC.tv directory - use /build-root and /target
+      - name: Prepare the LibreELEC.tv directory - setup /sources
         run: |
           cd LibreELEC.tv
           # create links that will be used from within the docker containers
