@@ -1,6 +1,9 @@
 ### Ideas / TODO - something for the future
 
 - get uploads to work
+  - you will need to update this from `no_upload` to `upload` to run the test.
+  - you need to update all on the with: blocks in the job: section. Don't worry about L15-L16 in env: (not used at the moment)  
+  - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
 - update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX -- these are done...) to updated template.
 - enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
 - update nightly-MASTER to include all targets
@@ -9,6 +12,9 @@
 - create nightly-LE10-addon.yml
 - create release-LE10.yml
 - How can we use "CI=yes"
+- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
+  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+- logging - so we can actually get the logs (as ephemeral means that they are deleted)
 - continue-on-error -- addons
 - could be smarter and build the docker base that is then subsequently used with the .config ???
 - Add logic for export CCACHE_DISABLE=1
@@ -16,8 +22,6 @@
 - check the commit hash / date logic
 - Do we have need for environments ?
   - Private Repo's dont allow Environments.
-- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
-  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 - fix the docker execution to use github syntax
   - parameterise the `make image` 
 - remove commented-out from `if: checkdate` https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
