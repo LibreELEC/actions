@@ -27,7 +27,7 @@ jobs:
         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
         
   # Allwinner
-  libreelec-A64.arm:
+  libreelec-A64_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -38,7 +38,7 @@ jobs:
           clean_le: false
           upload: true
           ephemeral_within: true
-  libreelec-H3.arm:
+  libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -49,7 +49,7 @@ jobs:
           clean_le: false
           upload: true
           ephemeral_within: true
-  libreelec-H5.arm:
+  libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -60,7 +60,7 @@ jobs:
           clean_le: false
           upload: true
           ephemeral_within: true
-  libreelec-H6.arm:
+  libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -73,7 +73,7 @@ jobs:
           ephemeral_within: true
 
   # Amlogic
-  libreelec-AMLGX.arm:
+  libreelec-AMLGX_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
