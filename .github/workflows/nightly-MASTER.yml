@@ -42,45 +42,37 @@ jobs:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: LibreELEC/actions/.github/workflows/libreelec-H3_arm.yml@main
-        with:
-          clean_le: false
-          upload: true
-          ephemeral_within: true
+    uses: LibreELEC/actions/.github/workflows/libreelec-H3_arm.yml@main
+    with:
+      clean_le: false
+      upload: true
+      ephemeral_within: true
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: LibreELEC/actions/.github/workflows/libreelec-H5_arm.yml@main
-        with:
-          clean_le: false
-          upload: true
-          ephemeral_within: true
+    uses: LibreELEC/actions/.github/workflows/libreelec-H5_arm.yml@main
+    with:
+      clean_le: false
+      upload: true
+      ephemeral_within: true
   libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: LibreELEC/actions/.github/workflows/libreelec-H6_arm.yml@main
-        with:
-          clean_le: false
-          upload: true
-          ephemeral_within: true
+    uses: LibreELEC/actions/.github/workflows/libreelec-H6_arm.yml@main
+    with:
+      clean_le: false
+      upload: true
+      ephemeral_within: true
 
   # Amlogic
   libreelec-AMLGX_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: LibreELEC/actions/.github/workflows/libreelec-AMLGX_arm.yml@main
-        with:
-          clean_le: false
-          upload: true
-          ephemeral_within: true
+    uses: LibreELEC/actions/.github/workflows/libreelec-AMLGX_arm.yml@main
+    with:
+      clean_le: false
+      upload: true
+      ephemeral_within: true
