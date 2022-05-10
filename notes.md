@@ -14,6 +14,7 @@
   - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 - fix the docker execution to use github syntax
   - parameterise the `make image` 
+- remove commented-out from `if: checkdate` https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
 
 ```
 --- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
