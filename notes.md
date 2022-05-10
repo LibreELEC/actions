@@ -3,11 +3,72 @@
 - continue-on-error -- addons
 - I could be smarter and build the docker base that is then subsequently used with the .config ???
 - Add logic for export CCACHE_DISABLE=1
-- fix the docker execution to use github syntax
+
 - hexdump is required for the addon retro builds -- look at util-linux
 - check the commit hash / date logic
 - get uploads to work
 - Do we have need for environments ?
+  - Private Repo's dont allow Environments.
+- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
+  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+- fix the docker execution to use github syntax
+  - parameterise the make image 
+
+```
+--- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
++++ libreelec-Generic_x86_64-10_0.yml   2022-05-10 13:32:26.501891262 +0000
+@@ -1,4 +1,4 @@
+-name: libreelec-A64_arm
++name: libreelec-Generic_x86_64-10_0
+ on:
+   # allows to run this workflow manually from the actions tab
+   workflow_dispatch:
+@@ -65,13 +65,13 @@
+   TZ: Australia/Melbourne
+   BASEDIR: /var/media/DATA/github-actions
+   # Distro Target Variables
+-  PROJECT: Allwinner
+-  ARCH: arm
+-  DEVICE: A64
+-  TARGETBUILDDIR: build.LibreELEC-A64.arm-11.0-devel
++  PROJECT: Generic
++  ARCH: x86_64
++  #DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
++  TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-10.0-devel
+
+ concurrency:
+-  group: A64_arm
++  group: Generic_x86_64-10_0
+   cancel-in-progress: false
+
+ jobs:
+@@ -81,7 +81,7 @@
+     steps:
+       - uses: actions/checkout@v3
+         with:
+-          ref: master
++          ref: libreelec-10.0
+           fetch-depth: 2
+           repository: "LibreELEC/LibreELEC.tv"
+           path: "LibreELEC.tv"
+@@ -93,7 +93,7 @@
+           sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
+           # workaround below until buildsystem does not require local cc
+           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
+-          #sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
++          sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
+           docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
+
+       - name: Prepare the LibreELEC.tv directory - setup /sources
+@@ -154,7 +154,6 @@
+                           -w /build -i \
+                           -e PROJECT=${{ env.PROJECT }} \
+                           -e ARCH=${{ env.ARCH }} \
+-                          -e DEVICE=${{ env.DEVICE }} \
+                           -e ONELOG=no -e LOGCOMBINE=never \
+                           -e BUILD_DIR=${{ env.build_dir }} \
+                           gh-${{ github.run_id }} make image
+```
 
 ## Fixes done to runners:
 ```
