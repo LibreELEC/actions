@@ -5,20 +5,38 @@ on:
     inputs:
       clean_le:
         description: 'Should the workflow clean the /build-root'
-        default: false
+        default: no_clean_le
         required: true
-        type: boolean
+        type: choice
+        options:
+        - clean_le
+        - no_clean_le
+      debug:
+        description: 'Provide debug output from GHA run'
+        default: no_debug
+        required: true
+        type: choice
+        options:
+        - debug
+        - no_debug
+      ephemeral:
+        description: 'Target and build-root are ephemeral'
+        default: ephemeral
+        required: true
+        type: choice
+        options:
+        - ephemeral
+        - no_ephemeral
       upload:
         description: 'Upload the images to the release server'
-        default: false
+        default: no_upload
         required: true
         type: choice
-      ephemeral_within:
-        description: 'Target and build-root are ephemeral'
-        default: false
-        required: true
-        type: choice
+        options:
+        - upload
+        - no_upload
 
+        
   workflow_call:
     inputs:
       clean_le:
@@ -26,16 +44,22 @@ on:
         default: no_clean_le
         required: true
         type: string
+      debug:
+        description: 'Provide debug output from GHA run'
+        default: no_debug
+        required: true
+        type: string
+      ephemeral:
+        description: 'Target and build-root are ephemeral'
+        default: ephemeral
+        required: true
+        type: string
       upload:
         description: 'Upload the images to the release server'
         default: no_upload
         required: true
         type: string
-      ephemeral_within:
-        description: 'Target and build-root are ephemeral'
-        default: ephemeral_within
-        required: true
-        type: string
+
 
 env:
   TZ: Australia/Melbourne
@@ -66,22 +90,30 @@ jobs:
           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
           docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
+          
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         run: |
           cd LibreELEC.tv
           # create links that will be used from within the docker containers
           [ ! -h sources ] && ln -s /sources .
-          [ ! -h target ] && ln -s /target .
-          echo "build_dir=/build-root" >> $GITHUB_ENV
-      - name: Prepare the LibreELEC.tv directory - dont leave files behind
-        if: ${{ github.event.inputs.ephemeral_within == 'true' }}
+
+      - name: Prepare the LibreELEC.tv directory - do not leave files behind
+        if: inputs.ephemeral == 'ephemeral' || github.event.inputs.ephemeral == 'ephemeral'
         run: |
           cd LibreELEC.tv
-          # remove target links will be used from within the docker containers
-          [ -h target ] && rm target
-          # overwrite the build_dir=/build
+          # set the build_dir=/build
           echo "build_dir=/build" >> $GITHUB_ENV
+      - name: Prepare the LibreELEC.tv directory - use /build-root and /target
+        if: inputs.ephemeral == 'no_ephemeral' || github.event.inputs.ephemeral == 'no_ephemeral'
+        run: |
+          cd LibreELEC.tv
+          # create links that will be used from within the docker containers
+          [ ! -h target ] && ln -s /target .
+          # set the build_dir=/build-root - 
+          echo "build_dir=/build-root" >> $GITHUB_ENV
+          
       - name: Display environment
+        if: inputs.debug == 'debug' || github.event.inputs.debug == 'debug'
         run: |
           cd LibreELEC.tv
           echo "pwd: $(pwd)"
@@ -89,16 +121,26 @@ jobs:
           echo "whoami: $(whoami)"
           echo "docker images: $(docker images)"
           echo "ls: $(ls -la)"
-          echo "clean_le: ${{ github.event.inputs.clean_le }}"
-          echo "upload:  ${{ github.event.inputs.upload }}"
-          echo "ephemeral_within:  ${{ github.event.inputs.ephemeral_within }}"
+          echo
+          echo "inputs.clean_le: ${{ inputs.clean_le }}"
+          echo "inputs.debug: ${{ inputs.debug }}"
+          echo "inputs.ephemeral: ${{ inputs.ephemeral }}"
+          echo "inputs.upload: ${{ inputs.upload }}"
+          echo
+          echo "github.event.inputs.clean_le: ${{ github.event.inputs.clean_le }}"
+          echo "github.event.inputs.debug: ${{ github.event.inputs.debug }}"
+          echo "github.event.inputs.ephemeral: ${{ github.event.inputs.ephemeral }}"
+          echo "github.event.inputs.upload: ${{ github.event.inputs.upload }}"
+
+          
       - name: Clean LE at docker image
-        if: ${{ github.event.inputs.clean_le == 'true' }}
+        if: inputs.clean_le == 'clean_le' || github.event.inputs.clean_le == 'clean_le'
         run: |
           rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-Generic.x86_64-10.0-devel/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/build.LibreELEC-Generic.x86_64-10.0-devel/*
           echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/build.LibreELEC-Generic.x86_64-10.0-devel)"
-      - name: Build LE at docker image
+          
+      - name: Build LE using docker
         run: |
           cd LibreELEC.tv
           docker run --rm -v ${{ env.BASEDIR }}/sources:/sources \
@@ -113,8 +155,9 @@ jobs:
                           -e BUILD_DIR=${{ env.build_dir }} \
                           gh-${{ github.run_id }} make image
           docker image rm -f gh-${{ github.run_id }}
+          
       - name: Upload files
-        if: ${{ github.event.inputs.upload == 'true' }}
+        if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
         run: |
           echo "${{ secrets.KEY }}" > mykey.ssh
           chmod 600 mykey.ssh
