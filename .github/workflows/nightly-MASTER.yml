@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
 env:
   TZ: Australia/Melbourne
-
+  clean_le: false
+  upload: false
+  #upload: true
+  ephemeral_within: true
+      
 jobs:
   check_date:
     runs-on: ubuntu-latest
@@ -33,36 +37,36 @@ jobs:
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-A64_arm.yml@main
     with:
-      clean_le: false
-      upload: true
-      ephemeral_within: true
+      clean_le: ${{ env.clean_le }}
+      upload: ${{ env.upload }}
+      ephemeral_within: ${{ env.ephemeral_within }}
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H3_arm.yml@main
     with:
-      clean_le: false
-      upload: true
-      ephemeral_within: true
+      clean_le: ${{ env.clean_le }}
+      upload: ${{ env.upload }}
+      ephemeral_within: ${{ env.ephemeral_within }}
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H5_arm.yml@main
     with:
-      clean_le: false
-      upload: true
-      ephemeral_within: true
+      clean_le: ${{ env.clean_le }}
+      upload: ${{ env.upload }}
+      ephemeral_within: ${{ env.ephemeral_within }}
   libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H6_arm.yml@main
     with:
-      clean_le: false
-      upload: true
-      ephemeral_within: true
+      clean_le: ${{ env.clean_le }}
+      upload: ${{ env.upload }}
+      ephemeral_within: ${{ env.ephemeral_within }}
 
   # Amlogic
   libreelec-AMLGX_arm:
@@ -71,6 +75,6 @@ jobs:
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-AMLGX_arm.yml@main
     with:
-      clean_le: false
-      upload: true
-      ephemeral_within: true
+      clean_le: ${{ env.clean_le }}
+      upload: ${{ env.upload }}
+      ephemeral_within: ${{ env.ephemeral_within }}
