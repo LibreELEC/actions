@@ -5,6 +5,9 @@
 - Add logic for export CCACHE_DISABLE=1
 - fix the docker execution to use github syntax
 - hexdump is required for the addon retro builds -- look at util-linux
+- check the commit hash / date logic
+- get uploads to work
+- Do we have need for environments ?
  
 ### Ideas - DONE
 - ~inputs. dont come across from workflow_run :-(~
