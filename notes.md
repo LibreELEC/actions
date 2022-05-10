@@ -8,7 +8,18 @@
 - check the commit hash / date logic
 - get uploads to work
 - Do we have need for environments ?
- 
+
+## Fixes done to runners:
+```
+sudo chown runner:runner /var/media/DATA/github-actions/{build-root,sources,target}
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
+tune2fs -m 1 /dev/ubuntu-vg/ubuntu-lv
+tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
+resize2fs /dev/ubuntu-vg/ubuntu-lv
+df
+```
+
 ### Ideas - DONE
 - ~inputs. dont come across from workflow_run :-(~
 - ~so next task will be to look at the "CI=yes" and seeing what the correct way to call the workflows is? (https://github.com/heitbaum/libreelec-actions/blob/main/.github/workflows/libreelec-nightly.yml is setup to initiate all using workflow_run) - is workflow_call the right way? https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
