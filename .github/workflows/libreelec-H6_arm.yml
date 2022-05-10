@@ -1,4 +1,4 @@
-name: libreelec-H6.arm
+name: libreelec-H6_arm
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
