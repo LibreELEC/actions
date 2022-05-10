@@ -5,21 +5,21 @@
   - you need to update all on the with: blocks in the job: section. Don't worry about L15-L16 in env: (not used at the moment)  
   - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
 - update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX -- these are done...) to updated template.
-- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
 - update nightly-MASTER to include all targets
 - update nightly-LE10 to include all targets
 - create nightly-MASTER-addon.yml
 - create nightly-LE10-addon.yml
 - create release-LE10.yml
-- How can we use "CI=yes"
-- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
-  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+- Add logic for export CCACHE_DISABLE=1
 - logging - so we can actually get the logs (as ephemeral means that they are deleted)
 - continue-on-error -- addons
-- could be smarter and build the docker base that is then subsequently used with the .config ???
-- Add logic for export CCACHE_DISABLE=1
 - hexdump is required for the addon retro builds -- look at util-linux
 - check the commit hash / date logic
+- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
+  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+- How can we use "CI=yes"
+- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
+- could be smarter and build the docker base that is then subsequently used with the .config ???
 - Do we have need for environments ?
   - Private Repo's dont allow Environments.
 - fix the docker execution to use github syntax
