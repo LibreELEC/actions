@@ -1,0 +1,46 @@
+name: nightly-LE10
+on:
+  # allows to run this workflow manually from the actions tab
+  workflow_dispatch:
+env:
+  TZ: Australia/Melbourne
+  clean_le: no_clean_le
+  debug: debug
+  ephemeral: ephemeral
+  upload: no_upload
+  #upload: upload
+
+      
+jobs:
+  check_date:
+    runs-on: ubuntu-latest
+    name: Check latest commit
+    outputs:
+      should_run: ${{ steps.should_run.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+          fetch-depth: 2
+          repository: "LibreELEC/LibreELEC.tv"
+          path: "LibreELEC.tv"
+      - name: print latest_commit
+        run: echo ${{ github.sha }}
+      - id: should_run
+        continue-on-error: true
+        name: check latest commit is less than a day
+        if: ${{ github.event_name == 'schedule' }}
+        run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+        
+  # Generic
+  Generic_x86_64-10_0:
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    uses: LibreELEC/actions/.github/workflows/libreelec-Generic_x86_64-10_0.yml@main
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: no_upload
+      #upload: upload
