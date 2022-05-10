@@ -67,7 +67,7 @@ env:
   # Distro Target Variables
   PROJECT: Generic
   ARCH: x86_64
-  DEVICE: Generic
+  #DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
   TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-10.0-devel
 
 concurrency:
@@ -154,7 +154,6 @@ jobs:
                           -w /build -i \
                           -e PROJECT=${{ env.PROJECT }} \
                           -e ARCH=${{ env.ARCH }} \
-                          -e DEVICE=${{ env.DEVICE }} \
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           gh-${{ github.run_id }} make image
