@@ -19,9 +19,7 @@ on:
         required: true
         type: boolean
 
-  workflow_run:
-    workflows: [libreelec-nightly]
-    types: [completed]
+  workflow_call:
     inputs:
       clean_le:
         description: 'Should the workflow clean the /build-root'
