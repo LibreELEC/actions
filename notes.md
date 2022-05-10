@@ -1,30 +1,36 @@
-### Ideas - something for the future
-- inputs. dont come across from workflow_run :-(
-- so next task will be to look at the "CI=yes" and seeing what the correct way to call the workflows is? (https://github.com/heitbaum/libreelec-actions/blob/main/.github/workflows/libreelec-nightly.yml is setup to initiate all using workflow_run) - is workflow_call the right way? https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
-  - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
-- continue-on-error
+### Ideas / TODO - something for the future
+- How can we use "CI=yes"
+- continue-on-error -- addons
 - I could be smarter and build the docker base that is then subsequently used with the .config ???
+- Add logic for export CCACHE_DISABLE=1
+- fix the docker execution to use github syntax
+- hexdump is required for the addon retro builds -- look at util-linux
+ 
+### Ideas - DONE
+- ~inputs. dont come across from workflow_run :-(~
+- ~so next task will be to look at the "CI=yes" and seeing what the correct way to call the workflows is? (https://github.com/heitbaum/libreelec-actions/blob/main/.github/workflows/libreelec-nightly.yml is setup to initiate all using workflow_run) - is workflow_call the right way? https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
+  - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows~
 - ~use concurrecy groups to stop same build target concurrency builds.~
   - ~https://github.blog/changelog/2021-04-19-github-actions-limit-workflow-run-or-job-concurrency/~
   - ~DONE~
-- do the nightly runs
-  - https://stackoverflow.com/questions/63014786/how-to-schedule-a-github-actions-nightly-build-but-run-it-only-when-there-where
-  - https://gist.github.com/jasonrudolph/1810768
-  - might need to have a prescript to is dispatch that checks bbefore spawning ....
-- how to spawn all the workflows
-  - use workflow_run
-    - https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_run
-  - use workflow_dispatch
-  - github actions workflow dispatch
-  - https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
-  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
-- reusable workflows
-  - https://yonatankra.com/7-github-actions-tricks-i-wish-i-knew-before-i-started/
-- other stuff: / subworkflow / actions
-  - https://github.com/actions/runner/discussions/1419?msclkid=b3843972cf3711ecbe5439078f5daf4c
-  - https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf
-  - https://www.bing.com/search?q=github+%22uses%22+same+repository&cvid=60fe0aef5c1549db9efa12bca84795ea&aqs=edge..69i57j69i64l2.15260j0j1&FORM=ANAB01&PC=U531
-  - https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
+- ~do the nightly runs~
+  - ~https://stackoverflow.com/questions/63014786/how-to-schedule-a-github-actions-nightly-build-but-run-it-only-when-there-where~
+  - ~https://gist.github.com/jasonrudolph/1810768~
+  - ~might need to have a prescript to is dispatch that checks bbefore spawning ....~
+- ~how to spawn all the workflows~
+  - ~use workflow_run~
+    - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_run~
+  - ~use workflow_dispatch~
+  - ~github actions workflow dispatch~
+  - ~https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow~
+  - ~https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
+- ~reusable workflows~
+  - ~https://yonatankra.com/7-github-actions-tricks-i-wish-i-knew-before-i-started/~
+- ~other stuff: / subworkflow / actions~
+  - ~https://github.com/actions/runner/discussions/1419?msclkid=b3843972cf3711ecbe5439078f5daf4c~
+  - ~https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf~
+  - ~https://www.bing.com/search?q=github+%22uses%22+same+repository&cvid=60fe0aef5c1549db9efa12bca84795ea&aqs=edge..69i57j69i64l2.15260j0j1&FORM=ANAB01&PC=U531~
+  - ~https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow~
 
 ### Current status / things to understand / work though
 - there is only 1 (shared) build-root (dont buiuld the same architecture at the same time - it will lock / fail)
