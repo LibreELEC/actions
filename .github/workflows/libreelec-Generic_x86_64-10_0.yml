@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       clean_le:
+        # This setting is only used (makes sense) when builds are NOT ephemeral
         description: 'Should the workflow clean the /build-root'
         default: no_clean_le
         required: true
@@ -12,7 +13,7 @@ on:
         - clean_le
         - no_clean_le
       debug:
-        description: 'Provide debug output from GHA run'
+        description: 'Provide debug output within GHA run'
         default: no_debug
         required: true
         type: choice
@@ -40,6 +41,7 @@ on:
   workflow_call:
     inputs:
       clean_le:
+        # This setting is only used (makes sense) when builds are NOT ephemeral
         description: 'Should the workflow clean the /build-root'
         default: no_clean_le
         required: true
@@ -64,6 +66,10 @@ on:
 env:
   TZ: Australia/Melbourne
   BASEDIR: /var/media/DATA/github-actions
+  # Distro Target Variables
+  PROJECT: Generic
+  ARCH: x86_64
+  DEVICE: Generic
 
 concurrency: 
   group: Generic_x86_64-10_0
@@ -131,7 +137,6 @@ jobs:
           echo "github.event.inputs.debug: ${{ github.event.inputs.debug }}"
           echo "github.event.inputs.ephemeral: ${{ github.event.inputs.ephemeral }}"
           echo "github.event.inputs.upload: ${{ github.event.inputs.upload }}"
-
           
       - name: Clean LE at docker image
         if: inputs.clean_le == 'clean_le' || github.event.inputs.clean_le == 'clean_le'
