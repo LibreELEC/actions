@@ -1,4 +1,4 @@
-name: libreelec-H5.arm
+name: libreelec-H5_arm
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
