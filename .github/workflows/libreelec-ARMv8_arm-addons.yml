@@ -108,6 +108,7 @@ jobs:
           cd LibreELEC.tv
           # set the build_dir=/build
           echo "build_dir=/build" >> $GITHUB_ENV
+          echo "CCACHE_DISABLE=1" >> $GITHUB_ENV
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         if: inputs.ephemeral == 'no_ephemeral' || github.event.inputs.ephemeral == 'no_ephemeral'
         run: |
@@ -157,6 +158,7 @@ jobs:
                           -e DEVICE=${{ env.DEVICE }} \
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
+                          -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} scripts/create_addon all
           docker image rm -f gh-${{ github.run_id }}
 
