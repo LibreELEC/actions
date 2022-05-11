@@ -1,4 +1,4 @@
-name: libreelec-ARMv8_arm-addons-all
+name: libreelec-ARMv8_arm-addons
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:

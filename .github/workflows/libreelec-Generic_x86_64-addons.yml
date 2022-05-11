@@ -1,4 +1,4 @@
-name: libreelec-ARMv7_arm-addons
+name: libreelec-Generic_x86_64-addons
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
@@ -65,13 +65,13 @@ env:
   TZ: Australia/Melbourne
   BASEDIR: /var/media/DATA/github-actions
   # Distro Target Variables
-  PROJECT: ARM
-  ARCH: arm
-  DEVICE: ARMv7
-  TARGETBUILDDIR: build.LibreELEC-ARMv7.arm-11.0-devel
+  PROJECT: Generic
+  ARCH: x86_64
+  DEVICE: Generic
+  TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-11.0-devel
 
 concurrency:
-  group: ARMv7_arm
+  group: Generic_x86_64
   cancel-in-progress: false
 
 jobs:
@@ -159,7 +159,7 @@ jobs:
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
-                          gh-${{ github.run_id }} scripts/create_addon all
+                          gh-${{ github.run_id }} scripts/create_addon all -chrome
           docker image rm -f gh-${{ github.run_id }}
 
       - name: Upload files
