@@ -13,6 +13,7 @@
 - Add logic for export CCACHE_DISABLE=1
 - logging - so we can actually get the logs (as ephemeral means that they are deleted)
 - continue-on-error -- addons
+- on cancelled jobs ... how to cleanup?
 - hexdump is required for the addon retro builds -- look at util-linux
 - check the commit hash / date logic
 - The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
