@@ -24,7 +24,7 @@
 - Do we have need for environments ?
   - Private Repo's dont allow Environments.
 - fix the docker execution to use github syntax
-  - parameterise the `make image` 
+  - parameterise the `make image` (addons is done- but need to change to buildcmd and update other .yml files so we can have the single template /include.
 - ~remove commented-out from `if: checkdate`~ - DONE - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
 
 ```
