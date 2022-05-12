@@ -1,0 +1,11 @@
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare the LibreELEC.tv directory - do not leave files behind
+      shell: bash
+      if: inputs.ephemeral == 'ephemeral' || github.event.inputs.ephemeral == 'ephemeral'
+      run: |
+        cd LibreELEC.tv
+        # set the build_dir=/build
+        echo "build_dir=/build" >> $GITHUB_ENV
+        echo "CCACHE_DISABLE=1" >> $GITHUB_ENV

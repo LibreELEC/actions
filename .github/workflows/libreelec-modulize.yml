@@ -1,0 +1,105 @@
+name: libreelec-modulize-test
+on:
+  # allows to run this workflow manually from the actions tab
+  workflow_dispatch:
+    inputs:
+      clean_le:
+        # This setting is only used (makes sense) when builds are NOT ephemeral
+        description: "Should the workflow clean the /build-root"
+        default: no_clean_le
+        required: true
+        type: choice
+        options:
+          - clean_le
+          - no_clean_le
+      debug:
+        description: "Provide debug output within GHA run"
+        default: no_debug
+        required: true
+        type: choice
+        options:
+          - debug
+          - no_debug
+      ephemeral:
+        description: "Target and build-root are ephemeral"
+        default: ephemeral
+        required: true
+        type: choice
+        options:
+          - ephemeral
+          - no_ephemeral
+      upload:
+        description: "Upload the images to the release server"
+        default: no_upload
+        required: true
+        type: choice
+        options:
+          - upload
+          - no_upload
+
+  workflow_call:
+    inputs:
+      clean_le:
+        # This setting is only used (makes sense) when builds are NOT ephemeral
+        description: "Should the workflow clean the /build-root"
+        default: no_clean_le
+        required: true
+        type: string
+      debug:
+        description: "Provide debug output from GHA run"
+        default: no_debug
+        required: true
+        type: string
+      ephemeral:
+        description: "Target and build-root are ephemeral"
+        default: ephemeral
+        required: true
+        type: string
+      upload:
+        description: "Upload the images to the release server"
+        default: no_upload
+        required: true
+        type: string
+
+env:
+  TZ: Australia/Melbourne
+  BASEDIR: /var/media/DATA/github-actions
+  # Distro Target Variables
+  PROJECT: Generic
+  ARCH: x86_64
+  DEVICE: Generic
+  TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-11.0-devel
+
+concurrency:
+  group: Generic_x86_64
+  cancel-in-progress: false
+
+jobs:
+  build_libreelec:
+    runs-on: self-hosted
+
+    steps:
+      - uses: LibreELEC/actions/steps/checkout@main
+
+      - uses: LibreELEC/actions/steps/docker_image_create@main
+
+      - uses: LibreELEC/actions/steps/prepare_env@main
+
+      - uses: LibreELEC/actions/steps/ephemeral@main
+
+      - uses: LibreELEC/actions/steps/prepare_directory@main
+
+      - uses: LibreELEC/actions/steps/debug_display_env@main
+
+      - uses: LibreELEC/actions/steps/docker_image_clean@main
+
+      - uses: LibreELEC/actions/steps/build_le_addons@main
+
+      #- uses: LibreELEC/actions/steps/upload@main
+      - name: Upload files
+        shell: bash
+        if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
+        run: |
+          ls -lah ${{ env.BASEDIR }}/target
+          scp -P ${{ secrets.PORT }} ${{ env.BASEDIR }}/target/*.{zip,img.gz} \
+          ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}

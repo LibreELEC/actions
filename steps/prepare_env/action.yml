@@ -1,0 +1,9 @@
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare the LibreELEC.tv directory - setup /sources
+      shell: bash
+      run: |
+        cd LibreELEC.tv
+        # create links that will be used from within the docker containers
+        [ ! -h sources ] && ln -s /sources .

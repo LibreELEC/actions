@@ -1,0 +1,23 @@
+runs:
+  using: "composite"
+  steps:
+    - name: Display environment
+      shell: bash
+      if: inputs.debug == 'debug' || github.event.inputs.debug == 'debug'
+      run: |
+        cd LibreELEC.tv
+        echo "pwd: $(pwd)"
+        echo "id: $(id)"
+        echo "whoami: $(whoami)"
+        echo "docker images: $(docker images)"
+        echo "ls: $(ls -la)"
+        echo
+        echo "inputs.clean_le: ${{ inputs.clean_le }}"
+        echo "inputs.debug: ${{ inputs.debug }}"
+        echo "inputs.ephemeral: ${{ inputs.ephemeral }}"
+        echo "inputs.upload: ${{ inputs.upload }}"
+        echo
+        echo "github.event.inputs.clean_le: ${{ github.event.inputs.clean_le }}"
+        echo "github.event.inputs.debug: ${{ github.event.inputs.debug }}"
+        echo "github.event.inputs.ephemeral: ${{ github.event.inputs.ephemeral }}"
+        echo "github.event.inputs.upload: ${{ github.event.inputs.upload }}"
