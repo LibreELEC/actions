@@ -171,6 +171,7 @@ jobs:
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} scripts/create_addon ${{ inputs.addons }} ${{ github.event.inputs.addons }}
           docker image rm -f gh-${{ github.run_id }}
+        continue-on-error: true
 
       - name: Upload files
         if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
