@@ -169,7 +169,7 @@ jobs:
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
-                          gh-${{ github.run_id }} scripts/create_addon ${{ inputs.addons }} ${{ github.event.inputs.clean_le }}
+                          gh-${{ github.run_id }} scripts/create_addon ${{ inputs.addons }} ${{ github.event.inputs.addons }}
           docker image rm -f gh-${{ github.run_id }}
 
       - name: Upload files
