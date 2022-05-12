@@ -162,9 +162,4 @@ jobs:
                           gh-${{ github.run_id }} scripts/create_addon script.config.vdr
           docker image rm -f gh-${{ github.run_id }}
 
-      - name: Upload files
-        if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
-        run: |
-          ls -lah ${{ env.BASEDIR }}/target
-          scp -P ${{ secrets.PORT }} ${{ env.BASEDIR }}/target/*.{zip,img.gz} \
-              ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }} \
+      - uses: ./jobs/upload.yml
