@@ -89,6 +89,7 @@ env:
   ARCH: arm
   DEVICE: iMX6
   TARGETBUILDDIR: build.LibreELEC-iMX6.arm-11.0-devel
+  BUILD_PERIODIC: nightly
 
 concurrency:
   group: iMX6_arm
@@ -178,6 +179,7 @@ jobs:
                           -e DEVICE=${{ env.DEVICE }} \
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
+                          -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }} ${{ github.event.inputs.buildcmd }}
           docker image rm -f gh-${{ github.run_id }}

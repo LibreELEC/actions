@@ -91,6 +91,7 @@ env:
   # DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
   #         make sure it is set to empty string
   TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-10.0-devel
+  BUILD_PERIODIC: nightly
 
 concurrency:
   group: Generic_x86_64-10_0
@@ -180,6 +181,7 @@ jobs:
                           -e DEVICE=${{ env.DEVICE }} \
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
+                          -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }} ${{ github.event.inputs.buildcmd }}
           docker image rm -f gh-${{ github.run_id }}
