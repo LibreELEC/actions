@@ -188,5 +188,10 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lahR target
-          scp -P ${{ secrets.PORT }} target/addons/*/*/*/*/*.zip \
-          ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
+          find target/addons -type f -name "*.zip" | \
+            while read zipfile
+            do
+              fp=(`echo $zipfile | tr '/' ' '`)
+              scp -P ${{ secrets.PORT }} $zipfile \
+              ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}/addons/${fp[2]}/${fp[2]}-${fp[3]}-${fp[4]}-${fp[6]}
+            done
