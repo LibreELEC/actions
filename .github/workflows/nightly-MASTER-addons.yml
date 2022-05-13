@@ -72,3 +72,15 @@ jobs:
       upload: upload
       buildcmd: 'scripts/create_addon all -chrome'
       gitref: master
+  libreelec-Generic-legacy_x86_64-addons-chrome:
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    uses: LibreELEC/actions/.github/workflows/libreelec-Generic-legacy_x86_64-addons-chrome.yml@main
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: 'scripts/create_addon chrome'
+      gitref: master
