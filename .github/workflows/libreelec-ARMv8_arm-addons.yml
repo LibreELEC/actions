@@ -176,9 +176,6 @@ jobs:
       - name: Upload files
         if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
         run: |
-          echo "${{ secrets.KEY }}" > mykey.ssh
-          chmod 600 mykey.ssh
-          scp -i mykey.ssh -o "StrictHostKeyChecking no" \
-              -P ${{ secrets.PORT }} \
-              -p ${{ env.BASEDIR }}/target/addon.zip \
-              ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
+          ls -lah ${{ env.BASEDIR }}/target
+          scp -P ${{ secrets.PORT }} ${{ env.BASEDIR }}/target/*.{zip,img.gz} \
+          ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
