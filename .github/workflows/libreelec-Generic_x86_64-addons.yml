@@ -36,9 +36,9 @@ on:
         options:
         - upload
         - no_upload
-      addons:
+      buildcmd:
         description: 'list of addons to build'
-        default: 'all -chrome'
+        default: 'scripts/create_addon all -chrome'
         required: true
         type: string
 
@@ -65,9 +65,9 @@ on:
         default: no_upload
         required: true
         type: string
-      addons:
+      buildcmd:
         description: 'list of addons to build'
-        default: 'all -chrome'
+        default: 'scripts/create_addon all -chrome'
         required: true
         type: string
 
@@ -169,7 +169,7 @@ jobs:
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
-                          gh-${{ github.run_id }} scripts/create_addon ${{ inputs.addons }} ${{ github.event.inputs.addons }}
+                          gh-${{ github.run_id }} ${{ inputs.buildcmd }} ${{ github.event.inputs.buildcmd }}
           docker image rm -f gh-${{ github.run_id }}
         continue-on-error: true
 

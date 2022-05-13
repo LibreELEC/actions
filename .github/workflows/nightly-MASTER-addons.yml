@@ -48,7 +48,7 @@ jobs:
       ephemeral: ephemeral
       upload: no_upload
       #upload: upload
-      addons: all
+      buildcmd: 'scripts/create_addon all'
   libreelec-ARMv8_arm-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -60,7 +60,7 @@ jobs:
       ephemeral: ephemeral
       upload: no_upload
       #upload: upload
-      addons: all
+      buildcmd: 'scripts/create_addon all'
   libreelec-Generic_x86_64-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -72,4 +72,4 @@ jobs:
       ephemeral: ephemeral
       upload: no_upload
       #upload: upload
-      addons: 'all -chrome'
+      buildcmd: 'scripts/create_addon all -chrome'
