@@ -185,6 +185,7 @@ jobs:
       - name: Upload files
         if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
         run: |
-          ls -lah ${{ env.BASEDIR }}/target
-          scp -P ${{ secrets.PORT }} ${{ env.BASEDIR }}/target/*.{zip,img.gz} \
+          cd LibreELEC.tv
+          ls -lahR target
+          scp -P ${{ secrets.PORT }} target/*.{img.gz,ova,tar} \
           ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
