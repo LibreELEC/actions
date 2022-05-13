@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '30 14 * * *'
+    - cron:  '50 14 * * *'
 
 env:
   TZ: Australia/Melbourne
@@ -46,6 +46,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
+      buildcmd: 'make image'
       gitref: master
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
@@ -58,6 +59,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
+      gitref: master
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
