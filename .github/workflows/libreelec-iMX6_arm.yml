@@ -189,5 +189,5 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lahR target
-          scp -P ${{ secrets.PORT }} target/*.{img.gz,ova,tar} \
+          scp -P ${{ secrets.PORT }} target/*.{img.gz,tar} \
           ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
