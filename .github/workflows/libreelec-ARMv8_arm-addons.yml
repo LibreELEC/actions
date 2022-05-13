@@ -41,6 +41,11 @@ on:
         default: 'scripts/create_addon all'
         required: true
         type: string
+      gitref:
+        description: 'git branch or hash to build'
+        default: master
+        required: true
+        type: string
 
   workflow_call:
     inputs:
@@ -70,6 +75,11 @@ on:
         default: 'scripts/create_addon all'
         required: true
         type: string
+      gitref:
+        description: 'git branch or hash to build'
+        default: master
+        required: true
+        type: string
 
 env:
   TZ: Australia/Melbourne
@@ -91,7 +101,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: ${{ inputs.gitref }}${{ github.event.inputs.gitref }}
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"

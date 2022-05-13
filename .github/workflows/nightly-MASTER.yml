@@ -48,6 +48,7 @@ jobs:
       ephemeral: ephemeral
       upload: no_upload
       #upload: upload
+      gitref: master
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -57,8 +58,8 @@ jobs:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
-      upload: no_upload
-      #upload: upload
+      upload: upload
+      buildcmd: 'make image'
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -68,8 +69,9 @@ jobs:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
-      upload: no_upload
-      #upload: upload
+      upload: upload
+      buildcmd: 'make image'
+      gitref: master
   libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -79,8 +81,9 @@ jobs:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
-      upload: no_upload
-      #upload: upload
+      upload: upload
+      buildcmd: 'make image'
+      gitref: master
 
   # Amlogic
   libreelec-AMLGX_arm:
@@ -92,5 +95,6 @@ jobs:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
-      upload: no_upload
-      #upload: upload
+      upload: upload
+      buildcmd: 'make image'
+      gitref: master

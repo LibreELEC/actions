@@ -36,6 +36,16 @@ on:
         options:
         - upload
         - no_upload
+      buildcmd:
+        description: 'build command to run'
+        default: 'make image'
+        required: true
+        type: string
+      gitref:
+        description: 'git branch or hash to build'
+        default: master
+        required: true
+        type: string
 
   workflow_call:
     inputs:
@@ -58,6 +68,16 @@ on:
       upload:
         description: 'Upload the images to the release server'
         default: no_upload
+        required: true
+        type: string
+      buildcmd:
+        description: 'build command to run'
+        default: 'make image'
+        required: true
+        type: string
+      gitref:
+        description: 'git branch or hash to build'
+        default: master
         required: true
         type: string
 
@@ -83,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: libreelec-10.0
+          ref: ${{ inputs.gitref }}${{ github.event.inputs.gitref }}
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
@@ -161,15 +181,12 @@ jobs:
                           -e ONELOG=no -e LOGCOMBINE=never \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
-                          gh-${{ github.run_id }} make image
+                          gh-${{ github.run_id }} ${{ inputs.buildcmd }} ${{ github.event.inputs.buildcmd }}
           docker image rm -f gh-${{ github.run_id }}
 
       - name: Upload files
         if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
         run: |
-          echo "${{ secrets.KEY }}" > mykey.ssh
-          chmod 600 mykey.ssh
-          scp -i mykey.ssh -o "StrictHostKeyChecking no" \
-              -P ${{ secrets.PORT }} \
-              -p ${{ env.BASEDIR }}/target/addon.zip \
-              ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
+          ls -lah ${{ env.BASEDIR }}/target
+          scp -P ${{ secrets.PORT }} ${{ env.BASEDIR }}/target/*.{zip,img.gz} \
+          ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
