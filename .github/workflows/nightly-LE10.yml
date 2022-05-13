@@ -7,8 +7,7 @@ env:
   clean_le: no_clean_le
   debug: debug
   ephemeral: ephemeral
-  upload: no_upload
-  #upload: upload
+  upload: upload
 
       
 jobs:
