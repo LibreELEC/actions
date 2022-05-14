@@ -50,6 +50,7 @@ jobs:
       upload: upload
       buildcmd: 'scripts/create_addon all'
       gitref: master
+    secrets: inherit
   libreelec-ARMv8_arm-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -62,6 +63,7 @@ jobs:
       upload: upload
       buildcmd: 'scripts/create_addon all'
       gitref: master
+    secrets: inherit
   libreelec-Generic_x86_64-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -74,6 +76,7 @@ jobs:
       upload: upload
       buildcmd: 'scripts/create_addon all -chrome'
       gitref: master
+    secrets: inherit
   libreelec-Generic-legacy_x86_64-addons-chrome:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -86,3 +89,4 @@ jobs:
       upload: upload
       buildcmd: 'scripts/create_addon chrome'
       gitref: master
+    secrets: inherit

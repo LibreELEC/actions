@@ -50,6 +50,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -62,6 +63,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -74,6 +76,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -86,6 +89,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # Amlogic
   libreelec-AMLGX_arm:
@@ -100,6 +104,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # Generic
   libreelec-Generic_x86_64:
@@ -114,6 +119,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # NXP
   libreelec-iMX6_arm:
@@ -128,6 +134,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-iMX8_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -140,6 +147,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # Qualcomm
   libreelec-Dragonboard_arm:
@@ -154,6 +162,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # Rockchip
   libreelec-RK3288_arm:
@@ -168,6 +177,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-RK3328_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -180,6 +190,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-RK3399_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -192,6 +203,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # RPi
   libreelec-RPi2_arm:
@@ -206,6 +218,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
   libreelec-RPi4_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
@@ -218,6 +231,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
 
   # Samsung
   libreelec-Exynos_arm:
@@ -232,3 +246,4 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+    secrets: inherit
