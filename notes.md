@@ -1,11 +1,7 @@
 ### Ideas / TODO - something for the future
 
-- get uploads to work
-  - you will need to update this from `no_upload` to `upload` to run the test.
-  - you need to update all on the with: blocks in the job: section. Don't worry about L15-L16 in env: (not used at the moment)  
-  - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
-- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX, addons -- these are done...) to updated template.
-- update nightly-MASTER to include all targets
+- matrix builds
+  - https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/4ab4a926f8312d2354a950247a3375dde4992396/.github/workflows/ci_workflow.yml
 - update nightly-LE10 to include all targets
 - change names of files to drop lubreelec?
 - create nightly-LE10-addon.yml
@@ -119,6 +115,12 @@ df
   - ~https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf~
   - ~https://www.bing.com/search?q=github+%22uses%22+same+repository&cvid=60fe0aef5c1549db9efa12bca84795ea&aqs=edge..69i57j69i64l2.15260j0j1&FORM=ANAB01&PC=U531~
   - ~https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow~
+- get uploads to work
+  - you will need to update this from `no_upload` to `upload` to run the test.
+  - you need to update all on the with: blocks in the job: section. Don't worry about L15-L16 in env: (not used at the moment)  
+  - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
+- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX, addons -- these are done...) to updated template.
+- update nightly-MASTER to include all targets
 
 ### Current status / things to understand / work though
 - there is only 1 (shared) build-root (dont buiuld the same architecture at the same time - it will lock / fail)
