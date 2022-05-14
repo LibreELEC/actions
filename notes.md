@@ -8,20 +8,17 @@
 - create release-LE10.yml
 - test logic for export CCACHE_DISABLE=1
 - logging - so we can actually get the logs (as ephemeral means that they are deleted)
-- continue-on-error -- addons
 - on cancelled jobs ... how to cleanup?
-- hexdump is required for the addon retro builds -- look at util-linux
 - check the commit hash / date logic
 - The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
   - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 - How can we use "CI=yes"
-- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
 - could be smarter and build the docker base that is then subsequently used with the .config ???
 - Do we have need for environments ?
   - Private Repo's dont allow Environments.
 - fix the docker execution to use github syntax
   - parameterise the `make image` (addons is done- but need to change to buildcmd and update other .yml files so we can have the single template /include.
-- ~remove commented-out from `if: checkdate`~ - DONE - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
+- remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
 
 ```
 --- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
@@ -91,6 +88,9 @@ df
 ```
 
 ### Ideas - DONE
+- continue-on-error -- addons
+- hexdump is required for the addon retro builds -- look at util-linux
+- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
 - ~inputs. dont come across from workflow_run :-(~
 - ~so next task will be to look at the "CI=yes" and seeing what the correct way to call the workflows is? (https://github.com/heitbaum/libreelec-actions/blob/main/.github/workflows/libreelec-nightly.yml is setup to initiate all using workflow_run) - is workflow_call the right way? https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
   - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows~
