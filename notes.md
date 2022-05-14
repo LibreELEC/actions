@@ -85,6 +85,7 @@ tune2fs -m 1 /dev/ubuntu-vg/ubuntu-lv
 tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
 resize2fs /dev/ubuntu-vg/ubuntu-lv
 df
+# ssh host key to scp / ssh targets
 ```
 
 ### Ideas - DONE
