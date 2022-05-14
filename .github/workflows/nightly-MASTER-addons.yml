@@ -41,7 +41,7 @@ jobs:
   libreelec-ARMv7_arm-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-ARMv7_arm-addons.yml@main
     with:
       clean_le: no_clean_le
@@ -54,7 +54,7 @@ jobs:
   libreelec-ARMv8_arm-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-ARMv8_arm-addons.yml@main
     with:
       clean_le: no_clean_le
@@ -67,7 +67,7 @@ jobs:
   libreelec-Generic_x86_64-addons:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-Generic_x86_64-addons.yml@main
     with:
       clean_le: no_clean_le
@@ -80,7 +80,7 @@ jobs:
   libreelec-Generic-legacy_x86_64-addons-chrome:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-Generic-legacy_x86_64-addons-chrome.yml@main
     with:
       clean_le: no_clean_le

@@ -41,7 +41,7 @@ jobs:
   libreelec-A64_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-A64_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -54,7 +54,7 @@ jobs:
   libreelec-H3_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H3_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -67,7 +67,7 @@ jobs:
   libreelec-H5_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H5_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -80,7 +80,7 @@ jobs:
   libreelec-H6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-H6_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -95,7 +95,7 @@ jobs:
   libreelec-AMLGX_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-AMLGX_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -110,7 +110,7 @@ jobs:
   libreelec-Generic_x86_64:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-Generic_x86_64.yml@main
     with:
       clean_le: no_clean_le
@@ -125,7 +125,7 @@ jobs:
   libreelec-iMX6_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-iMX6_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -138,7 +138,7 @@ jobs:
   libreelec-iMX8_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-iMX8_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -153,7 +153,7 @@ jobs:
   libreelec-Dragonboard_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-Dragonboard_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -168,7 +168,7 @@ jobs:
   libreelec-RK3288_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-RK3288_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -181,7 +181,7 @@ jobs:
   libreelec-RK3328_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-RK3328_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -194,7 +194,7 @@ jobs:
   libreelec-RK3399_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-RK3399_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -209,7 +209,7 @@ jobs:
   libreelec-RPi2_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-RPi2_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -222,7 +222,7 @@ jobs:
   libreelec-RPi4_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-RPi4_arm.yml@main
     with:
       clean_le: no_clean_le
@@ -237,7 +237,7 @@ jobs:
   libreelec-Exynos_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    #if: ${{ needs.check_date.outputs.should_run != 'false' }}
     uses: LibreELEC/actions/.github/workflows/libreelec-Exynos_arm.yml@main
     with:
       clean_le: no_clean_le
