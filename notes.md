@@ -1,5 +1,6 @@
 ### Ideas / TODO - something for the future
 
+- how do we update slack?
 - matrix builds
   - https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/4ab4a926f8312d2354a950247a3375dde4992396/.github/workflows/ci_workflow.yml
 - update nightly-LE10 to include all targets
@@ -18,7 +19,7 @@
   - Private Repo's dont allow Environments.
 - fix the docker execution to use github syntax
   - parameterise the `make image` (addons is done- but need to change to buildcmd and update other .yml files so we can have the single template /include.
-- remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
+
 
 ```
 --- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
@@ -86,6 +87,7 @@ tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
 resize2fs /dev/ubuntu-vg/ubuntu-lv
 df
 # ssh host key to scp / ssh targets
+# sync the sources directories
 ```
 
 ### Ideas - DONE
@@ -122,6 +124,7 @@ df
   - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
 - update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX, addons -- these are done...) to updated template.
 - update nightly-MASTER to include all targets
+- remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
 
 ### Current status / things to understand / work though
 - there is only 1 (shared) build-root (dont buiuld the same architecture at the same time - it will lock / fail)
