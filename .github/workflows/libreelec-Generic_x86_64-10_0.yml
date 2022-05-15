@@ -66,6 +66,31 @@ on:
         default: ""
         required: false
         type: string
+      targetbuilddir:
+        description: 'TARGETBUILDDIR'
+        default: ""
+        required: false
+        type: string
+      buildperiodic:
+        description: 'BUILD_PERIODIC'
+        default: devel
+        required: true
+        type: string
+      ccachecachesize:
+        description: 'CCACHE_CACHE_SIZE'
+        default: 10G
+        required: true
+        type: string
+      version:
+        description: 'version code used in TARGETBUILDDIR'
+        default: ""
+        required: false
+        type: string
+      fileextns:
+        description: 'file extns to copy to webserver'
+        default: img.gz,ova,tar
+        required: true
+        type: string
 
   workflow_call:
     inputs:
@@ -120,6 +145,31 @@ on:
         default: ""
         required: false
         type: string
+      targetbuilddir:
+        description: 'TARGETBUILDDIR'
+        default: ""
+        required: true
+        type: string
+      buildperiodic:
+        description: 'BUILD_PERIODIC'
+        default: devel
+        required: true
+        type: string
+      ccachecachesize:
+        description: 'CCACHE_CACHE_SIZE'
+        default: 10G
+        required: true
+        type: string
+      version:
+        description: 'version code used in TARGETBUILDDIR'
+        default: ""
+        required: false
+        type: string
+      fileextns:
+        description: 'file extns to copy to webserver'
+        default: img.gz,ova,tar
+        required: true
+        type: string
 
 env:
   TZ: Australia/Melbourne
@@ -130,8 +180,8 @@ env:
   DEVICE: ${{ inputs.device }}${{ github.event.inputs.device }}
   # DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
   #         make sure it is set to empty string
-  TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-10.0-devel
-  BUILD_PERIODIC: nightly
+  TARGETBUILDDIR: ${{ inputs.targetbuilddir }}
+  BUILD_PERIODIC: ${{ inputs.buildperiodic }}
 
 concurrency:
   group: ${{ inputs.group }}${{ github.event.inputs.group }}
@@ -156,7 +206,7 @@ jobs:
           sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
           # workaround below until buildsystem does not require local cc
           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
-          sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="30G"/' config/options
+          sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
           docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
 
       - name: Prepare the LibreELEC.tv directory - setup /sources
@@ -224,6 +274,10 @@ jobs:
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }} ${{ github.event.inputs.buildcmd }}
+
+      - name: clean docker images and tags
+        run: |
+          cd LibreELEC.tv
           docker image rm -f gh-${{ github.run_id }}
 
       - name: Upload files
@@ -231,5 +285,5 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lahR target
-          scp -P ${{ secrets.PORT }} target/*.{img.gz,ova,tar} \
+          scp -P ${{ secrets.PORT }} target/*.{${{ input.fileextns }}} \
           ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}

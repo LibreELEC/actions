@@ -57,4 +57,11 @@ jobs:
       project: Generic
       arch: x86_64
       device: ''
+      # device: Generic ### LE10 does not support DEVICE for PROJECT=Generic
+      #         make sure it is set to empty string
+      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-nightly
+      buildperiodic: nightly
+      ccachecachesize: 30G
+      version: '10.0'
+      fileextns: img.gz,ova,tar
     secrets: inherit
