@@ -7,6 +7,9 @@ on:
     # * is a special character in YAML so you have to quote this string
     - cron:  '45 15 * * *'
 
+    # Performance
+    # 12h20m - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache)
+
 env:
   TZ: Australia/Melbourne
   # these ENV variables are not used yet - need to get this working with the with statements below
