@@ -89,7 +89,7 @@ df
 # sync the sources directories
 ```
 
-sync script
+sync script - runs from 14
 ```
 runner@runner-14:/var/media/DATA/github-actions/sources$ more sync-sources.sh 
 rsync --rsh='ssh -p1122' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
