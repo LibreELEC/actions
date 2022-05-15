@@ -46,6 +46,11 @@ on:
         default: libreelec-10.0
         required: true
         type: string
+      group:
+        description: 'concurrency group'
+        default: Generic_x86_64-10_0
+        required: true
+        type: string
 
   workflow_call:
     inputs:
@@ -80,6 +85,11 @@ on:
         default: libreelec-10.0
         required: true
         type: string
+      group:
+        description: 'concurrency group'
+        default: Generic_x86_64-10_0
+        required: true
+        type: string
 
 env:
   TZ: Australia/Melbourne
@@ -94,7 +104,7 @@ env:
   BUILD_PERIODIC: nightly
 
 concurrency:
-  group: Generic_x86_64-10_0
+  group: ${{ inputs.group }}${{ github.event.inputs.group }}
   cancel-in-progress: false
 
 jobs:

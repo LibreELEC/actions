@@ -125,6 +125,7 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: master
+      group: Generic_x86_64
     secrets: inherit
 
   # NXP

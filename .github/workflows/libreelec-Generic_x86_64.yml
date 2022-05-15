@@ -46,6 +46,11 @@ on:
         default: master
         required: true
         type: string
+      group:
+        description: 'concurrency group'
+        default: Generic_x86_64
+        required: true
+        type: string
 
   workflow_call:
     inputs:
@@ -80,6 +85,11 @@ on:
         default: master
         required: true
         type: string
+      group:
+        description: 'concurrency group'
+        default: Generic_x86_64
+        required: true
+        type: string
 
 env:
   TZ: Australia/Melbourne
@@ -92,7 +102,7 @@ env:
   BUILD_PERIODIC: nightly
 
 concurrency:
-  group: Generic_x86_64
+  group: ${{ inputs.group }}${{ github.event.inputs.group }}
   cancel-in-progress: false
 
 jobs:

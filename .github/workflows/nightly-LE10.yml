@@ -53,4 +53,5 @@ jobs:
       upload: upload
       buildcmd: 'make image'
       gitref: libreelec-10.0
+      group: Generic_x86_64-10_0
     secrets: inherit
