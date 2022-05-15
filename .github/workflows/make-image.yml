@@ -96,7 +96,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build_libreelec:
+  build_image:
     runs-on: self-hosted
 
     steps:
