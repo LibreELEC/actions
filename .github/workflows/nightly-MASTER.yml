@@ -8,7 +8,7 @@ on:
     - cron:  '15 14 * * *'
 
     # Performance
-    # 12h20m - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache)
+    # 12h20m - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache) - 4 runners
 
 env:
   TZ: Australia/Melbourne
