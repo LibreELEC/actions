@@ -10,7 +10,6 @@
 - test logic for export CCACHE_DISABLE=1
 - logging - so we can actually get the logs (as ephemeral means that they are deleted)
 - on cancelled jobs ... how to cleanup?
-- check the commit hash / date logic
 - The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
   - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 - How can we use "CI=yes"
@@ -125,6 +124,7 @@ df
 - update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX, addons -- these are done...) to updated template.
 - update nightly-MASTER to include all targets
 - remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
+- check the commit hash / date logic --- issue was using the "actions repo" not the "LibreELEC.tv" repo
 
 ### Current status / things to understand / work though
 - there is only 1 (shared) build-root (dont buiuld the same architecture at the same time - it will lock / fail)
