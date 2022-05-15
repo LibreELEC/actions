@@ -54,4 +54,7 @@ jobs:
       buildcmd: 'make image'
       gitref: libreelec-10.0
       group: Generic_x86_64-10_0
+      project: Generic
+      arch: x86_64
+      device: ''
     secrets: inherit

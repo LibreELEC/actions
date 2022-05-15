@@ -51,6 +51,21 @@ on:
         default: Generic_x86_64-10_0
         required: true
         type: string
+      project:
+        description: 'target project'
+        default: Generic
+        required: true
+        type: string
+      arch:
+        description: 'arch device'
+        default: x86_64
+        required: true
+        type: string
+      device:
+        description: 'target device'
+        default: ""
+        required: false
+        type: string
 
   workflow_call:
     inputs:
@@ -90,14 +105,29 @@ on:
         default: Generic_x86_64-10_0
         required: true
         type: string
+      project:
+        description: 'target project'
+        default: Generic
+        required: true
+        type: string
+      arch:
+        description: 'target arch'
+        default: x86_64
+        required: true
+        type: string
+      device:
+        description: 'target device'
+        default: ""
+        required: false
+        type: string
 
 env:
   TZ: Australia/Melbourne
   BASEDIR: /var/media/DATA/github-actions
   # Distro Target Variables
-  PROJECT: Generic
-  ARCH: x86_64
-  DEVICE: ""
+  PROJECT: ${{ inputs.project }}${{ github.event.inputs.project }}
+  ARCH: ${{ inputs.arch }}${{ github.event.inputs.arch }}
+  DEVICE: ${{ inputs.device }}${{ github.event.inputs.device }}
   # DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
   #         make sure it is set to empty string
   TARGETBUILDDIR: build.LibreELEC-Generic.x86_64-10.0-devel
