@@ -126,14 +126,14 @@ jobs:
           [ ! -h sources ] && ln -s /sources .
 
       - name: Prepare the LibreELEC.tv directory - do not leave files behind
-        if: inputs.ephemeral == 'ephemeral' || github.event.inputs.ephemeral == 'ephemeral'
+        if: inputs.ephemeral == 'ephemeral'
         run: |
           cd LibreELEC.tv
           # set the build_dir=/build
           echo "build_dir=/build" >> $GITHUB_ENV
           echo "CCACHE_DISABLE=1" >> $GITHUB_ENV
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
-        if: inputs.ephemeral == 'no_ephemeral' || github.event.inputs.ephemeral == 'no_ephemeral'
+        if: inputs.ephemeral == 'no_ephemeral'
         run: |
           cd LibreELEC.tv
           # create links that will be used from within the docker containers
@@ -142,7 +142,7 @@ jobs:
           echo "build_dir=/build-root" >> $GITHUB_ENV
 
       - name: Display environment
-        if: inputs.debug == 'debug' || github.event.inputs.debug == 'debug'
+        if: inputs.debug == 'debug'
         run: |
           cd LibreELEC.tv
           echo "pwd: $(pwd)"
@@ -157,7 +157,7 @@ jobs:
           echo "inputs.upload: ${{ inputs.upload }}"
 
       - name: Clean LE at docker image
-        if: inputs.clean_le == 'clean_le' || github.event.inputs.clean_le == 'clean_le'
+        if: inputs.clean_le == 'clean_le'
         run: |
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
@@ -186,7 +186,7 @@ jobs:
           docker image rm -f gh-${{ github.run_id }}
 
       - name: Upload files
-        if: inputs.upload == 'upload' || github.event.inputs.upload == 'upload'
+        if: inputs.upload == 'upload'
         run: |
           cd LibreELEC.tv
           ls -lahR target
