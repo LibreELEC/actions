@@ -83,16 +83,16 @@ env:
   TZ: Australia/Melbourne
   BASEDIR: /var/media/DATA/github-actions
   # Distro Target Variables
-  PROJECT: ${{ inputs.project }}${{ github.event.inputs.project }}
-  ARCH: ${{ inputs.arch }}${{ github.event.inputs.arch }}
-  DEVICE: ${{ inputs.device }}${{ github.event.inputs.device }}
+  PROJECT: ${{ inputs.project }}
+  ARCH: ${{ inputs.arch }}
+  DEVICE: ${{ inputs.device }}
   # DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
   #         make sure it is set to empty string
   TARGETBUILDDIR: ${{ inputs.targetbuilddir }}
   BUILD_PERIODIC: ${{ inputs.buildperiodic }}
 
 concurrency:
-  group: ${{ inputs.group }}${{ github.event.inputs.group }}
+  group: ${{ inputs.group }}
   cancel-in-progress: false
 
 jobs:
@@ -102,19 +102,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.gitref }}${{ github.event.inputs.gitref }}
+          ref: ${{ inputs.gitref }}
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
-      - name: Create docker image for build - tools/docker/focal
+      - name: customise the checked out git repository
         run: |
-          ls
-          pwd
           cd LibreELEC.tv
           sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
           # workaround below until buildsystem does not require local cc
           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
+
+      - name: Create docker image for build - tools/docker/focal
+        run: |
+          cd LibreELEC.tv
           docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
 
       - name: Prepare the LibreELEC.tv directory - setup /sources
@@ -153,11 +155,6 @@ jobs:
           echo "inputs.debug: ${{ inputs.debug }}"
           echo "inputs.ephemeral: ${{ inputs.ephemeral }}"
           echo "inputs.upload: ${{ inputs.upload }}"
-          echo
-          echo "github.event.inputs.clean_le: ${{ github.event.inputs.clean_le }}"
-          echo "github.event.inputs.debug: ${{ github.event.inputs.debug }}"
-          echo "github.event.inputs.ephemeral: ${{ github.event.inputs.ephemeral }}"
-          echo "github.event.inputs.upload: ${{ github.event.inputs.upload }}"
 
       - name: Clean LE at docker image
         if: inputs.clean_le == 'clean_le' || github.event.inputs.clean_le == 'clean_le'
@@ -181,7 +178,7 @@ jobs:
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
-                          gh-${{ github.run_id }} ${{ inputs.buildcmd }} ${{ github.event.inputs.buildcmd }}
+                          gh-${{ github.run_id }} ${{ inputs.buildcmd }}
 
       - name: clean docker images and tags
         run: |
