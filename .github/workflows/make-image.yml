@@ -193,5 +193,5 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lahR target
-          scp -P ${{ secrets.PORT }} target/*.{${{ input.fileextns }}} \
+          scp -P ${{ secrets.PORT }} target/*.{${{ inputs.fileextns }}} \
           ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
