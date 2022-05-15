@@ -89,6 +89,18 @@ df
 # sync the sources directories
 ```
 
+sync script
+```
+runner@runner-14:/var/media/DATA/github-actions/sources$ more sync-sources.sh 
+rsync --rsh='ssh -p1122' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
+rsync --rsh='ssh -p1222' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
+rsync --rsh='ssh -p1322' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
+#
+rsync --rsh='ssh -p1122' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
+rsync --rsh='ssh -p1222' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
+rsync --rsh='ssh -p1322' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
+```
+
 ### Ideas - DONE
 - continue-on-error -- addons
 - hexdump is required for the addon retro builds -- look at util-linux
