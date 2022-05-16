@@ -1,4 +1,4 @@
-name: libreelec-upload-test
+name: zz-test-libreelec-upload-test
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
