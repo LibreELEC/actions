@@ -187,6 +187,7 @@ jobs:
             while read zipfile
             do
               fp=(`echo ${zipfile} | tr '/' ' '`)
+              echo "running: mkdir -p .../addons/${fp[2]}"
               ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
                 "mkdir -p ${{ secrets.UPLOAD_TARGET }}/addons/${fp[2]}"
               echo "copying ${zipfile}"
