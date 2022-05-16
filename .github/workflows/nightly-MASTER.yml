@@ -9,7 +9,7 @@ on:
 
     # Performance
     # 12h20m - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache) - 4 runners
-
+    # 10h31m - 15 May 2022 - AMD Ryzen 5 3600 (no .ccache) - 4 runners - 1 failure on image with automake
 env:
   TZ: Australia/Melbourne
   # these ENV variables are not used yet - need to get this working with the with statements below
