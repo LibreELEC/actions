@@ -47,6 +47,8 @@ jobs:
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     steps:
+    - name: make-image
+      # Use the location in the repository (without action.yml)
       # Checkout the repository first
       # Otherwise the workflow won't be able to find the action
       uses: ./.github/actions/make-image
