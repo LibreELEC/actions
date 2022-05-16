@@ -1,4 +1,4 @@
-name: libreelec-modulize-test
+name: zz-test-libreelec-modulize-test
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
