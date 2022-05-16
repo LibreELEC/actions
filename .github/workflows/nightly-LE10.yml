@@ -42,6 +42,7 @@ jobs:
         
   # Generic
   Generic_x86_64-10_0:
+    runs-on: ubuntu-latest
     name: Build Generic.x86_64-10.0
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
