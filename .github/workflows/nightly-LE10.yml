@@ -42,26 +42,30 @@ jobs:
         
   # Generic
   Generic_x86_64-10_0:
+    name: Build Generic.x86_64-10.0
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
-    uses: ./.github/actions/make-image
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: 'make image'
-      gitref: libreelec-10.0
-      group: Generic_x86_64-10_0
-      project: Generic
-      arch: x86_64
-      device: ''
-      # device: Generic ### LE10 does not support DEVICE for PROJECT=Generic
-      #         make sure it is set to empty string
-      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-nightly
-      buildperiodic: nightly
-      ccachecachesize: 30G
-      version: '10.0'
-      fileextns: img.gz,ova,tar
-    secrets: inherit
+    steps:
+      # Checkout the repository first
+      # Otherwise the workflow won't be able to find the action
+      uses: ./.github/actions/make-image
+      with:
+        clean_le: no_clean_le
+        debug: debug
+        ephemeral: ephemeral
+        upload: upload
+        buildcmd: 'make image'
+        gitref: libreelec-10.0
+        group: Generic_x86_64-10_0
+        project: Generic
+        arch: x86_64
+        device: ''
+        # device: Generic ### LE10 does not support DEVICE for PROJECT=Generic
+        #         make sure it is set to empty string
+        targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-nightly
+        buildperiodic: nightly
+        ccachecachesize: 30G
+        version: '10.0'
+        fileextns: img.gz,ova,tar
+      secrets: inherit
