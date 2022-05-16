@@ -1,4 +1,4 @@
-name: make-image
+name: create-addon
 on:
   workflow_call:
     inputs:
@@ -192,4 +192,4 @@ jobs:
               echo "copying ${zipfile}"
               scp -P ${{ secrets.PORT }} ${zipfile} \
                 ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}/addons/${fp[2]}/${fp[2]}-${fp[3]}-${fp[4]}-${fp[6]}
-          done
+            done
