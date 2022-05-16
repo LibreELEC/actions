@@ -78,22 +78,6 @@ on:
         default: img.gz,ova,tar
         required: true
         type: string
-      sec-port:
-        description: 'ssh server port'
-        required: true
-        type: string
-      sec-username:
-        description: 'ssh username'
-        required: true
-        type: string
-      sec-host:
-        description: 'ssh host'
-        required: true
-        type: string
-      sec-upload-target:
-        description: 'ssh upload target'
-        required: true
-        type: string
 
 env:
   TZ: Australia/Melbourne
@@ -206,5 +190,5 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lahR target
-          scp -P ${{ inputs.sec-port }} target/*.{${{ inputs.fileextns }}} \
-          ${{ inputs.sec-username }}@${{ inputs.sec-host }}:${{ inputs.sec-upload-target }}
+          scp -P ${{ secrets.PORT }} target/*.{${{ inputs.fileextns }}} \
+            ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}

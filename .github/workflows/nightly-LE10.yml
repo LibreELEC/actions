@@ -65,7 +65,4 @@ jobs:
       ccachecachesize: 30G
       version: '10.0'
       fileextns: img.gz,ova,tar
-      sec-host: ${{ secrets.HOST }}
-      sec-port: ${{ secrets.PORT }}
-      sec-username: ${{ secrets.USERNAME }}
-      sec-upload-target: ${{ secrets.UPLOAD_TARGET }}
+    secrets: inherit
