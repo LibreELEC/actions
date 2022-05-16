@@ -55,7 +55,7 @@ jobs:
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
         
   # Addons
-  libreelec-ARMv7_arm-addons:
+  libreelec-ARMv7_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -76,7 +76,7 @@ jobs:
       ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
-  libreelec-ARMv8_arm-addons:
+  libreelec-ARMv8_arm:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -97,7 +97,7 @@ jobs:
       ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
-  libreelec-Generic_x86_64-addons:
+  libreelec-Generic_x86_64:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -118,7 +118,7 @@ jobs:
       ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
-  libreelec-Generic-legacy_x86_64-addons-chrome:
+  libreelec-Generic-legacy_x86_64:
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
