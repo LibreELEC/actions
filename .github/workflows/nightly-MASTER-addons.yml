@@ -73,7 +73,7 @@ jobs:
       device: ARMv7
       targetbuilddir: build.LibreELEC-ARMv7.arm-11.0-nightly
       buildperiodic: nightly
-      ccachecachesize: 30G
+      ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
   libreelec-ARMv8_arm-addons:
@@ -94,7 +94,7 @@ jobs:
       device: ARMv8
       targetbuilddir: build.LibreELEC-ARMv8.arm-11.0-nightly
       buildperiodic: nightly
-      ccachecachesize: 30G
+      ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
   libreelec-Generic_x86_64-addons:
@@ -115,7 +115,7 @@ jobs:
       device: Generic
       targetbuilddir: build.LibreELEC-Generic.x86_64-11.0-nightly
       buildperiodic: nightly
-      ccachecachesize: 30G
+      ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
   libreelec-Generic-legacy_x86_64-addons-chrome:
@@ -136,6 +136,6 @@ jobs:
       device: Generic-legacy
       targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-11.0-nightly
       buildperiodic: nightly
-      ccachecachesize: 30G
+      ccachecachesize: 20G
       version: '11.0'
     secrets: inherit
