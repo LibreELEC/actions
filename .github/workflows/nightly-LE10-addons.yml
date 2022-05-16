@@ -47,8 +47,8 @@ jobs:
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
         
   # Addons
-  ARMv7_arm:
-    name: ARMv7.arm
+  ARMv7_arm-10.0:
+    name: 'ARMv7.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -69,8 +69,8 @@ jobs:
       ccachecachesize: 20G
       version: '10.0'
     secrets: inherit
-  ARMv8_arm:
-    name: ARMv8.arm
+  ARMv8_arm-10.0:
+    name: 'ARMv8.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -91,8 +91,8 @@ jobs:
       ccachecachesize: 20G
       version: '10.0'
     secrets: inherit
-  Generic_x86_64:
-    name: Generic.x86_64
+  Generic_x86_64-10.0:
+    name: 'Generic.x86_64 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
