@@ -89,7 +89,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build_image:
+  create_addon:
     runs-on: self-hosted
 
     steps:
