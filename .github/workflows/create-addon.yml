@@ -172,6 +172,7 @@ jobs:
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
+        continue-on-error: true
 
       - name: clean docker images and tags
         run: |
