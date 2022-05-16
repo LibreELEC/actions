@@ -13,6 +13,13 @@ on:
     # 5h 9m - ARMv8
     # 5h48m - Generic
     #       - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache)
+    
+    # Performance - 4 job concurrent workflow runtime - 5h48m
+    # 3h48m - Generic-legacy
+    # 4h30m - ARMv7
+    # 4h38m - ARMv8
+    # 5h48m - Generic
+    #       - 15 May 2022 - AMD Ryzen 5 3600 (no .ccache)
 
 env:
   TZ: Australia/Melbourne
