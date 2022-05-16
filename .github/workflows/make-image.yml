@@ -86,8 +86,6 @@ env:
   PROJECT: ${{ inputs.project }}
   ARCH: ${{ inputs.arch }}
   DEVICE: ${{ inputs.device }}
-  # DEVICE: Generic ### LE10 does not support DEVICE for PROJECT=Generic
-  #         make sure it is set to empty string
   TARGETBUILDDIR: ${{ inputs.targetbuilddir }}
   BUILD_PERIODIC: ${{ inputs.buildperiodic }}
 
