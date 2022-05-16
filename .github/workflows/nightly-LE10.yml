@@ -42,7 +42,7 @@ jobs:
         
   # Allwinner
   A64_arm-10_0:
-    name: 'A64.arm 10'
+    name: 'A64.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -65,7 +65,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   H3_arm-10_0:
-    name: 'H3.arm 10'
+    name: 'H3.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -88,7 +88,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   H5_arm-10_0:
-    name: 'H5.arm 10'
+    name: 'H5.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -111,7 +111,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   H6_arm-10_0:
-    name: 'H6.arm 10'
+    name: 'H6.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -136,7 +136,7 @@ jobs:
 
   # Amlogic
   AMLGX_arm-10_0:
-    name: 'AMLGX.arm 10'
+    name: 'AMLGX.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -188,7 +188,7 @@ jobs:
 
   # NXP
   iMX6_arm-10_0:
-    name: 'iMX6.arm 10'
+    name: 'iMX6.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -211,7 +211,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   iMX8_arm-10_0:
-    name: 'iMX8.arm 10'
+    name: 'iMX8.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -236,7 +236,7 @@ jobs:
 
   # Qualcomm
   Dragonboard_arm-10_0:
-    name: 'Dragonboard.arm 10'
+    name: 'Dragonboard.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -261,7 +261,7 @@ jobs:
 
   # Rockchip
   RK3288_arm-10_0:
-    name: 'RK3288.arm 10'
+    name: 'RK3288.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -284,7 +284,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   RK3328_arm-10_0:
-    name: 'RK3328.arm 10'
+    name: 'RK3328.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -307,7 +307,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   RK3399_arm-10_0:
-    name: 'RK3399.arm 10'
+    name: 'RK3399.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -332,7 +332,7 @@ jobs:
 
   # RPi
   RPi2_arm-10_0:
-    name: 'RPi2.arm 10'
+    name: 'RPi2.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -355,7 +355,7 @@ jobs:
       fileextns: img.gz,tar
     secrets: inherit
   RPi4_arm-10_0:
-    name: 'RPi4.arm 10'
+    name: 'RPi4.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -380,7 +380,7 @@ jobs:
 
   # Samsung
   Exynos_arm-10_0:
-    name: 'Exynos.arm 10'
+    name: 'Exynos.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
