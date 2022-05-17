@@ -184,7 +184,9 @@ jobs:
         if: inputs.upload == 'upload'
         run: |
           cd LibreELEC.tv
-          ls -lah target/jenkins
-          scp -P ${{ secrets.ADDONS_HOST_PORT }} \
-          target/jenkins/*.{zip,.sha256} \
-          ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }}:${{ secrets.ADDONS_UPLOAD_PATH }}
+          find target/jenkins/ -name "*.zip" -or -name "*.sha256" | \
+          while read addonfiles; do
+            scp -q -P ${{ secrets.ADDONS_HOST_PORT }} ${addonfiles} \
+            ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }}:${{ secrets.ADDONS_UPLOAD_PATH }}
+            printf "[\xE2\x9C\x94] $(basename ${addonfiles})\n"
+          done
