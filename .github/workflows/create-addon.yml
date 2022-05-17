@@ -156,7 +156,7 @@ jobs:
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
           echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
 
-      - name: Build LE using docker
+      - name: Build addons using docker
         run: |
           cd LibreELEC.tv
           docker run --rm -v ${{ env.BASEDIR }}/sources:/sources \
