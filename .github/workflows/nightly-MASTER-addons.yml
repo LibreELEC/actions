@@ -74,15 +74,14 @@ jobs:
   # addon on targets
   assign_common_variables:
     name: Assign buildcmd_target variables
-    env: 
-      buildcmd_target: ${{ github.event.inputs.buildcmd_target }}
     runs-on: ubuntu-latest
+    outputs:
+      buildcmd_target: ${{ steps.buildcmd_target.outputs.buildcmd_target }}
     steps:
-      - name: Set buildcmd_target environment variable
-        if: env.buildcmd_target == null
-        run: echo "buildcmd_target=all" >> $GITHUB_ENV
-      - name: update global environment buildcmd_target environment variable
-        run: echo "buildcmd_target=$buildcmd_target" >> $GITHUB_ENV
+      - id: buildcmd_target
+        name: Set buildcmd_target environment variable
+        run: |
+          echo "::set-output name=buildcmd_target::${{ github.event.inputs.buildcmd_target }} || 'all'"
 
   # Addons
   ARMv7_arm:
@@ -96,7 +95,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon ${{ env.buildcmd_target }}'
+      buildcmd: 'scripts/create_addon ${{ needs.buildcmd_target.outputs.buildcmd_target }}'
       gitref: master
       group: ARMv7_arm
       project: ARM
@@ -118,7 +117,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon ${{ env.buildcmd_target }}'
+      buildcmd: 'scripts/create_addon ${{ needs.buildcmd_target.outputs.buildcmd_target }}'
       gitref: master
       group: ARMv8_arm
       project: ARM
@@ -140,7 +139,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon ${{ env.buildcmd_target }} -chrome'
+      buildcmd: 'scripts/create_addon ${{ needs.buildcmd_target.outputs.buildcmd_target }} -chrome'
       gitref: master
       group: Generic_x86_64
       project: Generic
