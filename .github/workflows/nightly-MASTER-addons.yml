@@ -2,6 +2,22 @@ name: nightly-MASTER-addons
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
+    buildcmd_target:
+      description: 'addon targets'
+      default: all
+      required: true
+      type: string
+    target:
+      description: 'targets to build addons'
+      default: all
+      required: true
+      type: choice
+      options:
+        - all
+        - ARMv7.arm
+        - ARMv8.arm
+        - Generic.x86_64
+        - Generic-legacy.x86_64
   schedule:
     # The times are specified in UTC
     # * is a special character in YAML so you have to quote this string
@@ -53,20 +69,33 @@ jobs:
         run: |
           cd LibreELEC.tv
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
-        
+       
+  # addon on targets
+  assign_common_variables:
+    name: Assign buildcmd_target variables
+    env: 
+      buildcmd_target: ${{ github.event.inputs.buildcmd_target }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set buildcmd_target environment variable
+        if: env.buildcmd_target == null
+        run: echo "buildcmd_target=all" >> $GITHUB_ENV
+      - name: update global environment buildcmd_target environment variable
+        run: echo "buildcmd_targeta=$buildcmd_target" >> $GITHUB_ENV
+
   # Addons
   ARMv7_arm:
     name: ARMv7.arm
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: ${{ needs.check_date.outputs.should_run != 'false' }} && ( ${{ github.event.inputs.target == 'all' }} || ${{ github.event.inputs.target == 'ARMv7.arm' }} || ${{ github.event_name == 'schedule' }} )
     uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
     with:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon all'
+      buildcmd: 'scripts/create_addon ${{ env.buildcmd_target }}'
       gitref: master
       group: ARMv7_arm
       project: ARM
@@ -81,14 +110,14 @@ jobs:
     name: ARMv8.arm
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: ${{ needs.check_date.outputs.should_run != 'false' }} && ( ${{ github.event.inputs.target == 'all' }} || ${{ github.event.inputs.target == 'ARMv8.arm' }} || ${{ github.event_name == 'schedule' }} )
     uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
     with:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon all'
+      buildcmd: 'scripts/create_addon ${{ env.buildcmd_target }}'
       gitref: master
       group: ARMv8_arm
       project: ARM
@@ -103,14 +132,14 @@ jobs:
     name: Generic.x86_64
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: ${{ needs.check_date.outputs.should_run != 'false' }} && ( ${{ github.event.inputs.target == 'all' }} || ${{ github.event.inputs.target == 'Generic.x86_64' }} || ${{ github.event_name == 'schedule' }} )
     uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
     with:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon all -chrome'
+      buildcmd: 'scripts/create_addon ${{ env.buildcmd_target }} -chrome'
       gitref: master
       group: Generic_x86_64
       project: Generic
@@ -125,7 +154,7 @@ jobs:
     name: Generic-legacy.x86_64
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: ${{ needs.check_date.outputs.should_run != 'false' }} && ( ${{ github.event.inputs.target == 'all' }} || ${{ github.event.inputs.target == 'Generic-legacy.x86_64' }} || ${{ github.event_name == 'schedule' }} )
     uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
     with:
       clean_le: no_clean_le
