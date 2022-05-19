@@ -81,7 +81,7 @@ jobs:
       - id: buildcmd_target
         name: Set buildcmd_target environment variable
         run: |
-          echo "::set-output name=buildcmd_target::${{ github.event.inputs.buildcmd_target }} || 'all'"
+          echo "::set-output name=buildcmd_target::${{ github.event.inputs.buildcmd_target || 'all' }}"
 
   # Addons
   ARMv7_arm:
