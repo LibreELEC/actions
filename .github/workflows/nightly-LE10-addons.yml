@@ -91,7 +91,6 @@ jobs:
     name: 'ARMv8.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.arm' || github.event_name == 'schedule' )
