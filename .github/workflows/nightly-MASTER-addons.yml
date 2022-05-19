@@ -95,7 +95,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon ${{ github.event.inputs.buildcmd_target || "all" }}'
+      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
       gitref: master
       group: ARMv7_arm
       project: ARM
@@ -117,7 +117,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon ${{ github.event.inputs.buildcmd_target || "all" }}'
+      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
       gitref: master
       group: ARMv8_arm
       project: ARM
@@ -139,7 +139,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon ${{ github.event.inputs.buildcmd_target || "all" }} -chrome'
+      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }} -chrome"
       gitref: master
       group: Generic_x86_64
       project: Generic
