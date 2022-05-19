@@ -2,22 +2,23 @@ name: nightly-MASTER-addons
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
-    buildcmd_target:
-      description: 'addon targets'
-      default: all
-      required: true
-      type: string
-    target:
-      description: 'targets to build addons'
-      default: all
-      required: true
-      type: choice
-      options:
-        - all
-        - ARMv7.arm
-        - ARMv8.arm
-        - Generic.x86_64
-        - Generic-legacy.x86_64
+    inputs:
+      buildcmd_target:
+        description: 'addon targets'
+        default: all
+        required: true
+        type: string
+      target:
+        description: 'targets to build addons'
+        default: all
+        required: true
+        type: choice
+        options:
+          - all
+          - ARMv7.arm
+          - ARMv8.arm
+          - Generic.x86_64
+          - Generic-legacy.x86_64
   schedule:
     # The times are specified in UTC
     # * is a special character in YAML so you have to quote this string
