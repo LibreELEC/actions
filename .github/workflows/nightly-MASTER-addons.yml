@@ -163,6 +163,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic-legacy.x86_64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.buildcmd_target == 'all' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
     with:
       clean_le: no_clean_le
