@@ -82,7 +82,7 @@ jobs:
         if: env.buildcmd_target == null
         run: echo "buildcmd_target=all" >> $GITHUB_ENV
       - name: update global environment buildcmd_target environment variable
-        run: echo "buildcmd_targeta=$buildcmd_target" >> $GITHUB_ENV
+        run: echo "buildcmd_target=$buildcmd_target" >> $GITHUB_ENV
 
   # Addons
   ARMv7_arm:
