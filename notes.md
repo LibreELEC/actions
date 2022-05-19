@@ -1,5 +1,6 @@
 ### Ideas / TODO - something for the future
 
+- add github.event.inputs.target for workflow_dispatch in image build
 - how do we update slack?
 - matrix builds
   - https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/4ab4a926f8312d2354a950247a3375dde4992396/.github/workflows/ci_workflow.yml
