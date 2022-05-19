@@ -3,15 +3,10 @@
 - how do we update slack?
 - matrix builds
   - https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/4ab4a926f8312d2354a950247a3375dde4992396/.github/workflows/ci_workflow.yml
-- update nightly-LE10 to include all targets
-- change names of files to drop lubreelec?
-- create nightly-LE10-addon.yml
 - create release-LE10.yml
 - test logic for export CCACHE_DISABLE=1
 - logging - so we can actually get the logs (as ephemeral means that they are deleted)
 - on cancelled jobs ... how to cleanup?
-- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
-  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 - How can we use "CI=yes"
 - could be smarter and build the docker base that is then subsequently used with the .config ???
 - Do we have need for environments ?
@@ -19,6 +14,72 @@
 - fix the docker execution to use github syntax
   - parameterise the `make image` (addons is done- but need to change to buildcmd and update other .yml files so we can have the single template /include.
 
+## Fixes done to runners:
+```
+sudo chown runner:runner /var/media/DATA/github-actions/{build-root,sources,target}
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
+tune2fs -m 1 /dev/ubuntu-vg/ubuntu-lv
+tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
+resize2fs /dev/ubuntu-vg/ubuntu-lv
+df
+# ssh host key to scp / ssh targets
+# sync the sources directories
+```
+
+sync script - runs from 14
+```
+runner@runner-14:/var/media/DATA/github-actions/sources$ more sync-sources.sh 
+rsync --rsh='ssh -p1122' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
+rsync --rsh='ssh -p1222' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
+rsync --rsh='ssh -p1322' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
+#
+rsync --rsh='ssh -p1122' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
+rsync --rsh='ssh -p1222' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
+rsync --rsh='ssh -p1322' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
+```
+
+### Ideas - DONE
+- The difference between workflows is now minimal (how to migrate to using Reusable workflows /	Composite actions)
+  - https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+- update nightly-LE10 to include all targets
+- change names of files to drop lubreelec?
+- create nightly-LE10-addon.yml
+- continue-on-error -- addons
+- hexdump is required for the addon retro builds -- look at util-linux
+- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
+- ~inputs. dont come across from workflow_run :-(~
+- ~so next task will be to look at the "CI=yes" and seeing what the correct way to call the workflows is? (https://github.com/heitbaum/libreelec-actions/blob/main/.github/workflows/libreelec-nightly.yml is setup to initiate all using workflow_run) - is workflow_call the right way? https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
+  - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows~
+- ~use concurrecy groups to stop same build target concurrency builds.~
+  - ~https://github.blog/changelog/2021-04-19-github-actions-limit-workflow-run-or-job-concurrency/~
+  - ~DONE~
+- ~do the nightly runs~
+  - ~https://stackoverflow.com/questions/63014786/how-to-schedule-a-github-actions-nightly-build-but-run-it-only-when-there-where~
+  - ~https://gist.github.com/jasonrudolph/1810768~
+  - ~might need to have a prescript to is dispatch that checks bbefore spawning ....~
+- ~how to spawn all the workflows~
+  - ~use workflow_run~
+    - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_run~
+  - ~use workflow_dispatch~
+  - ~github actions workflow dispatch~
+  - ~https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow~
+  - ~https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
+- ~reusable workflows~
+  - ~https://yonatankra.com/7-github-actions-tricks-i-wish-i-knew-before-i-started/~
+- ~other stuff: / subworkflow / actions~
+  - ~https://github.com/actions/runner/discussions/1419?msclkid=b3843972cf3711ecbe5439078f5daf4c~
+  - ~https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf~
+  - ~https://www.bing.com/search?q=github+%22uses%22+same+repository&cvid=60fe0aef5c1549db9efa12bca84795ea&aqs=edge..69i57j69i64l2.15260j0j1&FORM=ANAB01&PC=U531~
+  - ~https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow~
+- get uploads to work
+  - you will need to update this from `no_upload` to `upload` to run the test.
+  - you need to update all on the with: blocks in the job: section. Don't worry about L15-L16 in env: (not used at the moment)  
+  - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
+- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX, addons -- these are done...) to updated template.
+- update nightly-MASTER to include all targets
+- remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
+- check the commit hash / date logic --- issue was using the "actions repo" not the "LibreELEC.tv" repo
 
 ```
 --- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
@@ -76,67 +137,7 @@
                            gh-${{ github.run_id }} make image
 ```
 
-## Fixes done to runners:
-```
-sudo chown runner:runner /var/media/DATA/github-actions/{build-root,sources,target}
-lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
-tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
-tune2fs -m 1 /dev/ubuntu-vg/ubuntu-lv
-tune2fs -l /dev/ubuntu-vg/ubuntu-lv | egrep "Block size:|Reserved block count"
-resize2fs /dev/ubuntu-vg/ubuntu-lv
-df
-# ssh host key to scp / ssh targets
-# sync the sources directories
-```
 
-sync script - runs from 14
-```
-runner@runner-14:/var/media/DATA/github-actions/sources$ more sync-sources.sh 
-rsync --rsh='ssh -p1122' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
-rsync --rsh='ssh -p1222' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
-rsync --rsh='ssh -p1322' -avH . runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/
-#
-rsync --rsh='ssh -p1122' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
-rsync --rsh='ssh -p1222' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
-rsync --rsh='ssh -p1322' -avH runner@builder-01.libreelec.tv:/var/media/DATA/github-actions/sources/ .
-```
-
-### Ideas - DONE
-- continue-on-error -- addons
-- hexdump is required for the addon retro builds -- look at util-linux
-- enable cron in https://github.com/LibreELEC/actions/blob/b7ab83ba173a2751ee244e783ec2289e4d43d866/.github/workflows/nightly-MASTER.yml#L5-L7
-- ~inputs. dont come across from workflow_run :-(~
-- ~so next task will be to look at the "CI=yes" and seeing what the correct way to call the workflows is? (https://github.com/heitbaum/libreelec-actions/blob/main/.github/workflows/libreelec-nightly.yml is setup to initiate all using workflow_run) - is workflow_call the right way? https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
-  - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows~
-- ~use concurrecy groups to stop same build target concurrency builds.~
-  - ~https://github.blog/changelog/2021-04-19-github-actions-limit-workflow-run-or-job-concurrency/~
-  - ~DONE~
-- ~do the nightly runs~
-  - ~https://stackoverflow.com/questions/63014786/how-to-schedule-a-github-actions-nightly-build-but-run-it-only-when-there-where~
-  - ~https://gist.github.com/jasonrudolph/1810768~
-  - ~might need to have a prescript to is dispatch that checks bbefore spawning ....~
-- ~how to spawn all the workflows~
-  - ~use workflow_run~
-    - ~https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_run~
-  - ~use workflow_dispatch~
-  - ~github actions workflow dispatch~
-  - ~https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow~
-  - ~https://github.blog/2022-02-10-using-reusable-workflows-github-actions/~
-- ~reusable workflows~
-  - ~https://yonatankra.com/7-github-actions-tricks-i-wish-i-knew-before-i-started/~
-- ~other stuff: / subworkflow / actions~
-  - ~https://github.com/actions/runner/discussions/1419?msclkid=b3843972cf3711ecbe5439078f5daf4c~
-  - ~https://github.github.io/actions-cheat-sheet/actions-cheat-sheet.pdf~
-  - ~https://www.bing.com/search?q=github+%22uses%22+same+repository&cvid=60fe0aef5c1549db9efa12bca84795ea&aqs=edge..69i57j69i64l2.15260j0j1&FORM=ANAB01&PC=U531~
-  - ~https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow~
-- get uploads to work
-  - you will need to update this from `no_upload` to `upload` to run the test.
-  - you need to update all on the with: blocks in the job: section. Don't worry about L15-L16 in env: (not used at the moment)  
-  - https://github.com/LibreELEC/actions/blob/a760ba7cd44d1d3d73d9b9904450e4e503f47a1e/.github/workflows/nightly-MASTER.yml#L49-L50
-- update the other workflows (not Generic-10.0, A64, H3, H5, H6, AMLGX, addons -- these are done...) to updated template.
-- update nightly-MASTER to include all targets
-- remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
-- check the commit hash / date logic --- issue was using the "actions repo" not the "LibreELEC.tv" repo
 
 ### Current status / things to understand / work though
 - there is only 1 (shared) build-root (dont buiuld the same architecture at the same time - it will lock / fail)
