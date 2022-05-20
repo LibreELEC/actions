@@ -2,6 +2,42 @@ name: nightly-MASTER
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
+    inputs:
+      le_periodic_version:
+        description: 'Version and Perodic build'
+        default: all
+        required: true
+        type: choice
+        options:
+          - devel
+          - nightly
+          - official
+      gitref_to_build:
+        description: 'gitref tag or hash to build'
+        default: master
+        required: true
+        type: string
+      target:
+        description: 'targets to build'
+        default: all
+        required: true
+        type: choice
+        options:
+          - A64.arm
+          - H3.arm
+          - H5.arm
+          - H6.arm
+          - AMLGX.arm
+          - Generic.x86_64
+          - iMX6.arm
+          - iMX8.arm
+          - Dragonboard.arm
+          - RK3288.arm
+          - RK3328.arm
+          - RK3399.arm
+          - RPi2.arm
+          - RPi4.arm
+          - Exynos.arm
   schedule:
     # The times are specified in UTC
     # * is a special character in YAML so you have to quote this string
@@ -58,7 +94,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: A64_arm
       project: Allwinner
       arch: arm
@@ -81,7 +117,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: H3_arm
       project: Allwinner
       arch: arm
@@ -104,7 +140,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: H5_arm
       project: Allwinner
       arch: arm
@@ -127,7 +163,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: H6_arm
       project: Allwinner
       arch: arm
@@ -152,7 +188,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: AMLGX_arm
       project: Amlogic
       arch: arm
@@ -177,7 +213,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Generic_x86_64
       project: Generic
       arch: x86_64
@@ -202,7 +238,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: iMX6_arm
       project: NXP
       arch: arm
@@ -225,7 +261,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: iMX8_arm
       project: NXP
       arch: arm
@@ -250,7 +286,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Dragonboard_arm
       project: Qualcomm
       arch: arm
@@ -275,7 +311,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3288_arm
       project: Rockchip
       arch: arm
@@ -298,7 +334,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3328_arm
       project: Rockchip
       arch: arm
@@ -321,7 +357,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3399_arm
       project: Rockchip
       arch: arm
@@ -346,7 +382,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RPi2_arm
       project: RPi
       arch: arm
@@ -369,7 +405,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RPi4_arm
       project: RPi
       arch: arm
@@ -394,7 +430,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: master
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Exynos_arm
       project: Samsung
       arch: arm
