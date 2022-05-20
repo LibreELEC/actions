@@ -1,6 +1,9 @@
 ### Ideas / TODO - something for the future
 
 - add github.event.inputs.target for workflow_dispatch in image build
+- https://azure.microsoft.com/en-gb/blog/announcing-azure-pipelines-with-unlimited-ci-cd-minutes-for-open-source/
+- https://cloudblogs.microsoft.com/opensource/2021/09/28/announcing-azure-credits-for-open-source-projects/
+- https://opensource.microsoft.com/azure-credits#credits-apply
 - how do we update slack?
 - matrix builds
   - https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/4ab4a926f8312d2354a950247a3375dde4992396/.github/workflows/ci_workflow.yml
