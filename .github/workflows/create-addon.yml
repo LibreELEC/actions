@@ -106,7 +106,7 @@ jobs:
           # workaround below until buildsystem does not require local cc
           sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
-          sed -n '/ADDON_VERSION=/s/[[:space:]]*//p' distributions/LibreELEC/version >> $GITHUB_ENV
+          echo "LE_$(sed -n '/ADDON_VERSION=/s/[[:space:]]*//p' distributions/LibreELEC/version)" >> $GITHUB_ENV
 
       - name: Create docker image for build - tools/docker/focal
         run: |
