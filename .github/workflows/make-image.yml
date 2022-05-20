@@ -60,7 +60,7 @@ on:
         type: string
       buildperiodic:
         description: 'BUILD_PERIODIC'
-        default: devel
+        default: nightly
         required: true
         type: string
       ccachecachesize:
@@ -111,6 +111,14 @@ jobs:
           # workaround below until buildsystem does not require local cc
           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
+
+      - name: build official release
+        if: inputs.buildperiodic == 'official'
+        run: |
+          cd LibreELEC.tv
+          sed -i -e 's/LIBREELEC_VERSION="devel"/LIBREELEC_VERSION="${{ inputs.gitref }}"/' distributions/LibreELEC/version
+          echo "OFFICIAL=\"yes\"" >> distributions/LibreELEC/version
+          echo "building official ${{ inputs.gitref }}"
 
       - name: Create docker image for build - tools/docker/focal
         run: |
@@ -183,8 +191,14 @@ jobs:
           cd LibreELEC.tv
           docker image rm -f gh-${{ github.run_id }}
 
-      - name: Upload files
-        if: inputs.upload == 'upload'
+      - name: Upload OFFICIAL Release
+        if: (inputs.buildperiodic == 'official') && (inputs.upload == 'upload')
+        run: |
+          cd LibreELEC.tv
+          echo "upload official ${{ inputs.gitref }}"
+          # domsomething
+      - name: Upload image
+        if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload')
         run: |
           cd LibreELEC.tv
           ls -lahR target
