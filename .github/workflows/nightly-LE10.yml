@@ -2,6 +2,43 @@ name: nightly-LE10
 on:
   # allows to run this workflow manually from the actions tab
   workflow_dispatch:
+    inputs:
+      le_periodic_version:
+        description: 'Version and Perodic builds'
+        default: devel
+        required: true
+        type: choice
+        options:
+          - devel
+          - nightly
+          - official
+      gitref_to_build:
+        description: 'gitref tag or hash to build'
+        default: libreelec-10.0
+        required: true
+        type: string
+      target:
+        description: 'targets to build'
+        default: all
+        required: true
+        type: choice
+        options:
+          - all
+          - A64.arm
+          - H3.arm
+          - H5.arm
+          - H6.arm
+          - AMLGX.arm
+          - Generic.x86_64
+          - iMX6.arm
+          - iMX8.arm
+          - Dragonboard.arm
+          - RK3288.arm
+          - RK3328.arm
+          - RK3399.arm
+          - RPi2.arm
+          - RPi4.arm
+          - Exynos.arm
   schedule:
     # The times are specified in UTC
     # * is a special character in YAML so you have to quote this string
@@ -53,7 +90,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: A64_arm-10_0
       project: Allwinner
       arch: arm
@@ -76,7 +113,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: H3_arm-10_0
       project: Allwinner
       arch: arm
@@ -99,7 +136,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: H5_arm-10_0
       project: Allwinner
       arch: arm
@@ -122,7 +159,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: H6_arm-10_0
       project: Allwinner
       arch: arm
@@ -147,7 +184,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: AMLGX_arm-10_0
       project: Amlogic
       arch: arm
@@ -172,7 +209,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: Generic_x86_64-10_0
       project: Generic
       arch: x86_64
@@ -199,7 +236,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: iMX6_arm-10_0
       project: NXP
       arch: arm
@@ -222,7 +259,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: iMX8_arm-10_0
       project: NXP
       arch: arm
@@ -247,7 +284,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: Dragonboard_arm-10_0
       project: Qualcomm
       arch: arm
@@ -272,7 +309,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: RK3288_arm-10_0
       project: Rockchip
       arch: arm
@@ -295,7 +332,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: RK3328_arm-10_0
       project: Rockchip
       arch: arm
@@ -318,7 +355,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: RK3399_arm-10_0
       project: Rockchip
       arch: arm
@@ -343,7 +380,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: RPi2_arm-10_0
       project: RPi
       arch: arm
@@ -366,7 +403,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: RPi4_arm-10_0
       project: RPi
       arch: arm
@@ -391,7 +428,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: 'make image'
-      gitref: libreelec-10.0
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
       group: Exynos_arm-10_0
       project: Samsung
       arch: arm
