@@ -9,7 +9,6 @@ on:
         required: true
         type: choice
         options:
-          - devel
           - nightly
           - official
       gitref_to_build:
