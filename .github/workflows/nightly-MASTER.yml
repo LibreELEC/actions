@@ -103,7 +103,7 @@ jobs:
       arch: arm
       device: A64
       targetbuilddir: build.LibreELEC-A64.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -128,7 +128,7 @@ jobs:
       arch: arm
       device: H3
       targetbuilddir: build.LibreELEC-H3.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -153,7 +153,7 @@ jobs:
       arch: arm
       device: H5
       targetbuilddir: build.LibreELEC-H5.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -178,7 +178,7 @@ jobs:
       arch: arm
       device: H6
       targetbuilddir: build.LibreELEC-H6.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -205,7 +205,7 @@ jobs:
       arch: arm
       device: AMLGX
       targetbuilddir: build.LibreELEC-AMLGX.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -232,7 +232,7 @@ jobs:
       arch: x86_64
       device: Generic
       targetbuilddir: build.LibreELEC-Generic.x86_64-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 20G
       version: '11.0'
       fileextns: img.gz,ova,tar
@@ -259,7 +259,7 @@ jobs:
       arch: arm
       device: iMX6
       targetbuilddir: build.LibreELEC-iMX6.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -284,7 +284,7 @@ jobs:
       arch: arm
       device: iMX8
       targetbuilddir: build.LibreELEC-iMX8.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -311,7 +311,7 @@ jobs:
       arch: arm
       device: Dragonboard
       targetbuilddir: build.LibreELEC-Dragonboard.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -338,7 +338,7 @@ jobs:
       arch: arm
       device: RK3288
       targetbuilddir: build.LibreELEC-RK3288.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -363,7 +363,7 @@ jobs:
       arch: arm
       device: RK3328
       targetbuilddir: build.LibreELEC-RK3328.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -388,7 +388,7 @@ jobs:
       arch: arm
       device: RK3399
       targetbuilddir: build.LibreELEC-RK3399.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -415,7 +415,7 @@ jobs:
       arch: arm
       device: RPi2
       targetbuilddir: build.LibreELEC-RPi2.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -440,7 +440,7 @@ jobs:
       arch: arm
       device: RPi4
       targetbuilddir: build.LibreELEC-RPi4.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
@@ -467,7 +467,7 @@ jobs:
       arch: arm
       device: Exynos
       targetbuilddir: build.LibreELEC-Exynos.arm-11.0-nightly
-      buildperiodic: nightly
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '11.0'
       fileextns: img.gz,tar
