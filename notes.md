@@ -1,13 +1,13 @@
 ### Ideas / TODO - something for the future
 
-- add github.event.inputs.target for workflow_dispatch in image build
+- simplify calling workflows (nightly-yyy.yml) use as "defaults" style
 - https://azure.microsoft.com/en-gb/blog/announcing-azure-pipelines-with-unlimited-ci-cd-minutes-for-open-source/
 - https://cloudblogs.microsoft.com/opensource/2021/09/28/announcing-azure-credits-for-open-source-projects/
 - https://opensource.microsoft.com/azure-credits#credits-apply
 - how do we update slack?
 - matrix builds
   - https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/4ab4a926f8312d2354a950247a3375dde4992396/.github/workflows/ci_workflow.yml
-- create release-LE10.yml
+- test release logic with image builds.
 - test logic for export CCACHE_DISABLE=1
 - logging - so we can actually get the logs (as ephemeral means that they are deleted)
 - on cancelled jobs ... how to cleanup?
@@ -16,7 +16,6 @@
 - Do we have need for environments ?
   - Private Repo's dont allow Environments.
 - fix the docker execution to use github syntax
-  - parameterise the `make image` (addons is done- but need to change to buildcmd and update other .yml files so we can have the single template /include.
 
 ## Fixes done to runners:
 ```
@@ -84,6 +83,8 @@ rsync --rsh='ssh -p1322' -avH runner@builder-01.libreelec.tv:/var/media/DATA/git
 - update nightly-MASTER to include all targets
 - remove commented-out from `if: checkdate` - TESTING required https://github.com/LibreELEC/actions/blob/9afe68eed6cbf879daa8ede4fb8a8da84c34ba53/.github/workflows/nightly-LE10.yml#L39
 - check the commit hash / date logic --- issue was using the "actions repo" not the "LibreELEC.tv" repo
+- add github.event.inputs.target for workflow_dispatch in image build
+- parameterise the `make image` (addons is done- but need to change to buildcmd and update other .yml files so we can have the single template /include.
 
 ```
 --- libreelec-A64_arm.yml       2022-05-10 13:32:55.815176539 +0000
