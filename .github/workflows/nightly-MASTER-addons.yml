@@ -73,23 +73,11 @@ jobs:
           cd LibreELEC.tv
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
        
-  # addon on targets
-  assign_common_variables:
-    name: Assign buildcmd_target variables
-    runs-on: ubuntu-latest
-    outputs:
-      buildcmd_target: ${{ steps.buildcmd_target.outputs.buildcmd_target }}
-    steps:
-      - id: buildcmd_target
-        name: Set buildcmd_target environment variable
-        run: |
-          echo "::set-output name=buildcmd_target::${{ github.event.inputs.buildcmd_target || 'all' }}"
-
   # Addons
   ARMv7_arm:
     name: ARMv7.arm
     # Only run if there has been a commit in the last 24 hours
-    needs: [check_date, assign_common_variables]
+    needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv7.arm' || github.event_name == 'schedule' )
@@ -113,7 +101,7 @@ jobs:
   ARMv8_arm:
     name: ARMv8.arm
     # Only run if there has been a commit in the last 24 hours
-    needs: [check_date, assign_common_variables]
+    needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.arm' || github.event_name == 'schedule' )
@@ -137,7 +125,7 @@ jobs:
   Generic_x86_64:
     name: Generic.x86_64
     # Only run if there has been a commit in the last 24 hours
-    needs: [check_date, assign_common_variables]
+  needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
@@ -161,7 +149,7 @@ jobs:
   Generic-legacy_x86_64:
     name: Generic-legacy.x86_64
     # Only run if there has been a commit in the last 24 hours
-    needs: [check_date, assign_common_variables]
+    needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic-legacy.x86_64' || github.event_name == 'schedule' )
