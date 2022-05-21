@@ -125,7 +125,7 @@ jobs:
   Generic_x86_64:
     name: Generic.x86_64
     # Only run if there has been a commit in the last 24 hours
-  needs: check_date
+    needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
