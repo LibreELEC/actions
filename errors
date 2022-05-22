@@ -3,7 +3,6 @@ libreelec-Generic.x86_64-addons-all
 FAILED ADDONS:
     audiodecoder.fluidsynth: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/465.log
     visualization.pictureit: /build-root/build.LibreELEC-Generic.x86_64-11.0-devel/.threads/logs/649.log
-Error: Process completed with exit code 1.
 
 libreelec-Generic-legacy.x86_64-addons-chrome
 
