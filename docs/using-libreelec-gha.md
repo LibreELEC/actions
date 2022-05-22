@@ -1,5 +1,9 @@
 # Building LibreELEC
 ## Using GitHub Actions Workflows CI/CD
+
+Both tested scenarios below can be deployed to provide support for your **GitHub Actions**.
+The customise build guides will help you depliy your GitHub Action Runners ready to build LibreELEC.
+
 - [Build github actions runner/s as docket container/s](build-docker-gha-runner.md)
 ```mermaid
 graph TD;
@@ -31,3 +35,5 @@ graph TD;
     ar12-->ghaj2((GitHub Workflow Job));
     ar13-->ghaj3((GitHub Workflow Job));
     ar14-->ghaj4((GitHub Workflow Job));
+.
+- Common information that you should take into consideration before building your repositories **Runners**.
