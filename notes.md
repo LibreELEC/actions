@@ -4,6 +4,8 @@
 - https://azure.microsoft.com/en-gb/blog/announcing-azure-pipelines-with-unlimited-ci-cd-minutes-for-open-source/
 - https://cloudblogs.microsoft.com/opensource/2021/09/28/announcing-azure-credits-for-open-source-projects/
 - https://opensource.microsoft.com/azure-credits#credits-apply
+- add more CI functionality to LE code
+- add capability of make_helper cleaning one directory only
 - how do we update slack?
   - https://github.com/slackapi/slack-github-action
 - matrix builds
