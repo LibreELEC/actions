@@ -35,5 +35,6 @@ graph TD;
     ar12-->ghaj2((GitHub Workflow Job));
     ar13-->ghaj3((GitHub Workflow Job));
     ar14-->ghaj4((GitHub Workflow Job));
-.
-- Common information that you should take into consideration before building your repositories **Runners**.
+```
+
+- Information that you should take into consideration before building your repositories **Runners**.
