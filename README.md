@@ -6,7 +6,7 @@ This repository lives at https://github.com/LibreELEC/actions.
 
 ## Build & install
 
-You can find more information in our documentation [docs/using-libreelec-gha.md].
+You can find more information in our documentation [docs/using-libreelec-gha.md](docs/using-libreelec-gha.md).
 
 ## Support
 
