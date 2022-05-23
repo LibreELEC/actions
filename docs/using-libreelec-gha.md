@@ -52,3 +52,5 @@ graph TD;
 - [ ] add capability of make_helper cleaning one directory only
 - [ ] logging
   - so we can actually get the logs (as ephemeral means that they are deleted)
+  - https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
+  - https://github.com/actions/upload-artifact
