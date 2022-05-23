@@ -202,7 +202,8 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: |
-            ${{ env.TARGETBUILDDIR }}/artifact/
+            LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
+            ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
 
       - name: clean docker images and tags
         run: |
