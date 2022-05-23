@@ -175,6 +175,21 @@ jobs:
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
         continue-on-error: true
 
+      - name: prepare artifacts ephemeral
+        run: |
+          # Currently only works for ephemeral builds
+          cd LibreELEC.tv
+          mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
+          cat ${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
+            while read failedaddon failedlog
+            do
+              mv ../${failedlog} ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
+            done
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.TARGETBUILDDIR }}/artifact/
+
       - name: clean docker images and tags
         run: |
           cd LibreELEC.tv
