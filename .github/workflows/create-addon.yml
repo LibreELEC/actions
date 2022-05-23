@@ -175,9 +175,9 @@ jobs:
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
         continue-on-error: true
 
-      - name: prepare artifacts ephemeral
+      - name: prepare ephemeral artifacts
+        if: inputs.ephemeral == 'ephemeral'
         run: |
-          # Currently only works for ephemeral builds
           cd LibreELEC.tv
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
           cat ${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
@@ -185,10 +185,23 @@ jobs:
             do
               mv ../${failedlog} ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
             done
+      - name: prepare non-ephemeral artifacts
+        if: inputs.ephemeral == 'no_ephemeral'
+        run: |
+          # Currently only works for ephemeral builds
+          cd LibreELEC.tv
+          mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
+          cat ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
+            while read failedaddon failedlog
+            do
+              mv ${{ env.BASEDIR }}/${failedlog} \
+                ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
+            done
 
       - uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.TARGETBUILDDIR }}/artifact/
+          path: |
+            ${{ env.TARGETBUILDDIR }}/artifact/
 
       - name: clean docker images and tags
         run: |
