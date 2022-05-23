@@ -181,6 +181,8 @@ jobs:
         run: |
           cd LibreELEC.tv
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
+          ls -la
+          ls -la ${{ env.TARGETBUILDDIR }}/.threads
           cat ${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
             while read failedaddon failedlog
             do
