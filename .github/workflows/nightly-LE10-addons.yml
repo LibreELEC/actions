@@ -82,7 +82,7 @@ jobs:
       project: ARM
       arch: arm
       device: ARMv7
-      targetbuilddir: build.LibreELEC-ARMv7.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-ARMv7.arm-10.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
       version: '10.0'
@@ -106,7 +106,7 @@ jobs:
       project: ARM
       arch: arm
       device: ARMv8
-      targetbuilddir: build.LibreELEC-ARMv8.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-ARMv8.arm-10.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
       version: '10.0'
@@ -132,7 +132,7 @@ jobs:
       # device: Generic ### LE10 does not support DEVICE for PROJECT=Generic
       #         make sure it is set to empty string
       device: ''
-      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-nightly
+      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
       version: '10.0'
