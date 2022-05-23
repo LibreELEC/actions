@@ -180,7 +180,7 @@ jobs:
                           -e PROJECT=${{ env.PROJECT }} \
                           -e ARCH=${{ env.ARCH }} \
                           -e DEVICE=${{ env.DEVICE }} \
-                          -e ONELOG=no -e LOGCOMBINE=never \
+                          -e ONELOG=no -e LOGCOMBINE=fail \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
