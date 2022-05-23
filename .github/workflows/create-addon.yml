@@ -186,7 +186,8 @@ jobs:
           cat ${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
             while read failedaddon failedlog
             do
-              mv ../${failedlog} ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
+              mv $(echo ${failedlog} | sed 's#/build/##') \
+                ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
             done
       - name: prepare non-ephemeral artifacts
         if: inputs.ephemeral == 'no_ephemeral'
