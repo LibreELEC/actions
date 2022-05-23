@@ -150,9 +150,10 @@ jobs:
           echo "inputs.ephemeral: ${{ inputs.ephemeral }}"
           echo "inputs.upload: ${{ inputs.upload }}"
 
-      - name: Clean LE at docker image
+      - name: Clean target_build_dir in /build-root
         if: inputs.clean_le == 'clean_le'
         run: |
+          echo "About to clean: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}"
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
           echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
