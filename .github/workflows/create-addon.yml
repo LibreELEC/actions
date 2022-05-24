@@ -181,13 +181,11 @@ jobs:
         run: |
           cd LibreELEC.tv
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
-          ls -la
-          ls -la ${{ env.TARGETBUILDDIR }}/.threads
           cat ${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
-            while read failedaddon failedlog
+            while read failedpkg failedlog
             do
               mv $(echo ${failedlog} | sed 's#/build/##') \
-                ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
+                ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
             done
       - name: prepare non-ephemeral artifacts
         if: inputs.ephemeral == 'no_ephemeral'
@@ -196,10 +194,10 @@ jobs:
           cd LibreELEC.tv
           mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
           cat ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
-            while read failedaddon failedlog
+            while read failedpkg failedlog
             do
               mv ${{ env.BASEDIR }}/${failedlog} \
-                ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
+                ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
             done
 
       - name: upload artifact failed - ephemeral

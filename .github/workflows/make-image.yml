@@ -186,6 +186,44 @@ jobs:
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
 
+      - name: prepare ephemeral artifacts
+        if: inputs.ephemeral == 'ephemeral'
+        run: |
+          cd LibreELEC.tv
+          mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
+          grep ^FAIL ${{ env.TARGETBUILDDIR }}/.threads/joblog | \
+            awk '{ print $5, $12 }' | tr ':' '_' | \
+              while read failedpkg failedlog
+              do
+                mv $(echo ${failedlog} | sed 's#/build/##') \
+                  ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
+              done
+      - name: prepare non-ephemeral artifacts
+        if: inputs.ephemeral == 'no_ephemeral'
+        run: |
+          cd LibreELEC.tv
+          mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
+          grep ^FAIL ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog | \
+            awk '{ print $5, $12 }' | tr ':' '_' | \
+              while read failedpkg failedlog
+              do
+                mv ${{ env.BASEDIR }}/${failedlog} \
+                  ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
+              done
+
+      - name: upload artifact failed - ephemeral
+        if: inputs.ephemeral == 'ephemeral'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TARGETBUILDDIR }}-failed
+          path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
+      - name: upload artifact failed - no_ephemeral
+        if: inputs.ephemeral == 'no_ephemeral'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TARGETBUILDDIR }}-failed
+          path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
+
       - name: clean docker images and tags
         run: |
           cd LibreELEC.tv
