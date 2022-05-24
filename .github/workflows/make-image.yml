@@ -194,8 +194,7 @@ jobs:
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
           grep ^FAIL ${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
-              while read failedpkg failedlog
-              do
+              while read failedpkg failedlog; do
                 mv $(echo ${failedlog} | sed 's#/build/##') \
                   ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
@@ -206,8 +205,7 @@ jobs:
           mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
           grep ^FAIL ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
-              while read failedpkg failedlog
-              do
+              while read failedpkg failedlog; do
                 mv ${{ env.BASEDIR }}/${failedlog} \
                   ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
