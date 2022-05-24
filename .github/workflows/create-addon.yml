@@ -202,11 +202,13 @@ jobs:
                 ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedaddon}-$(echo ${failedlog} | sed 's#.*/##')
             done
 
-      - uses: actions/upload-artifact@v3
+      - name: upload artifact failed A
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.TARGETBUILDDIR }}-failed-A
           path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
-      - uses: actions/upload-artifact@v3
+      - name: upload artifact failed B
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.TARGETBUILDDIR }}-failed-B
           path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
