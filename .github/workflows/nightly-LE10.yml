@@ -96,7 +96,7 @@ jobs:
       project: Allwinner
       arch: arm
       device: A64
-      targetbuilddir: build.LibreELEC-A64.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-A64.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -121,7 +121,7 @@ jobs:
       project: Allwinner
       arch: arm
       device: H3
-      targetbuilddir: build.LibreELEC-H3.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-H3.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -146,7 +146,7 @@ jobs:
       project: Allwinner
       arch: arm
       device: H5
-      targetbuilddir: build.LibreELEC-H5.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-H5.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -171,7 +171,7 @@ jobs:
       project: Allwinner
       arch: arm
       device: H6
-      targetbuilddir: build.LibreELEC-H6.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-H6.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -198,7 +198,7 @@ jobs:
       project: Amlogic
       arch: arm
       device: AMLGX
-      targetbuilddir: build.LibreELEC-AMLGX.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-AMLGX.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -227,7 +227,7 @@ jobs:
       # device: Generic ### LE10 does not support DEVICE for PROJECT=Generic
       #         make sure it is set to empty string
       device: ''
-      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-nightly
+      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 20G
       version: '10.0'
@@ -254,7 +254,7 @@ jobs:
       project: NXP
       arch: arm
       device: iMX6
-      targetbuilddir: build.LibreELEC-iMX6.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-iMX6.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -279,7 +279,7 @@ jobs:
       project: NXP
       arch: arm
       device: iMX8
-      targetbuilddir: build.LibreELEC-iMX8.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-iMX8.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -306,7 +306,7 @@ jobs:
       project: Qualcomm
       arch: arm
       device: Dragonboard
-      targetbuilddir: build.LibreELEC-Dragonboard.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-Dragonboard.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -333,7 +333,7 @@ jobs:
       project: Rockchip
       arch: arm
       device: RK3288
-      targetbuilddir: build.LibreELEC-RK3288.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-RK3288.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -358,7 +358,7 @@ jobs:
       project: Rockchip
       arch: arm
       device: RK3328
-      targetbuilddir: build.LibreELEC-RK3328.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-RK3328.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -383,7 +383,7 @@ jobs:
       project: Rockchip
       arch: arm
       device: RK3399
-      targetbuilddir: build.LibreELEC-RK3399.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-RK3399.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -410,7 +410,7 @@ jobs:
       project: RPi
       arch: arm
       device: RPi2
-      targetbuilddir: build.LibreELEC-RPi2.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-RPi2.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -435,7 +435,7 @@ jobs:
       project: RPi
       arch: arm
       device: RPi4
-      targetbuilddir: build.LibreELEC-RPi4.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-RPi4.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
@@ -462,7 +462,7 @@ jobs:
       project: Samsung
       arch: arm
       device: Exynos
-      targetbuilddir: build.LibreELEC-Exynos.arm-10.0-nightly
+      targetbuilddir: build.LibreELEC-Exynos.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: '10.0'
