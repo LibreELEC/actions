@@ -176,29 +176,30 @@ jobs:
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
         continue-on-error: true
 
-      - name: prepare ephemeral artifacts
+      - name: Prepare artifacts - ephemeral
         if: inputs.ephemeral == 'ephemeral'
         run: |
           cd LibreELEC.tv
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
-          cat ${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
-            while read failedpkg failedlog
-            do
-              mv $(echo ${failedlog} | sed 's#/build/##') \
-                ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
-            done
-      - name: prepare non-ephemeral artifacts
+          grep ^FAIL ${{ env.TARGETBUILDDIR }}/.threads/joblog | \
+            awk '{ print $5, $12 }' | tr ':' '_' | \
+              while read failedpkg failedlog
+              do
+                mv $(echo ${failedlog} | sed 's#/build/##') \
+                  ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
+              done
+      - name: Prepare artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
         run: |
-          # Currently only works for ephemeral builds
           cd LibreELEC.tv
           mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
-          cat ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/addons.failed | \
-            while read failedpkg failedlog
-            do
-              mv ${{ env.BASEDIR }}/${failedlog} \
-                ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
-            done
+          grep ^FAIL ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog | \
+            awk '{ print $5, $12 }' | tr ':' '_' | \
+              while read failedpkg failedlog
+              do
+                mv ${{ env.BASEDIR }}/${failedlog} \
+                  ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
+              done
 
       - name: upload failed artifacts - ephemeral
         if: inputs.ephemeral == 'ephemeral'

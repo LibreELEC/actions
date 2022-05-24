@@ -187,7 +187,7 @@ jobs:
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
         continue-on-error: true
 
-      - name: prepare ephemeral artifacts
+      - name: Prepare artifacts - ephemeral
         if: inputs.ephemeral == 'ephemeral'
         run: |
           cd LibreELEC.tv
@@ -199,7 +199,7 @@ jobs:
                 mv $(echo ${failedlog} | sed 's#/build/##') \
                   ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
-      - name: prepare non-ephemeral artifacts
+      - name: Prepare artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
         run: |
           cd LibreELEC.tv
