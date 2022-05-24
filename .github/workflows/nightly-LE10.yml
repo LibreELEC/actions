@@ -81,7 +81,9 @@ jobs:
     name: 'A64.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'A64.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -104,7 +106,9 @@ jobs:
     name: 'H3.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H3.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -127,7 +131,9 @@ jobs:
     name: 'H5.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H5.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -150,7 +156,9 @@ jobs:
     name: 'H6.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H6.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -175,7 +183,9 @@ jobs:
     name: 'AMLGX.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -200,7 +210,9 @@ jobs:
     name: 'Generic.x86_64 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -227,7 +239,9 @@ jobs:
     name: 'iMX6.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'iMX6.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -250,7 +264,9 @@ jobs:
     name: 'iMX8.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'iMX8.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -275,7 +291,9 @@ jobs:
     name: 'Dragonboard.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Dragonboard.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -300,7 +318,9 @@ jobs:
     name: 'RK3288.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3288.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -323,7 +343,9 @@ jobs:
     name: 'RK3328.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3328.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -346,7 +368,9 @@ jobs:
     name: 'RK3399.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3399.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -371,7 +395,9 @@ jobs:
     name: 'RPi2.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi2.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -394,7 +420,9 @@ jobs:
     name: 'RPi4.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi4.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
@@ -419,7 +447,9 @@ jobs:
     name: 'Exynos.arm 10.0'
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
-    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Exynos.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
