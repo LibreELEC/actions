@@ -185,6 +185,7 @@ jobs:
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
                           gh-${{ github.run_id }} ${{ inputs.buildcmd }}
+        continue-on-error: true
 
       - name: prepare ephemeral artifacts
         if: inputs.ephemeral == 'ephemeral'
@@ -229,13 +230,13 @@ jobs:
           cd LibreELEC.tv
           docker image rm -f gh-${{ github.run_id }}
 
-      - name: Upload OFFICIAL Release
+      - name: Upload OFFICIAL Release image
         if: (inputs.buildperiodic == 'official') && (inputs.upload == 'upload')
         run: |
           cd LibreELEC.tv
           echo "upload official ${{ inputs.gitref }}"
           # domsomething
-      - name: Upload image
+      - name: Upload nightly image
         if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload')
         run: |
           cd LibreELEC.tv
