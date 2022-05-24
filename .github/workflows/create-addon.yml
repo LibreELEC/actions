@@ -204,10 +204,12 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.TARGETBUILDDIR }}-failed
-          path: |
-            LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
-            ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
+          name: ${{ env.TARGETBUILDDIR }}-failed-A
+          path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TARGETBUILDDIR }}-failed-B
+          path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
 
       - name: clean docker images and tags
         run: |
