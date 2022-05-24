@@ -211,13 +211,13 @@ jobs:
                   ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
 
-      - name: upload artifact failed - ephemeral
+      - name: upload failed artifacts - ephemeral
         if: inputs.ephemeral == 'ephemeral'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.TARGETBUILDDIR }}-failed
           path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
-      - name: upload artifact failed - no_ephemeral
+      - name: upload failed artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
         uses: actions/upload-artifact@v3
         with:
