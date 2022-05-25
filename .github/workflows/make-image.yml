@@ -155,7 +155,7 @@ jobs:
           echo "id: $(id)"
           echo "whoami: $(whoami)"
           echo "docker images: $(docker images)"
-          echo "ls: $(ls -la)"
+          # echo "ls: $(ls -la)"
           echo
           echo "inputs.clean_le: ${{ inputs.clean_le }}"
           echo "inputs.debug: ${{ inputs.debug }}"
@@ -167,7 +167,7 @@ jobs:
         run: |
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
-          echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
+          # echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
 
       - name: Build LE using docker
         run: |
@@ -238,6 +238,6 @@ jobs:
         if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload')
         run: |
           cd LibreELEC.tv
-          ls -lahR target
+          # ls -lahR target
           scp -P ${{ secrets.PORT }} target/*.{${{ inputs.fileextns }}} \
             ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
