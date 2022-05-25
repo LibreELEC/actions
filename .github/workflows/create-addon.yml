@@ -99,7 +99,7 @@ jobs:
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
-      - name: customise the checked out git repository
+      - name: Customise the checked out git repository
         run: |
           cd LibreELEC.tv
           sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
@@ -150,7 +150,7 @@ jobs:
           echo "inputs.ephemeral: ${{ inputs.ephemeral }}"
           echo "inputs.upload: ${{ inputs.upload }}"
 
-      - name: Clean target_build_dir in /build-root
+      - name: Clean target_build_dir in /build-root - make clean DEVICE
         if: inputs.clean_le == 'clean_le'
         run: |
           echo "About to clean: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}"
@@ -158,7 +158,7 @@ jobs:
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
           # echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
 
-      - name: Build addons using docker
+      - name: BuIld addons in docker container
         run: |
           cd LibreELEC.tv
           docker run --rm -v ${{ env.BASEDIR }}/sources:/sources \
@@ -199,20 +199,20 @@ jobs:
                   ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
 
-      - name: upload failed artifacts - ephemeral
+      - name: Upload failed artifacts - ephemeral
         if: inputs.ephemeral == 'ephemeral'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.group }}-failed
           path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
-      - name: upload failed artifacts - no_ephemeral
+      - name: Upload failed artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.group }}-failed
           path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
 
-      - name: clean docker images and tags
+      - name: Clean up - remove docker image tag
         run: |
           cd LibreELEC.tv
           docker image rm -f gh-${{ github.run_id }}
