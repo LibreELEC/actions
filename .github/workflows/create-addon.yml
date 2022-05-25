@@ -143,7 +143,7 @@ jobs:
           echo "id: $(id)"
           echo "whoami: $(whoami)"
           echo "docker images: $(docker images)"
-          echo "ls: $(ls -la)"
+          # echo "ls: $(ls -la)"
           echo
           echo "inputs.clean_le: ${{ inputs.clean_le }}"
           echo "inputs.debug: ${{ inputs.debug }}"
@@ -156,7 +156,7 @@ jobs:
           echo "About to clean: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}"
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
-          echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
+          # echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
 
       - name: Build addons using docker
         run: |
@@ -221,7 +221,7 @@ jobs:
         if: inputs.upload == 'upload'
         run: |
           cd LibreELEC.tv
-          ls -lahR target
+          # ls -lahR target
           find target/addons -type f -name "*.zip" | \
             while read zipfile; do
               fp=(`echo ${zipfile} | tr '/' ' '`)
