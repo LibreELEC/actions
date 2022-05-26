@@ -1,6 +1,5 @@
 name: nightly-LE10-addons
 on:
-  # allows to run this workflow manually from the actions tab
   workflow_dispatch:
     inputs:
       buildcmd_target:
@@ -20,14 +19,7 @@ on:
           - Generic.x86_64
   schedule:
     # The times are specified in UTC
-    # * is a special character in YAML so you have to quote this string
     - cron: "30 22 * * *"
-
-    # Performance - 4 job concurrent workflow runtime - 5h48m
-    # 4h56m - ARMv7
-    # 5h 9m - ARMv8
-    # 5h48m - Generic
-    #       - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache)
 
 env:
   # these ENV variables are not used yet - need to get this working with the with statements below
@@ -86,6 +78,7 @@ jobs:
       ccachecachesize: 20G
       version: "10.0"
     secrets: inherit
+
   ARMv8_arm-10_0:
     name: "ARMv8.arm 10.0"
     # Only run if there has been a commit in the last 24 hours
@@ -110,6 +103,7 @@ jobs:
       ccachecachesize: 20G
       version: "10.0"
     secrets: inherit
+
   Generic_x86_64-10_0:
     name: "Generic.x86_64 10.0"
     # Only run if there has been a commit in the last 24 hours

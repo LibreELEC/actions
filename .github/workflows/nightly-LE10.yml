@@ -1,6 +1,5 @@
 name: nightly-LE10
 on:
-  # allows to run this workflow manually from the actions tab
   workflow_dispatch:
     inputs:
       le_periodic_version:
@@ -40,7 +39,6 @@ on:
           - Exynos.arm
   schedule:
     # The times are specified in UTC
-    # * is a special character in YAML so you have to quote this string
     - cron: "30 7 * * *"
 
 env:

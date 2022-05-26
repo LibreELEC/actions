@@ -1,6 +1,5 @@
 name: nightly-MASTER
 on:
-  # allows to run this workflow manually from the actions tab
   workflow_dispatch:
     inputs:
       le_periodic_version:
@@ -40,14 +39,8 @@ on:
           - Exynos.arm
   schedule:
     # The times are specified in UTC
-    # * is a special character in YAML so you have to quote this string
     - cron: "15 14 * * *"
 
-    # Performance
-    # 12h20m - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache) - 4 runners
-    # 10h31m - 15 May 2022 - AMD Ryzen 5 3600 (no .ccache) - 4 runners - 1 failure on image with automake
-    # 11h10m - 18 May 2022
-    # 10h30m - 19 May 2022
 env:
   clean_le: no_clean_le
   debug: debug

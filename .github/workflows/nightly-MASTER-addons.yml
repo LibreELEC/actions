@@ -1,6 +1,5 @@
 name: nightly-MASTER-addons
 on:
-  # allows to run this workflow manually from the actions tab
   workflow_dispatch:
     inputs:
       buildcmd_target:
@@ -21,25 +20,8 @@ on:
           - Generic-legacy.x86_64
   schedule:
     # The times are specified in UTC
-    # * is a special character in YAML so you have to quote this string
     - cron: "30 2 * * *"
-
-    # This workflow is taking between 4h50m and 6h0m to run
-
-    # Performance - 4 job concurrent workflow runtime - 5h48m
-    # 4h37m - Generic-legacy
-    # 4h56m - ARMv7
-    # 5h 9m - ARMv8
-    # 5h48m - Generic
-    #       - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache)
-
-    # Performance - 4 job concurrent workflow runtime - 5h10m
-    # 3h48m - Generic-legacy
-    # 4h30m - ARMv7
-    # 4h38m - ARMv8
-    # 5h 4m - Generic
-    #       - 15 May 2022 - AMD Ryzen 5 3600 (no .ccache)
-
+ 
 env:
   # these ENV variables are not used yet - need to get this working with the with statements below
   clean_le: no_clean_le
@@ -97,6 +79,7 @@ jobs:
       ccachecachesize: 20G
       version: "11.0"
     secrets: inherit
+
   ARMv8_arm:
     name: ARMv8.arm
     # Only run if there has been a commit in the last 24 hours
@@ -121,6 +104,7 @@ jobs:
       ccachecachesize: 20G
       version: "11.0"
     secrets: inherit
+
   Generic_x86_64:
     name: Generic.x86_64
     # Only run if there has been a commit in the last 24 hours
@@ -145,6 +129,7 @@ jobs:
       ccachecachesize: 20G
       version: "11.0"
     secrets: inherit
+
   Generic-legacy_x86_64:
     name: Generic-legacy.x86_64
     # Only run if there has been a commit in the last 24 hours

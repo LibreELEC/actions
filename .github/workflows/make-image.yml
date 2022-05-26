@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       clean_le:
-        # This setting is only used (makes sense) when builds are NOT ephemeral
+        # This setting is only used when builds are NOT ephemeral
         description: "Should the workflow clean the /build-root"
         default: no_clean_le
         required: true
@@ -103,6 +103,7 @@ jobs:
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
+
       - name: Customise the checked out git repository
         run: |
           cd LibreELEC.tv
@@ -137,6 +138,7 @@ jobs:
           # set the build_dir=/build
           echo "build_dir=/build" >> $GITHUB_ENV
           echo "CCACHE_DISABLE=1" >> $GITHUB_ENV
+
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         if: inputs.ephemeral == 'no_ephemeral'
         run: |
@@ -154,8 +156,7 @@ jobs:
           echo "id: $(id)"
           echo "whoami: $(whoami)"
           echo "docker images: $(docker images)"
-          # echo "ls: $(ls -la)"
-          echo
+          echo ""
           echo "inputs.clean_le: ${{ inputs.clean_le }}"
           echo "inputs.debug: ${{ inputs.debug }}"
           echo "inputs.ephemeral: ${{ inputs.ephemeral }}"
@@ -166,7 +167,6 @@ jobs:
         run: |
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.stamps
           rm -rf ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/*
-          # echo "ls: $(ls -la ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }})"
 
       - name: Build LE in docker container
         run: |
@@ -197,6 +197,7 @@ jobs:
                 mv $(echo ${failedlog} | sed 's#/build/##') \
                   ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
+
       - name: Prepare artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
         run: |
@@ -215,6 +216,7 @@ jobs:
         with:
           name: ${{ inputs.group }}-failed
           path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
+
       - name: Upload failed artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
         uses: actions/upload-artifact@v3
@@ -232,11 +234,10 @@ jobs:
         run: |
           cd LibreELEC.tv
           echo "upload official ${{ inputs.gitref }}"
-          # domsomething
+
       - name: Upload nightly image
         if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload')
         run: |
           cd LibreELEC.tv
-          # ls -lahR target
           scp -P ${{ secrets.PORT }} target/*.{${{ inputs.fileextns }}} \
             ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.UPLOAD_TARGET }}
