@@ -1,7 +1,15 @@
 name: clean-hotdog
 on:
   workflow_dispatch:
-
+    inputs:
+      run_clean:
+        description: 'Run a hotdog clean'
+        default: no_run_clean
+        required: true
+        type: choice
+        options:
+          - no_run_clean
+          - run_clean
 env:
   TZ: Australia/Melbourne
 
@@ -11,7 +19,7 @@ jobs:
 
     steps:
       - name: Upload files
-        if: inputs.upload == 'upload'
+        if: inputs.run_clean == 'run_clean'
         run: |
           ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/addons/*/*.zip"
