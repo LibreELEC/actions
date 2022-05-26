@@ -15,19 +15,19 @@ env:
 
 jobs:
   clean_hotdog:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Run Clean
         if: github.event.inputs.run_clean == 'run_clean'
         run: |
-          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/addons/*/*.zip"
-          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rmdir ${{ secrets.UPLOAD_TARGET }}/addons/*"
-          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/*.ova"
-          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/*.tar"
-          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/*.img.gz"
