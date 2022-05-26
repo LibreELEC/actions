@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       run_clean:
-        description: 'Run a hotdog clean'
+        description: "Run a hotdog clean"
         default: no_run_clean
         required: true
         type: choice

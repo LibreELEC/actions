@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       buildcmd_target:
-        description: 'addon targets'
+        description: "addon targets"
         default: all
         required: true
         type: string
       target:
-        description: 'targets to build addons'
+        description: "targets to build addons"
         default: all
         required: true
         type: choice
@@ -22,17 +22,17 @@ on:
   schedule:
     # The times are specified in UTC
     # * is a special character in YAML so you have to quote this string
-    - cron:  '30 2 * * *'
-    
+    - cron: "30 2 * * *"
+
     # This workflow is taking between 4h50m and 6h0m to run
-    
+
     # Performance - 4 job concurrent workflow runtime - 5h48m
     # 4h37m - Generic-legacy
     # 4h56m - ARMv7
     # 5h 9m - ARMv8
     # 5h48m - Generic
     #       - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache)
-    
+
     # Performance - 4 job concurrent workflow runtime - 5h10m
     # 3h48m - Generic-legacy
     # 4h30m - ARMv7
@@ -47,7 +47,7 @@ env:
   debug: debug
   ephemeral: ephemeral
   upload: upload
-      
+
 jobs:
   check_date:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
         run: |
           cd LibreELEC.tv
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
-       
+
   # Addons
   ARMv7_arm:
     name: ARMv7.arm
@@ -96,7 +96,7 @@ jobs:
       targetbuilddir: build.LibreELEC-ARMv7.arm-11.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: '11.0'
+      version: "11.0"
     secrets: inherit
   ARMv8_arm:
     name: ARMv8.arm
@@ -120,7 +120,7 @@ jobs:
       targetbuilddir: build.LibreELEC-ARMv8.arm-11.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: '11.0'
+      version: "11.0"
     secrets: inherit
   Generic_x86_64:
     name: Generic.x86_64
@@ -144,7 +144,7 @@ jobs:
       targetbuilddir: build.LibreELEC-Generic.x86_64-11.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: '11.0'
+      version: "11.0"
     secrets: inherit
   Generic-legacy_x86_64:
     name: Generic-legacy.x86_64
@@ -160,7 +160,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'scripts/create_addon chrome'
+      buildcmd: "scripts/create_addon chrome"
       gitref: master
       group: Generic-legacy_x86_64
       project: Generic
@@ -169,5 +169,5 @@ jobs:
       targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-11.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: '11.0'
+      version: "11.0"
     secrets: inherit

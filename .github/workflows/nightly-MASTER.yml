@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       le_periodic_version:
-        description: 'Version and Perodic builds'
+        description: "Version and Perodic builds"
         default: nightly
         required: true
         type: choice
@@ -12,12 +12,12 @@ on:
           - nightly
           - official
       gitref_to_build:
-        description: 'gitref tag or hash to build'
+        description: "gitref tag or hash to build"
         default: master
         required: true
         type: string
       target:
-        description: 'targets to build'
+        description: "targets to build"
         default: all
         required: true
         type: choice
@@ -41,7 +41,7 @@ on:
   schedule:
     # The times are specified in UTC
     # * is a special character in YAML so you have to quote this string
-    - cron:  '15 14 * * *'
+    - cron: "15 14 * * *"
 
     # Performance
     # 12h20m - 14 May 2022 - AMD Ryzen 5 3600 (no .ccache) - 4 runners
@@ -55,7 +55,7 @@ env:
   debug: debug
   ephemeral: ephemeral
   upload: upload
-      
+
 jobs:
   check_date:
     runs-on: ubuntu-latest
@@ -80,7 +80,7 @@ jobs:
         run: |
           cd LibreELEC.tv
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
-        
+
   # Allwinner
   A64_arm:
     name: A64.arm
@@ -95,7 +95,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: A64_arm
       project: Allwinner
@@ -104,7 +104,7 @@ jobs:
       targetbuilddir: build.LibreELEC-A64.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   H3_arm:
@@ -120,7 +120,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: H3_arm
       project: Allwinner
@@ -129,7 +129,7 @@ jobs:
       targetbuilddir: build.LibreELEC-H3.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   H5_arm:
@@ -145,7 +145,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: H5_arm
       project: Allwinner
@@ -154,7 +154,7 @@ jobs:
       targetbuilddir: build.LibreELEC-H5.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   H6_arm:
@@ -170,7 +170,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: H6_arm
       project: Allwinner
@@ -179,7 +179,7 @@ jobs:
       targetbuilddir: build.LibreELEC-H6.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
 
@@ -197,7 +197,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: AMLGX_arm
       project: Amlogic
@@ -206,7 +206,7 @@ jobs:
       targetbuilddir: build.LibreELEC-AMLGX.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
 
@@ -224,7 +224,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Generic_x86_64
       project: Generic
@@ -233,7 +233,7 @@ jobs:
       targetbuilddir: build.LibreELEC-Generic.x86_64-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 20G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,ova,tar
     secrets: inherit
 
@@ -251,7 +251,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: iMX6_arm
       project: NXP
@@ -260,7 +260,7 @@ jobs:
       targetbuilddir: build.LibreELEC-iMX6.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   iMX8_arm:
@@ -276,7 +276,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: iMX8_arm
       project: NXP
@@ -285,7 +285,7 @@ jobs:
       targetbuilddir: build.LibreELEC-iMX8.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
 
@@ -303,7 +303,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Dragonboard_arm
       project: Qualcomm
@@ -312,7 +312,7 @@ jobs:
       targetbuilddir: build.LibreELEC-Dragonboard.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
 
@@ -330,7 +330,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3288_arm
       project: Rockchip
@@ -339,7 +339,7 @@ jobs:
       targetbuilddir: build.LibreELEC-RK3288.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   RK3328_arm:
@@ -355,7 +355,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3328_arm
       project: Rockchip
@@ -364,7 +364,7 @@ jobs:
       targetbuilddir: build.LibreELEC-RK3328.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   RK3399_arm:
@@ -380,7 +380,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3399_arm
       project: Rockchip
@@ -389,7 +389,7 @@ jobs:
       targetbuilddir: build.LibreELEC-RK3399.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
 
@@ -407,7 +407,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RPi2_arm
       project: RPi
@@ -416,7 +416,7 @@ jobs:
       targetbuilddir: build.LibreELEC-RPi2.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
   RPi4_arm:
@@ -432,7 +432,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RPi4_arm
       project: RPi
@@ -441,7 +441,7 @@ jobs:
       targetbuilddir: build.LibreELEC-RPi4.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
 
@@ -459,7 +459,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: 'make image'
+      buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Exynos_arm
       project: Samsung
@@ -468,6 +468,6 @@ jobs:
       targetbuilddir: build.LibreELEC-Exynos.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: '11.0'
+      version: "11.0"
       fileextns: img.gz,tar
     secrets: inherit
