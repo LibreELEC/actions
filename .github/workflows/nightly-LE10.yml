@@ -44,7 +44,6 @@ on:
     - cron: "30 7 * * *"
 
 env:
-  TZ: Australia/Melbourne
   # these ENV variables are not used yet - need to get this working with the with statements below
   clean_le: no_clean_le
   debug: debug

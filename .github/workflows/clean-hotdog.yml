@@ -10,9 +10,6 @@ on:
         options:
           - no_run_clean
           - run_clean
-env:
-  TZ: Australia/Melbourne
-
 jobs:
   clean_hotdog:
     runs-on: self-hosted

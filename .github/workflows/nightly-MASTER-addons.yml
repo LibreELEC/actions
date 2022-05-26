@@ -41,7 +41,6 @@ on:
     #       - 15 May 2022 - AMD Ryzen 5 3600 (no .ccache)
 
 env:
-  TZ: Australia/Melbourne
   # these ENV variables are not used yet - need to get this working with the with statements below
   clean_le: no_clean_le
   debug: debug

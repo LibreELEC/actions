@@ -75,7 +75,6 @@ on:
         type: string
 
 env:
-  TZ: Australia/Melbourne
   BASEDIR: /var/media/DATA/github-actions
   # Distro Target Variables
   PROJECT: ${{ inputs.project }}
