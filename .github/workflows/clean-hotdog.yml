@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Upload files
-        if: inputs.run_clean == 'run_clean'
+      - name: Run Clean
+        if: github.events.inputs.run_clean == 'run_clean'
         run: |
           ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/addons/*/*.zip"
