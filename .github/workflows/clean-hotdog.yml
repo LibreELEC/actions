@@ -21,13 +21,13 @@ jobs:
       - name: Run Clean
         if: github.event.inputs.run_clean == 'run_clean'
         run: |
-          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/addons/*/*.zip"
-          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rmdir ${{ secrets.UPLOAD_TARGET }}/addons/*"
-          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/*.ova"
-          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/*.tar"
-          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+          ssh -o 'StrictHostKeyChecking no' -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
             "rm ${{ secrets.UPLOAD_TARGET }}/*.img.gz"
