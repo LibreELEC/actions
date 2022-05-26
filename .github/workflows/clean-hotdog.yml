@@ -1,0 +1,25 @@
+name: clean-hotdog
+on:
+  workflow_dispatch:
+
+env:
+  TZ: Australia/Melbourne
+
+jobs:
+  clean_hotdog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Upload files
+        if: inputs.upload == 'upload'
+        run: |
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/addons/*/*.zip"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rmdir ${{ secrets.UPLOAD_TARGET }}/addons/*"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/*.ova"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/*.tar"
+          ssh -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+            "rm ${{ secrets.UPLOAD_TARGET }}/*.img.gz"
