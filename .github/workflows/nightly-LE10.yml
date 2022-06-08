@@ -26,17 +26,12 @@ on:
           - H3.arm
           - H5.arm
           - H6.arm
-          - AMLGX.arm
           - Generic.x86_64
-          - iMX6.arm
-          - iMX8.arm
-          - Dragonboard.arm
           - RK3288.arm
           - RK3328.arm
           - RK3399.arm
           - RPi2.arm
           - RPi4.arm
-          - Exynos.arm
   schedule:
     # The times are specified in UTC
     - cron: "30 7 * * *"
@@ -175,33 +170,6 @@ jobs:
       file_extension: img.gz,tar
     secrets: inherit
 
-  # Amlogic
-  AMLGX_arm-10_0:
-    name: "AMLGX.arm 10.0"
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
-      group: AMLGX_arm-10_0
-      project: Amlogic
-      arch: arm
-      device: AMLGX
-      targetbuilddir: build.LibreELEC-AMLGX.arm-10.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "10.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-
   # Generic
   Generic_x86_64-10_0:
     name: "Generic.x86_64 10.0"
@@ -229,85 +197,6 @@ jobs:
       ccachecachesize: 20G
       version: "10.0"
       file_extension: img.gz,ova,tar
-    secrets: inherit
-
-  # NXP
-  iMX6_arm-10_0:
-    name: "iMX6.arm 10.0"
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'iMX6.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
-      group: iMX6_arm-10_0
-      project: NXP
-      arch: arm
-      device: iMX6
-      targetbuilddir: build.LibreELEC-iMX6.arm-10.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "10.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-  iMX8_arm-10_0:
-    name: "iMX8.arm 10.0"
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'iMX8.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
-      group: iMX8_arm-10_0
-      project: NXP
-      arch: arm
-      device: iMX8
-      targetbuilddir: build.LibreELEC-iMX8.arm-10.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "10.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-
-  # Qualcomm
-  Dragonboard_arm-10_0:
-    name: "Dragonboard.arm 10.0"
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Dragonboard.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
-      group: Dragonboard_arm-10_0
-      project: Qualcomm
-      arch: arm
-      device: Dragonboard
-      targetbuilddir: build.LibreELEC-Dragonboard.arm-10.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "10.0"
-      file_extension: img.gz,tar
     secrets: inherit
 
   # Rockchip
@@ -433,33 +322,6 @@ jobs:
       arch: arm
       device: RPi4
       targetbuilddir: build.LibreELEC-RPi4.arm-10.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "10.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-
-  # Samsung
-  Exynos_arm-10_0:
-    name: "Exynos.arm 10.0"
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Exynos.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-10.0' }}
-      group: Exynos_arm-10_0
-      project: Samsung
-      arch: arm
-      device: Exynos
-      targetbuilddir: build.LibreELEC-Exynos.arm-10.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "10.0"
