@@ -39,9 +39,11 @@ jobs:
                   while read le_pattern; do
                     ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
                       "ls -t ${le_pattern}" < /dev/null | \
-                        awk 'NR>4' | \
+                        awk 'NR>2' | \
                           while read file; do
                             echo "Removing old image file ${file}" 
                             ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} rm ${file}
                           done
                   done
+          ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
+            "find ${{ secrets.NIGHTLY_UPLOAD_PATH }} -type f -size 0 -exec rm {} \;"
