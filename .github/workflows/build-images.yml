@@ -245,7 +245,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic_x86_64
+      group: Generic-legacy_x86_64
       project: Generic
       arch: x86_64
       device: Generic-legacy
