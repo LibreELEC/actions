@@ -91,6 +91,8 @@ jobs:
   create_addon:
     runs-on: [self-hosted, nightly]
 
+    timeout-minutes: 480
+
     steps:
       - uses: actions/checkout@v3
         with:
