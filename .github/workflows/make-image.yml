@@ -75,7 +75,7 @@ on:
         type: string
       file_extension:
         description: "file extensions to copy to webserver"
-        default: img.gz,ova,tar
+        default: img.gz,img.gz.sha256,ova,ova.sha256,tar,tar.sha256
         required: true
         type: string
 
@@ -245,5 +245,5 @@ jobs:
           cd LibreELEC.tv
           ls -lah target/
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} "mkdir -p ${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}"
-          scp -P ${{ secrets.NIGHTLY_HOST_PORT }} target/*.img.gz \
+          scp -P ${{ secrets.NIGHTLY_HOST_PORT }} target/*.{img.gz,img.gz.sha256} \
             ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/
