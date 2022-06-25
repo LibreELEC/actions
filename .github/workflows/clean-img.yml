@@ -42,7 +42,7 @@ jobs:
                         awk 'NR>2' | \
                           while read file; do
                             echo "Removing old image file ${file}" 
-                            ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} rm ${file}
+                            ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} rm ${file} ${file}.sha256
                           done
                   done
           ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
