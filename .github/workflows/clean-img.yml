@@ -15,6 +15,7 @@ on:
         options:
           - no_run_clean
           - run_clean
+          - force_remove_le11
 jobs:
   clean_img:
     runs-on: [self-hosted, scripts]
@@ -25,6 +26,13 @@ jobs:
           echo "github.event.inputs.run_clean = ${{ github.event.inputs.run_clean }}"
           echo "github.event.workflow_run.event = ${{ github.event.workflow_run.event }}"
 
+      - name: Force remove image files in the test.libreelec.tv 11.0 directory
+        if: |
+          (github.event.inputs.run_clean == 'force_remove_le11')
+        run: |
+          ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
+            "find ${{ secrets.NIGHTLY_UPLOAD_PATH }}/11.0 -type f rm {} \;"
+
       - name: Remove old image files in the test.libreelec.tv directory
         if: |
           (github.event.inputs.run_clean == 'run_clean') || 
@@ -32,7 +40,7 @@ jobs:
           (github.event.workflow_run.event == 'workflow_dispatch')
         run: |
           ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
-            "ls ${{ secrets.NIGHTLY_UPLOAD_PATH }}/*/*/LibreELEC-*.{img.gz,tar,ova}" < /dev/null | \
+            "ls ${{ secrets.NIGHTLY_UPLOAD_PATH }}/*/*/*/LibreELEC-*.{img.gz,tar,ova}" < /dev/null | \
             sed 's#nightly-[0-9]*-[a-z0-9]*#nightly-\*#' | \
               sort | \
                 uniq | \
