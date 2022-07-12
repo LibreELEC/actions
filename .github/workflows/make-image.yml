@@ -244,6 +244,15 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lah target/
-          ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} "mkdir -p ${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}"
-          scp -P ${{ secrets.NIGHTLY_HOST_PORT }} target/*.{img.gz,img.gz.sha256} \
-            ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/
+          if [ ${{env.PROJECT }} == "Generic" || ${{env.PROJECT }} == "RPi" ]; then
+            ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} "mkdir -p ${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${{ env.DEVICE }}"
+            scp -P ${{ secrets.NIGHTLY_HOST_PORT }} target/*.{img.gz,img.gz.sha256} \
+              ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${{ env.DEVICE }}/
+          else
+            for f in target/*.img.gz; do
+              uboot_device="$(echo "${f##*/}" | sed -rn 's/(LibreELEC-.*.(arm|aarch64|x86_64)-[0-9.]+-nightly-[0-9.]{8}-[[0-9a-f]{7})(-)(.*)(.img.gz*)/\4/p')"
+              ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} "mkdir -p ${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${uboot_device}"
+              scp -P ${{ secrets.NIGHTLY_HOST_PORT }} target/*.{img.gz,img.gz.sha256} \
+                ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${uboot_device}/
+            done
+          fi
