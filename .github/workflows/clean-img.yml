@@ -31,7 +31,7 @@ jobs:
           (github.event.inputs.run_clean == 'force_remove_le11')
         run: |
           ssh -p ${{ secrets.NIGHTLY_HOST_PORT }} ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
-            "find ${{ secrets.NIGHTLY_UPLOAD_PATH }}/11.0 -type f rm {} \;"
+            "find ${{ secrets.NIGHTLY_UPLOAD_PATH }}/11.0 -type f -exec rm {} \;"
 
       - name: Remove old image files in the test.libreelec.tv directory
         if: |
