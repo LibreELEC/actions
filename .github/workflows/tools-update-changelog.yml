@@ -1,5 +1,6 @@
 name: tools-update-changelog
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
 
