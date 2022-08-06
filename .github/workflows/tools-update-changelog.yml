@@ -5,7 +5,7 @@ on:
     - cron: "*/30 * * * *"
 
 jobs:
-  create_addon:
+  update_changelog:
     runs-on: [self-hosted, scripts]
 
     steps:
@@ -18,6 +18,13 @@ jobs:
       - name: Update changelog at test.libreelec.tv
         run: |
           echo "Updating changelog at test.libreelec.tv"
+          ls -lah
+          echo "---------------"
+          pwd
           cd "actions/"
+          ls -lah
+          echo "---------------"
+          tail ./scripts/update_changelog.sh
+          echo "---------------"
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
             "bash -s" < ./scripts/update_changelog.sh
