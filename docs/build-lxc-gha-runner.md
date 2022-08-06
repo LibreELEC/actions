@@ -24,6 +24,13 @@ apt update && apt upgrade -y
 
 ```shell
 apt install unattended-upgrades -y && dpkg-reconfigure -plow unattended-upgrades
+sed -i 's#//\t"${distro_id}:${distro_codename}-updates"#\t"${distro_id}:${distro_codename}-updates"#' /etc/apt/apt.conf.d/50unattended-upgrades
+cat > /etc/apt/apt.conf.d/20auto-upgrades <<EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
+EOF
 ```
 
 > disable password login at ssh
