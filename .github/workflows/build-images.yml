@@ -26,6 +26,7 @@ on:
           - H3.arm
           - H5.arm
           - H6.arm
+          - R40.arm
           - AMLGX.arm
           - Generic.x86_64
           - Generic-legacy.x86_64
@@ -169,6 +170,31 @@ jobs:
       arch: arm
       device: H6
       targetbuilddir: build.LibreELEC-H6.arm-11.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "11.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  R40_arm:
+    name: R40.arm
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'R40.arm' || github.event_name == 'schedule' )
+    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    with:
+      clean_le: clean_le
+      debug: debug
+      ephemeral: no_ephemeral
+      upload: no_upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      group: R40_arm
+      project: Allwinner
+      arch: arm
+      device: R40
+      targetbuilddir: build.LibreELEC-R40.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "11.0"
