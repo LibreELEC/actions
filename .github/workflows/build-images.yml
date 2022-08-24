@@ -184,10 +184,10 @@ jobs:
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'R40.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
-      clean_le: clean_le
+      clean_le: no_clean_le
       debug: debug
-      ephemeral: no_ephemeral
-      upload: no_upload
+      ephemeral: ephemeral
+      upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: R40_arm
