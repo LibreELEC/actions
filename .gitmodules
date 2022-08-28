@@ -1,0 +1,3 @@
+[submodule "scripts/remote/release-scripts"]
+	path = scripts/remote/release-scripts
+	url = https://github.com/LibreELEC/release-scripts.git
