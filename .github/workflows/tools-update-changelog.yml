@@ -13,6 +13,7 @@ jobs:
         with:
           fetch-depth: 1
           repository: "LibreELEC/actions"
+          submodules: "true"
           path: "actions"
 
       - name: Update changelog at LibreELEC nightly repository
@@ -20,3 +21,10 @@ jobs:
           cd "actions/"
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
             "bash -s" < ./scripts/update_changelog.sh
+
+      - name: Update releases.json at LibreELEC nightly repository
+        run: |
+          scp -P ${{ secrets.NIGHTLY_HOST_PORT }} actions/scripts/remote/release-scripts/releases.py \
+            ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:/tmp
+          ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
+            "time python3 /tmp/releases.py -i /var/www/test/ -u https://test.libreelec.tv -o /var/www/test"
