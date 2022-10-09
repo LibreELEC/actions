@@ -176,7 +176,7 @@ jobs:
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H6.arm' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'R40.arm' || github.event_name == 'schedule' )
     uses: LibreELEC/actions/.github/workflows/make-image.yml@main
     with:
       clean_le: no_clean_le
