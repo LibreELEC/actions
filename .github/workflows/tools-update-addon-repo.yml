@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  create_addon:
+  update_addon_repo:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
