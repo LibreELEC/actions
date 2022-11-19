@@ -2,6 +2,7 @@
 
 # abort at error
 set -e
+set -x
 
 # create changelog
 generate_changelog() {
