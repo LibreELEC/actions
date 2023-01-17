@@ -236,8 +236,13 @@ jobs:
         run: |
           cd LibreELEC.tv
           ls -lah target/
-          scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{ova,tar,img.gz,img.gz.sha256} \
-            ${{ secrets.RELEASES_USERNAME }}@${{ secrets.RELEASES_HOST }}:${{ secrets.RELEASES_UPLOAD_PATH }}
+          if [[ "${{ env.PROJECT }}" == "Generic" ]]; then
+            scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{ova,tar,img.gz,img.gz.sha256} \
+              ${{ secrets.RELEASES_USERNAME }}@${{ secrets.RELEASES_HOST }}:${{ secrets.RELEASES_UPLOAD_PATH }}
+          else
+            scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{tar,img.gz,img.gz.sha256} \
+              ${{ secrets.RELEASES_USERNAME }}@${{ secrets.RELEASES_HOST }}:${{ secrets.RELEASES_UPLOAD_PATH }}
+          fi
 
       - name: Upload nightly image
         if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload')
