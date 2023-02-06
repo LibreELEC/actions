@@ -83,7 +83,7 @@ create_addon_xml(){
 
 ###############
 
-# check if jenkins addons are avaible
+# check if jenkins addons are available
 if [ ! -d "$PATH_STAGING" ]; then
   slack "*WARNING*: no jenkins addons folder exist"
   exit 0;
@@ -120,20 +120,21 @@ for PROJECT in "$PATH_STAGING"/*.zip; do
     fi
 done
 
-# move -Generic-legacy- files to -Generic-
-for PROJECT in "$PATH_STAGING"/*-Generic-legacy-*.zip; do
-  mv ${PROJECT} ${PROJECT/Generic-legacy/Generic}
-  mv ${PROJECT}.sha256 ${PROJECT/Generic-legacy/Generic}.sha256
-done
-
 # rename and move files to files
 for PROJECT in "$PATH_STAGING"/*.zip; do
   PROJECT=$(basename "$PROJECT")
   var1=$(echo "$PROJECT" | cut -d- -f1 )                             # 9.0
   var2=$(echo "$PROJECT" | cut -d- -f2 )                             # Generic
-  var3=$(echo "$PROJECT" | cut -d- -f3 )                             # x86_64
-  var4=$(echo "$PROJECT" | cut -d- -f4- | rev | cut -d- -f2- | rev ) # tools.ffmpeg-tools
-  var5=$(echo "$PROJECT" | cut -d- -f4- )                            # tools.ffmpeg-tools-9.0.102.zip
+  var3=$(echo "$PROJECT" | cut -d- -f3 )                             # Could be either ARCH (x86_64) or legacy
+  if [[ $var2 == "Generic" && $var3 == "legacy" ]]; then
+    var2="Generic-legacy"
+    var3=$(echo "$PROJECT" | cut -d- -f4 )                             # x86_64
+    var4=$(echo "$PROJECT" | cut -d- -f5- | rev | cut -d- -f2- | rev ) # tools.ffmpeg-tools
+    var5=$(echo "$PROJECT" | cut -d- -f5- )                            # tools.ffmpeg-tools-9.0.102.zip
+  else
+    var4=$(echo "$PROJECT" | cut -d- -f4- | rev | cut -d- -f2- | rev ) # tools.ffmpeg-tools
+    var5=$(echo "$PROJECT" | cut -d- -f4- )                            # tools.ffmpeg-tools-9.0.102.zip
+  fi
 
 # addon folder structure
 # path-to-folder/Generic/x86_64/9.0/tools.ffmpeg-tools
