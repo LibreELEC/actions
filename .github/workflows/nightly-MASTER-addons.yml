@@ -144,7 +144,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: "scripts/create_addon chrome"
+      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
       gitref: master
       group: Generic-legacy_x86_64
       project: Generic
