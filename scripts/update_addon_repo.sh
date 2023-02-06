@@ -120,12 +120,6 @@ for PROJECT in "$PATH_STAGING"/*.zip; do
     fi
 done
 
-# move -Generic-legacy- files to -Generic-
-for PROJECT in "$PATH_STAGING"/*-Generic-legacy-*.zip; do
-  mv ${PROJECT} ${PROJECT/Generic-legacy/Generic}
-  mv ${PROJECT}.sha256 ${PROJECT/Generic-legacy/Generic}.sha256
-done
-
 # rename and move files to files
 for PROJECT in "$PATH_STAGING"/*.zip; do
   PROJECT=$(basename "$PROJECT")
