@@ -74,10 +74,10 @@ jobs:
       project: ARM
       arch: arm
       device: ARMv7
-      targetbuilddir: build.LibreELEC-ARMv7.arm-11.0-devel
+      targetbuilddir: build.LibreELEC-ARMv7.arm-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "11.0"
+      version: "12.0"
     secrets: inherit
 
   ARMv8_arm:
@@ -99,10 +99,10 @@ jobs:
       project: ARM
       arch: arm
       device: ARMv8
-      targetbuilddir: build.LibreELEC-ARMv8.arm-11.0-devel
+      targetbuilddir: build.LibreELEC-ARMv8.arm-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "11.0"
+      version: "12.0"
     secrets: inherit
 
   Generic_x86_64:
@@ -124,10 +124,10 @@ jobs:
       project: Generic
       arch: x86_64
       device: Generic
-      targetbuilddir: build.LibreELEC-Generic.x86_64-11.0-devel
+      targetbuilddir: build.LibreELEC-Generic.x86_64-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "11.0"
+      version: "12.0"
     secrets: inherit
 
   Generic-legacy_x86_64:
@@ -149,8 +149,8 @@ jobs:
       project: Generic
       arch: x86_64
       device: Generic-legacy
-      targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-11.0-devel
+      targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "11.0"
+      version: "12.0"
     secrets: inherit
