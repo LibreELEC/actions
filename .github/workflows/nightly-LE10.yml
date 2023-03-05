@@ -33,9 +33,6 @@ on:
           - RK3399.arm
           - RPi2.arm
           - RPi4.arm
-  schedule:
-    # The times are specified in UTC
-    - cron: "30 7 * * *"
 
 env:
   # these ENV variables are not used yet - need to get this working with the with statements below
