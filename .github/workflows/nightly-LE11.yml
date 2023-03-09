@@ -12,7 +12,7 @@ on:
           - official
       gitref_to_build:
         description: "gitref tag or hash to build"
-        default: master
+        default: libreelec-11.0
         required: true
         type: string
       target:
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: libreelec-11.0
           fetch-depth: 2
           repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
@@ -71,8 +71,8 @@ jobs:
           test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
 
   # Allwinner
-  A64_arm:
-    name: A64.arm
+  A64_arm-11_0:
+    name: "A64.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -85,8 +85,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: A64_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: A64_arm-11_0
       project: Allwinner
       arch: arm
       device: A64
@@ -96,8 +96,8 @@ jobs:
       version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  H3_arm:
-    name: H3.arm
+  H3_arm-11_0:
+    name: "H3.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -110,8 +110,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H3_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: H3_arm-11_0
       project: Allwinner
       arch: arm
       device: H3
@@ -121,8 +121,8 @@ jobs:
       version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  H5_arm:
-    name: H5.arm
+  H5_arm-11_0:
+    name: "H5.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -135,8 +135,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H5_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: H5_arm-11_0
       project: Allwinner
       arch: arm
       device: H5
@@ -146,8 +146,8 @@ jobs:
       version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  H6_arm:
-    name: H6.arm
+  H6_arm-11_0:
+    name: "H6.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -160,8 +160,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H6_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: H6_arm-11_0
       project: Allwinner
       arch: arm
       device: H6
@@ -172,7 +172,7 @@ jobs:
       file_extension: img.gz,tar
     secrets: inherit
   R40_arm:
-    name: R40.arm
+    name: "R40.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -185,7 +185,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
       group: R40_arm
       project: Allwinner
       arch: arm
@@ -198,8 +198,8 @@ jobs:
     secrets: inherit
 
   # Amlogic
-  AMLGX_arm:
-    name: AMLGX.arm
+  AMLGX_arm-11_0:
+    name: "AMLGX.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -212,8 +212,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: AMLGX_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: AMLGX_arm-11_0
       project: Amlogic
       arch: arm
       device: AMLGX
@@ -225,8 +225,8 @@ jobs:
     secrets: inherit
 
   # Generic
-  Generic_x86_64:
-    name: Generic.x86_64
+  Generic_x86_64-11_0:
+    name: "Generic.x86_64 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -239,8 +239,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic_x86_64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: Generic_x86_64-11_0
       project: Generic
       arch: x86_64
       device: Generic
@@ -252,8 +252,8 @@ jobs:
     secrets: inherit
 
   # Generic-legacy
-  Generic-legacy_x86_64:
-    name: Generic-legacy.x86_64
+  Generic-legacy_x86_64-11_0:
+    name: "Generic-legacy.x86_64 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -266,8 +266,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic-legacy_x86_64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: Generic-legacy_x86_64-11_0
       project: Generic
       arch: x86_64
       device: Generic-legacy
@@ -279,8 +279,8 @@ jobs:
     secrets: inherit
 
   # Rockchip
-  RK3288_arm:
-    name: RK3288.arm
+  RK3288_arm-11_0:
+    name: "RK3288.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -293,8 +293,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3288_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RK3288_arm-11_0
       project: Rockchip
       arch: arm
       device: RK3288
@@ -304,8 +304,8 @@ jobs:
       version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  RK3328_arm:
-    name: RK3328.arm
+  RK3328_arm-11_0:
+    name: "RK3328.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -318,8 +318,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3328_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RK3328_arm-11_0
       project: Rockchip
       arch: arm
       device: RK3328
@@ -329,8 +329,8 @@ jobs:
       version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  RK3399_arm:
-    name: RK3399.arm
+  RK3399_arm-11_0:
+    name: "RK3399.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -343,8 +343,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3399_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RK3399_arm-11_0
       project: Rockchip
       arch: arm
       device: RK3399
@@ -356,8 +356,8 @@ jobs:
     secrets: inherit
 
   # RPi
-  RPi2_arm:
-    name: RPi2.arm
+  RPi2_arm-11_0:
+    name: "RPi2.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -370,8 +370,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi2_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RPi2_arm-11_0
       project: RPi
       arch: arm
       device: RPi2
@@ -381,8 +381,8 @@ jobs:
       version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  RPi4_arm:
-    name: RPi4.arm
+  RPi4_arm-11_0:
+    name: "RPi4.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -395,8 +395,8 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi4_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RPi4_arm-11_0
       project: RPi
       arch: arm
       device: RPi4
