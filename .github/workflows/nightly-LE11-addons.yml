@@ -118,7 +118,7 @@ jobs:
       debug: debug
       ephemeral: ephemeral
       upload: upload
-      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }} -chrome"
+      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }} -chrome -tigervnc"
       gitref: libreelec-11.0
       group: Generic_x86_64
       project: Generic
