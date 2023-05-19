@@ -5,7 +5,7 @@ on:
     - cron: "0 8 * * *"
 
 jobs:
-  update_changelog:
+  cleanup_images:
     runs-on: [self-hosted, scripts]
 
     steps:
@@ -23,8 +23,8 @@ jobs:
 
           # LE10
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
-            "python3 /tmp/prune-archive.py -i /var/www/test/10.0/ -k 100"
+            "python3 /tmp/prune-archive.py -i /var/www/test/10.0/ -k 100 -d"
 
           # LE11
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
-            "python3 /tmp/prune-archive.py -i /var/www/test/11.0/ -k 200"
+            "python3 /tmp/prune-archive.py -i /var/www/test/11.0/ -k 200 -d"
