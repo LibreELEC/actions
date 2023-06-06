@@ -106,7 +106,7 @@ jobs:
           cd LibreELEC.tv
           sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
           # workaround until buildsystem does not require local cc
-          sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
+          #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
           echo "LE_ADDON_VERSION=$(grep -oP -m 1 '(?<=ADDON_VERSION=\").*(?=\")' distributions/LibreELEC/version)" >> $GITHUB_ENV
 
