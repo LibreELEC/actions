@@ -91,7 +91,7 @@ jobs:
   create_addon:
     runs-on: [self-hosted, nightly]
 
-    timeout-minutes: 480
+    timeout-minutes: 720
 
     steps:
       - uses: actions/checkout@v3
@@ -104,16 +104,16 @@ jobs:
       - name: Customise the checked out git repository
         run: |
           cd LibreELEC.tv
-          sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/focal/Dockerfile
+          sed -i -e "s/RUN adduser/RUN adduser --uid $(id -u)/" tools/docker/jammy/Dockerfile
           # workaround until buildsystem does not require local cc
-          #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/focal/Dockerfile
+          #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/jammy/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
           echo "LE_ADDON_VERSION=$(grep -oP -m 1 '(?<=ADDON_VERSION=\").*(?=\")' distributions/LibreELEC/version)" >> $GITHUB_ENV
 
-      - name: Create docker image for build - tools/docker/focal
+      - name: Create docker image for build - tools/docker/jammy
         run: |
           cd LibreELEC.tv
-          docker build --pull -t gh-${{ github.run_id }} tools/docker/focal
+          docker build --pull -t gh-${{ github.run_id }} tools/docker/jammy
 
       - name: Prepare the LibreELEC.tv directory - setup /sources
         run: |
