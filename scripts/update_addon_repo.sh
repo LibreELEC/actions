@@ -46,13 +46,13 @@ rsync_log () {
 
   # list Add-ons
   while IFS="/" read -r project platform addon filename; do
-    if [[ $project_rsync != $project ]]; then
-      printf ' %s %s %s ' "\n*$project" "$platform" "($REPO_VERSION) *\n"   # some crap due the slack function escape text
-      printf '%s' "${filename%.*}\n"
+    if [[ $project_rsync != $project$platform ]]; then
+      printf '%s %s %s' "\n*$project" "$platform" "($REPO_VERSION) *\n"   # some crap due the slack function escape text
+      printf ' %s' "${filename%.*}\n"
     else
-       printf '%s' "${filename%.*}\n"
+      printf ' %s' "${filename%.*}\n"
     fi
-    project_rsync=$project
+    project_rsync=$project$platform
   done < "$PATH_LOG"
 }
 
