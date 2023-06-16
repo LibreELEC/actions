@@ -32,7 +32,7 @@ env:
 jobs:
   check_date:
     runs-on: ubuntu-latest
-    name: Checkout LibreELEC.tv/LibreELEC.tv and check latest commit
+    name: Checkout LibreELEC/LibreELEC.tv and check latest commit
     outputs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
@@ -40,9 +40,9 @@ jobs:
         with:
           ref: libreelec-11.0
           fetch-depth: 2
-          repository: "LibreELEC/LibreELEC.tv"
+          repository: "${{ github.actor }}/LibreELEC.tv"
           path: "LibreELEC.tv"
-      - name: print latest_commit of checked out LibreELEC.tv/LibreELEC.tv
+      - name: print latest_commit of checked out LibreELEC/LibreELEC.tv
         run: |
           cd LibreELEC.tv
           echo $(git rev-parse HEAD)
@@ -62,7 +62,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv7.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
+    uses: ./.github/workflows/create-addon.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -87,7 +87,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
+    uses: ./.github/workflows/create-addon.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -112,7 +112,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
+    uses: ./.github/workflows/create-addon.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -137,7 +137,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic-legacy.x86_64' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/create-addon.yml@main
+    uses: ./.github/workflows/create-addon.yml
     with:
       clean_le: no_clean_le
       debug: debug
