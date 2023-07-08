@@ -218,6 +218,7 @@ jobs:
         with:
           name: ${{ inputs.group }}-failed
           path: LibreELEC.tv/${{ env.TARGETBUILDDIR }}/artifact/
+          if-no-files-found: ignore
 
       - name: Upload failed artifacts - no_ephemeral
         if: inputs.ephemeral == 'no_ephemeral'
@@ -225,6 +226,7 @@ jobs:
         with:
           name: ${{ inputs.group }}-failed
           path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
+          if-no-files-found: ignore
 
       - name: Clean up - remove docker image tag
         run: |
