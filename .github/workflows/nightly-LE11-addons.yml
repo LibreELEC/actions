@@ -52,7 +52,7 @@ jobs:
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd LibreELEC.tv
-          test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "::set-output name=should_run::false"
+          test -z "$(git rev-list --after='24 hours' $(git rev-parse HEAD))" && echo "should_run=false" >> $GITHUB_OUTPUT
 
   # Addons
   ARMv7_arm-11_0:
