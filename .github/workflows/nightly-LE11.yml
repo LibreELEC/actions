@@ -56,7 +56,7 @@ jobs:
         with:
           ref: libreelec-11.0
           fetch-depth: 2
-          repository: "${{ github.actor }}/LibreELEC.tv"
+          repository: "LibreELEC/LibreELEC.tv"
           path: "LibreELEC.tv"
       - name: print latest_commit of checked out LibreELEC/LibreELEC.tv
         run: |
