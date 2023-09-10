@@ -44,7 +44,7 @@ env:
 jobs:
   check_date:
     runs-on: ubuntu-latest
-    name: Checkout LibreELEC.tv/LibreELEC.tv and check latest commit
+    name: Checkout LibreELEC/LibreELEC.tv and check latest commit
     outputs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
@@ -52,9 +52,9 @@ jobs:
         with:
           ref: libreelec-10.0
           fetch-depth: 2
-          repository: "LibreELEC/LibreELEC.tv"
+          repository: "${{ github.actor }}/LibreELEC.tv"
           path: "LibreELEC.tv"
-      - name: print latest_commit of checked out LibreELEC.tv/LibreELEC.tv
+      - name: print latest_commit of checked out LibreELEC/LibreELEC.tv
         run: |
           cd LibreELEC.tv
           echo $(git rev-parse HEAD)
@@ -74,7 +74,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'A64.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -99,7 +99,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H3.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -124,7 +124,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H5.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -149,7 +149,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H6.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -174,7 +174,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'R40.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -201,7 +201,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -230,7 +230,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3288.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -255,7 +255,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3328.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -280,7 +280,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3399.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -307,7 +307,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi2.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -332,7 +332,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi4.arm' || github.event_name == 'schedule' )
-    uses: LibreELEC/actions/.github/workflows/make-image.yml@main
+    uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
       debug: debug

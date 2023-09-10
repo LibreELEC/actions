@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.LIBREELECBOT_GITHUB_TOKEN }}
-          repository: LibreELEC/LibreELEC.tv
+          repository: ${{ github.actor }}/LibreELEC.tv
 
       - name: Get sha and canonical download url for latest version of certdata.txt file
         id: latest_certdata
