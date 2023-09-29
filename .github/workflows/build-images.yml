@@ -38,6 +38,7 @@ on:
           - RK3399.arm
           - RPi2.arm
           - RPi4.aarch64
+          - RPi5.aarch64
           - Exynos.arm
   schedule:
     # The times are specified in UTC
@@ -490,7 +491,32 @@ jobs:
       version: "12.0"
       file_extension: img.gz,tar
     secrets: inherit
-
+  RPi5_aarch64:
+    name: RPi5.aarch64
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi5.aarch64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/make-image.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      group: RPi5_aarch64
+      project: RPi
+      arch: aarch64
+      device: RPi5
+      targetbuilddir: build.LibreELEC-RPi5.aarch64-12.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "12.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+    
   # Samsung
   Exynos_arm:
     name: Exynos.arm
