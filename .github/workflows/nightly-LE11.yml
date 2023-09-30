@@ -35,6 +35,7 @@ on:
           - RK3399.arm
           - RPi2.arm
           - RPi4.arm
+          - RPi5.arm
   schedule:
     # The times are specified in UTC
     - cron: "15 14 * * *"
@@ -402,6 +403,31 @@ jobs:
       arch: arm
       device: RPi4
       targetbuilddir: build.LibreELEC-RPi4.arm-11.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "11.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  RPi5_arm-11_0:
+    name: "RPi5.arm 11.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi5.arm' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/make-image.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RPi5_arm-11_0
+      project: RPi
+      arch: arm
+      device: RPi5
+      targetbuilddir: build.LibreELEC-RPi5.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "11.0"
