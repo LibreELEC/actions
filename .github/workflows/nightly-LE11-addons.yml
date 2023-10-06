@@ -71,7 +71,7 @@ jobs:
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
       gitref: libreelec-11.0
-      group: ARMv7_arm
+      group: ARMv7_arm-11_0
       project: ARM
       arch: arm
       device: ARMv7
@@ -96,7 +96,7 @@ jobs:
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
       gitref: libreelec-11.0
-      group: ARMv8_arm
+      group: ARMv8_arm-11_0
       project: ARM
       arch: arm
       device: ARMv8
@@ -121,7 +121,7 @@ jobs:
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }} -chrome -tigervnc"
       gitref: libreelec-11.0
-      group: Generic_x86_64
+      group: Generic_x86_64-11_0
       project: Generic
       arch: x86_64
       device: Generic
@@ -146,7 +146,7 @@ jobs:
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
       gitref: libreelec-11.0
-      group: Generic-legacy_x86_64
+      group: Generic-legacy_x86_64-11_0
       project: Generic
       arch: x86_64
       device: Generic-legacy
