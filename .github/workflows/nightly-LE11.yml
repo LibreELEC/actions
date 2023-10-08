@@ -187,7 +187,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
-      group: R40_arm
+      group: R40_arm-11_0
       project: Allwinner
       arch: arm
       device: R40
