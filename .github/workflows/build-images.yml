@@ -32,7 +32,7 @@ on:
           - Generic-legacy.x86_64
           - iMX6.arm
           - iMX8.aarch64
-          - Dragonboard.arm
+          - Dragonboard.aarch64
           - RK3288.arm
           - RK3328.arm
           - RK3399.arm
@@ -336,13 +336,13 @@ jobs:
     secrets: inherit
 
   # Qualcomm
-  Dragonboard_arm:
-    name: Dragonboard.arm
+  Dragonboard_aarch64:
+    name: Dragonboard.aarch64
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Dragonboard.arm' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Dragonboard.aarch64' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -351,11 +351,11 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Dragonboard_arm
+      group: Dragonboard_aarch64
       project: Qualcomm
       arch: arm
       device: Dragonboard
-      targetbuilddir: build.LibreELEC-Dragonboard.arm-12.0-devel
+      targetbuilddir: build.LibreELEC-Dragonboard.aarch64-12.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "12.0"
