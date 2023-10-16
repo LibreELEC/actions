@@ -27,7 +27,7 @@ on:
           - H5.aarch64
           - H6.aarch64
           - R40.arm
-          - AMLGX.arm
+          - AMLGX.aarch64
           - Generic.x86_64
           - Generic-legacy.x86_64
           - iMX6.arm
@@ -204,13 +204,13 @@ jobs:
     secrets: inherit
 
   # Amlogic
-  AMLGX_arm:
-    name: AMLGX.arm
+  AMLGX_aarch64:
+    name: AMLGX.aarch64
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.arm' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.aarch64' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -219,11 +219,11 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: AMLGX_arm
+      group: AMLGX_aarch64
       project: Amlogic
       arch: arm
       device: AMLGX
-      targetbuilddir: build.LibreELEC-AMLGX.arm-12.0-devel
+      targetbuilddir: build.LibreELEC-AMLGX.aarch64-12.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "12.0"
