@@ -16,7 +16,6 @@ on:
           - all
           - ARMv7.arm
           - ARMv8.aarch64
-          - ARMv8.arm
           - Generic.x86_64
           - Generic-legacy.x86_64
   schedule:
@@ -107,31 +106,6 @@ jobs:
       version: "12.0"
     secrets: inherit
     
-  ARMv8_arm:
-    name: ARMv8.arm
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: master
-      group: ARMv8_arm
-      project: ARM
-      arch: arm
-      device: ARMv8
-      targetbuilddir: build.LibreELEC-ARMv8.arm-12.0-devel
-      buildperiodic: nightly
-      ccachecachesize: 20G
-      version: "12.0"
-    secrets: inherit
-
   Generic_x86_64:
     name: Generic.x86_64
     # Only run if there has been a commit in the last 24 hours
