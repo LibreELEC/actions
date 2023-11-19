@@ -15,7 +15,7 @@ docker image ls
 docker container ls
 
 # cleanup
-docker image ls -q | xargs docker image rm
+docker image ls -q | xargs docker image rm -f
 
 # final report
 docker image ls
