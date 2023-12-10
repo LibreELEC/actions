@@ -221,7 +221,7 @@ jobs:
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: AMLGX_aarch64
       project: Amlogic
-      arch: arm
+      arch: aarch64
       device: AMLGX
       targetbuilddir: build.LibreELEC-AMLGX.aarch64-12.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
@@ -354,7 +354,7 @@ jobs:
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: Dragonboard_aarch64
       project: Qualcomm
-      arch: arm
+      arch: aarch64
       device: Dragonboard
       targetbuilddir: build.LibreELEC-Dragonboard.aarch64-12.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
@@ -406,7 +406,7 @@ jobs:
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3328_aarch64
       project: Rockchip
-      arch: arm
+      arch: aarch64
       device: RK3328
       targetbuilddir: build.LibreELEC-RK3328.aarch64-12.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
@@ -431,7 +431,7 @@ jobs:
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
       group: RK3399_aarch64
       project: Rockchip
-      arch: arm
+      arch: aarch64
       device: RK3399
       targetbuilddir: build.LibreELEC-RK3399.aarch64-12.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
@@ -516,7 +516,7 @@ jobs:
       version: "12.0"
       file_extension: img.gz,tar
     secrets: inherit
-    
+
   # Samsung
   Exynos_arm:
     name: Exynos.arm
