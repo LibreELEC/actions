@@ -120,7 +120,7 @@ jobs:
           sed -i -e 's/LIBREELEC_VERSION="devel"/LIBREELEC_VERSION="${{ inputs.gitref }}"/' distributions/LibreELEC/version
           echo "OFFICIAL=\"yes\"" >> distributions/LibreELEC/version
           echo "building official ${{ inputs.gitref }}"
-          echo "NOOBS=\"noobs\"" >> $GITHUB_ENV
+          if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> $GITHUB_ENV; fi
 
       - name: Create docker image for build - tools/docker/jammy
         run: |
