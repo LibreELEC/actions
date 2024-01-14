@@ -239,10 +239,10 @@ jobs:
           cd LibreELEC.tv
           ls -lah target/
           if [[ "${{ env.PROJECT }}" == "Generic" ]]; then
-            scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{ova,tar,img.gz,img.gz.sha256} \
+            scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{ova,ova.sha256,tar,tar.sha256,img.gz,img.gz.sha256} \
               ${{ secrets.RELEASES_USERNAME }}@${{ secrets.RELEASES_HOST }}:${{ secrets.RELEASES_UPLOAD_PATH }}
           else
-            scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{tar,img.gz,img.gz.sha256} \
+            scp -P ${{ secrets.RELEASES_HOST_PORT }} target/*.{tar,tar.sha256,img.gz,img.gz.sha256} \
               ${{ secrets.RELEASES_USERNAME }}@${{ secrets.RELEASES_HOST }}:${{ secrets.RELEASES_UPLOAD_PATH }}
           fi
 
