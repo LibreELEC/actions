@@ -36,9 +36,6 @@ on:
           - RPi2.arm
           - RPi4.arm
           - RPi5.arm
-  schedule:
-    # The times are specified in UTC
-    - cron: "15 14 * * *"
 
 env:
   clean_le: no_clean_le
