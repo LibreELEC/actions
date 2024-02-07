@@ -4,7 +4,7 @@ on:
     inputs:
       le_periodic_version:
         description: "Version and Perodic builds"
-        default: devel
+        default: nightly
         required: true
         type: choice
         options:
