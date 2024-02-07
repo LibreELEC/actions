@@ -1,4 +1,4 @@
-name: nightly-LE12
+name: build-LE11
 on:
   workflow_dispatch:
     inputs:
@@ -12,7 +12,7 @@ on:
           - official
       gitref_to_build:
         description: "gitref tag or hash to build"
-        default: master
+        default: libreelec-11.0
         required: true
         type: string
       target:
@@ -22,27 +22,20 @@ on:
         type: choice
         options:
           - all
-          - A64.aarch64
+          - A64.arm
           - H3.arm
-          - H5.aarch64
-          - H6.aarch64
+          - H5.arm
+          - H6.arm
           - R40.arm
-          - AMLGX.aarch64
+          - AMLGX.arm
           - Generic.x86_64
           - Generic-legacy.x86_64
-          - iMX6.arm
-          - iMX8.aarch64
-          - Dragonboard.aarch64
           - RK3288.arm
-          - RK3328.aarch64
-          - RK3399.aarch64
+          - RK3328.arm
+          - RK3399.arm
           - RPi2.arm
-          - RPi4.aarch64
-          - RPi5.aarch64
-          - Exynos.arm
-  schedule:
-    # The times are specified in UTC
-    - cron: "15 14 * * *"
+          - RPi4.arm
+          - RPi5.arm
 
 env:
   clean_le: no_clean_le
@@ -59,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master
+          ref: libreelec-11.0
           fetch-depth: 2
           repository: "${{ github.repository_owner }}/LibreELEC.tv"
           path: "LibreELEC.tv"
@@ -77,13 +70,13 @@ jobs:
           exit 0
 
   # Allwinner
-  A64_aarch64:
-    name: A64.aarch64
+  A64_arm-11_0:
+    name: "A64.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'A64.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'A64.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -91,19 +84,19 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: A64_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: A64_arm-11_0
       project: Allwinner
-      arch: aarch64
+      arch: arm
       device: A64
-      targetbuilddir: build.LibreELEC-A64.aarch64-12.0-devel
+      targetbuilddir: build.LibreELEC-A64.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  H3_arm:
-    name: H3.arm
+  H3_arm-11_0:
+    name: "H3.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -116,24 +109,24 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H3_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: H3_arm-11_0
       project: Allwinner
       arch: arm
       device: H3
-      targetbuilddir: build.LibreELEC-H3.arm-12.0-devel
+      targetbuilddir: build.LibreELEC-H3.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  H5_aarch64:
-    name: H5.aarch64
+  H5_arm-11_0:
+    name: "H5.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H5.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H5.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -141,24 +134,24 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H5_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: H5_arm-11_0
       project: Allwinner
-      arch: aarch64
+      arch: arm
       device: H5
-      targetbuilddir: build.LibreELEC-H5.aarch64-12.0-devel
+      targetbuilddir: build.LibreELEC-H5.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  H6_aarch64:
-    name: H6.aarch64
+  H6_arm-11_0:
+    name: "H6.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H6.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H6.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -166,19 +159,19 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H6_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: H6_arm-11_0
       project: Allwinner
-      arch: aarch64
+      arch: arm
       device: H6
-      targetbuilddir: build.LibreELEC-H6.aarch64-12.0-devel
+      targetbuilddir: build.LibreELEC-H6.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
   R40_arm:
-    name: R40.arm
+    name: "R40.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -191,26 +184,26 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: R40_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: R40_arm-11_0
       project: Allwinner
       arch: arm
       device: R40
-      targetbuilddir: build.LibreELEC-R40.arm-12.0-devel
+      targetbuilddir: build.LibreELEC-R40.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
 
   # Amlogic
-  AMLGX_aarch64:
-    name: AMLGX.aarch64
+  AMLGX_arm-11_0:
+    name: "AMLGX.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -218,21 +211,21 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: AMLGX_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: AMLGX_arm-11_0
       project: Amlogic
-      arch: aarch64
+      arch: arm
       device: AMLGX
-      targetbuilddir: build.LibreELEC-AMLGX.aarch64-12.0-devel
+      targetbuilddir: build.LibreELEC-AMLGX.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
 
   # Generic
-  Generic_x86_64:
-    name: Generic.x86_64
+  Generic_x86_64-11_0:
+    name: "Generic.x86_64 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -245,21 +238,21 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic_x86_64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: Generic_x86_64-11_0
       project: Generic
       arch: x86_64
       device: Generic
-      targetbuilddir: build.LibreELEC-Generic.x86_64-12.0-devel
+      targetbuilddir: build.LibreELEC-Generic.x86_64-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 20G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,ova,tar
     secrets: inherit
 
   # Generic-legacy
-  Generic-legacy_x86_64:
-    name: Generic-legacy.x86_64
+  Generic-legacy_x86_64-11_0:
+    name: "Generic-legacy.x86_64 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -272,100 +265,21 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic-legacy_x86_64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: Generic-legacy_x86_64-11_0
       project: Generic
       arch: x86_64
       device: Generic-legacy
-      targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-12.0-devel
+      targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 20G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,ova,tar
     secrets: inherit
 
-  # NXP
-  iMX6_arm:
-    name: iMX6.arm
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'iMX6.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: iMX6_arm
-      project: NXP
-      arch: arm
-      device: iMX6
-      targetbuilddir: build.LibreELEC-iMX6.arm-12.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "12.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-  iMX8_aarch64:
-    name: iMX8.aarch64
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'iMX8.aarch64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: iMX8_aarch64
-      project: NXP
-      arch: aarch64
-      device: iMX8
-      targetbuilddir: build.LibreELEC-iMX8.aarch64-12.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "12.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-
-  # Qualcomm
-  Dragonboard_aarch64:
-    name: Dragonboard.aarch64
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Dragonboard.aarch64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Dragonboard_aarch64
-      project: Qualcomm
-      arch: aarch64
-      device: Dragonboard
-      targetbuilddir: build.LibreELEC-Dragonboard.aarch64-12.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "12.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-
   # Rockchip
-  RK3288_arm:
-    name: RK3288.arm
+  RK3288_arm-11_0:
+    name: "RK3288.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -378,24 +292,24 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3288_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RK3288_arm-11_0
       project: Rockchip
       arch: arm
       device: RK3288
-      targetbuilddir: build.LibreELEC-RK3288.arm-12.0-devel
+      targetbuilddir: build.LibreELEC-RK3288.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  RK3328_aarch64:
-    name: RK3328.aarch64
+  RK3328_arm-11_0:
+    name: "RK3328.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3328.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3328.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -403,24 +317,24 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3328_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RK3328_arm-11_0
       project: Rockchip
-      arch: aarch64
+      arch: arm
       device: RK3328
-      targetbuilddir: build.LibreELEC-RK3328.aarch64-12.0-devel
+      targetbuilddir: build.LibreELEC-RK3328.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  RK3399_aarch64:
-    name: RK3399.aarch64
+  RK3399_arm-11_0:
+    name: "RK3399.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3399.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3399.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -428,21 +342,21 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3399_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RK3399_arm-11_0
       project: Rockchip
-      arch: aarch64
+      arch: arm
       device: RK3399
-      targetbuilddir: build.LibreELEC-RK3399.aarch64-12.0-devel
+      targetbuilddir: build.LibreELEC-RK3399.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
 
   # RPi
-  RPi2_arm:
-    name: RPi2.arm
+  RPi2_arm-11_0:
+    name: "RPi2.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -455,24 +369,24 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi2_arm
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RPi2_arm-11_0
       project: RPi
       arch: arm
       device: RPi2
-      targetbuilddir: build.LibreELEC-RPi2.arm-12.0-devel
+      targetbuilddir: build.LibreELEC-RPi2.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit
-  RPi4_aarch64:
-    name: RPi4.aarch64
+  RPi4_arm-11_0:
+    name: "RPi4.arm 11.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi4.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi4.arm' || github.event_name == 'schedule' )
     uses: ./.github/workflows/make-image.yml
     with:
       clean_le: no_clean_le
@@ -480,66 +394,39 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi4_aarch64
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RPi4_arm-11_0
       project: RPi
-      arch: aarch64
-      device: RPi4
-      targetbuilddir: build.LibreELEC-RPi4.aarch64-12.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "12.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-  RPi5_aarch64:
-    name: RPi5.aarch64
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi5.aarch64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi5_aarch64
-      project: RPi
-      arch: aarch64
-      device: RPi5
-      targetbuilddir: build.LibreELEC-RPi5.aarch64-12.0-devel
-      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
-      ccachecachesize: 10G
-      version: "12.0"
-      file_extension: img.gz,tar
-    secrets: inherit
-
-  # Samsung
-  Exynos_arm:
-    name: Exynos.arm
-    # Only run if there has been a commit in the last 24 hours
-    needs: check_date
-    if: |
-      ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Exynos.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
-    with:
-      clean_le: no_clean_le
-      debug: debug
-      ephemeral: ephemeral
-      upload: upload
-      buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Exynos_arm
-      project: Samsung
       arch: arm
-      device: Exynos
-      targetbuilddir: build.LibreELEC-Exynos.arm-12.0-devel
+      device: RPi4
+      targetbuilddir: build.LibreELEC-RPi4.arm-11.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
-      version: "12.0"
+      version: "11.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  RPi5_arm-11_0:
+    name: "RPi5.arm 11.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi5.arm' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/make-image.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-11.0' }}
+      group: RPi5_arm-11_0
+      project: RPi
+      arch: arm
+      device: RPi5
+      targetbuilddir: build.LibreELEC-RPi5.arm-11.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "11.0"
       file_extension: img.gz,tar
     secrets: inherit

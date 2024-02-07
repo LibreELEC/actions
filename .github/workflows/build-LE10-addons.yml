@@ -1,4 +1,4 @@
-name: nightly-LE10-addons
+name: build-LE10-addons
 on:
   workflow_dispatch:
     inputs:
