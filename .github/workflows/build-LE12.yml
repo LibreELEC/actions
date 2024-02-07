@@ -92,7 +92,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: A64_aarch64
+      group: A64_aarch64-12_0
       project: Allwinner
       arch: aarch64
       device: A64
@@ -117,7 +117,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H3_arm
+      group: H3_arm-12_0
       project: Allwinner
       arch: arm
       device: H3
@@ -142,7 +142,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H5_aarch64
+      group: H5_aarch64-12_0
       project: Allwinner
       arch: aarch64
       device: H5
@@ -167,7 +167,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: H6_aarch64
+      group: H6_aarch64-12_0
       project: Allwinner
       arch: aarch64
       device: H6
@@ -192,7 +192,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: R40_arm
+      group: R40_arm-12_0
       project: Allwinner
       arch: arm
       device: R40
@@ -219,7 +219,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: AMLGX_aarch64
+      group: AMLGX_aarch64-12_0
       project: Amlogic
       arch: aarch64
       device: AMLGX
@@ -246,7 +246,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic_x86_64
+      group: Generic_x86_64-12_0
       project: Generic
       arch: x86_64
       device: Generic
@@ -273,7 +273,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Generic-legacy_x86_64
+      group: Generic-legacy_x86_64-12_0
       project: Generic
       arch: x86_64
       device: Generic-legacy
@@ -300,7 +300,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: iMX6_arm
+      group: iMX6_arm-12_0
       project: NXP
       arch: arm
       device: iMX6
@@ -325,7 +325,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: iMX8_aarch64
+      group: iMX8_aarch64-12_0
       project: NXP
       arch: aarch64
       device: iMX8
@@ -352,7 +352,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Dragonboard_aarch64
+      group: Dragonboard_aarch64-12_0
       project: Qualcomm
       arch: aarch64
       device: Dragonboard
@@ -379,7 +379,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3288_arm
+      group: RK3288_arm-12_0
       project: Rockchip
       arch: arm
       device: RK3288
@@ -404,7 +404,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3328_aarch64
+      group: RK3328_aarch64-12_0
       project: Rockchip
       arch: aarch64
       device: RK3328
@@ -429,7 +429,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RK3399_aarch64
+      group: RK3399_aarch64-12_0
       project: Rockchip
       arch: aarch64
       device: RK3399
@@ -456,7 +456,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi2_arm
+      group: RPi2_arm-12_0
       project: RPi
       arch: arm
       device: RPi2
@@ -481,7 +481,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi4_aarch64
+      group: RPi4_aarch64-12_0
       project: RPi
       arch: aarch64
       device: RPi4
@@ -506,7 +506,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: RPi5_aarch64
+      group: RPi5_aarch64-12_0
       project: RPi
       arch: aarch64
       device: RPi5
@@ -533,7 +533,7 @@ jobs:
       upload: upload
       buildcmd: "make image"
       gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
-      group: Exynos_arm
+      group: Exynos_arm-12_0
       project: Samsung
       arch: arm
       device: Exynos
