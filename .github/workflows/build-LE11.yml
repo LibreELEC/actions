@@ -77,7 +77,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'A64.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -102,7 +102,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H3.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -127,7 +127,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H5.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -152,7 +152,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H6.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -177,7 +177,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'R40.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -204,7 +204,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'AMLGX.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -231,7 +231,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -258,7 +258,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic-legacy.x86_64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -285,7 +285,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3288.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -310,7 +310,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3328.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -335,7 +335,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3399.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -362,7 +362,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi2.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -387,7 +387,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi4.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -412,7 +412,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RPi5.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/make-image.yml
+    uses: ./.github/workflows/yml-uses-make-image-LE11.yml
     with:
       clean_le: no_clean_le
       debug: debug

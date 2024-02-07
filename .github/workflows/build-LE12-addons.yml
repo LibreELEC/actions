@@ -63,7 +63,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv7.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -88,7 +88,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.aarch64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -113,7 +113,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug
@@ -138,7 +138,7 @@ jobs:
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic-legacy.x86_64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug

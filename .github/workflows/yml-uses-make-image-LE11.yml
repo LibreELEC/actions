@@ -1,4 +1,4 @@
-name: make-image
+name: yml-uses-make-image-LE11
 on:
   workflow_call:
     inputs:

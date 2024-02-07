@@ -1,4 +1,4 @@
-name: create-addon
+name: yml-uses-create-addon-LE11
 on:
   workflow_call:
     inputs:
