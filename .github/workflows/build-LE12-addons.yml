@@ -56,8 +56,8 @@ jobs:
           exit 0
 
   # Addons
-  ARMv7_arm:
-    name: ARMv7.arm
+  ARMv7_arm-12_0:
+    name: "ARMv7.arm 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -81,8 +81,8 @@ jobs:
       version: "12.0"
     secrets: inherit
 
-  ARMv8_aarch64:
-    name: ARMv8.aarch64
+  ARMv8_aarch64-12_0:
+    name: "ARMv8.aarch64 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -106,8 +106,8 @@ jobs:
       version: "12.0"
     secrets: inherit
     
-  Generic_x86_64:
-    name: Generic.x86_64
+  Generic_x86_64-12_0:
+    name: "Generic.x86_64 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
@@ -131,8 +131,8 @@ jobs:
       version: "12.0"
     secrets: inherit
 
-  Generic-legacy_x86_64:
-    name: Generic-legacy.x86_64
+  Generic-legacy_x86_64-12_0:
+    name: "Generic-legacy.x86_64 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
