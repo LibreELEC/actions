@@ -1,4 +1,4 @@
-name: build-images
+name: nightly-LE12
 on:
   workflow_dispatch:
     inputs:

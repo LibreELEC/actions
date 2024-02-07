@@ -1,4 +1,4 @@
-name: nightly-MASTER-addons
+name: nightly-LE12-addons
 on:
   workflow_dispatch:
     inputs:
