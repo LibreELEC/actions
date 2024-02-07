@@ -233,5 +233,5 @@ jobs:
           while read addonfiles; do
             scp -q -P ${{ secrets.ADDONS_HOST_PORT }} ${addonfiles} \
             ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }}:${{ secrets.ADDONS_UPLOAD_PATH }}/${{ env.LE_ADDON_VERSION }}
-            printf "[\xE2\x9C\x94] $(basename ${addonfiles})\n"
+            printf "[\xE2\x9C\x94] %s\n" "$(basename ${addonfiles})"
           done
