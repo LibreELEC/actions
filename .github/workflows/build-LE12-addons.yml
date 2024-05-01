@@ -1,4 +1,4 @@
-name: nightly-LE10-addons
+name: build-LE12-addons
 on:
   workflow_dispatch:
     inputs:
@@ -15,9 +15,13 @@ on:
         options:
           - all
           - ARMv7.arm
-          - ARMv8.arm
+          - ARMv8.aarch64
           - Generic.x86_64
-
+          - Generic-legacy.x86_64
+  schedule:
+    # The times are specified in UTC
+    - cron: "15 3 * * *"
+ 
 env:
   # these ENV variables are not used yet - need to get this working with the with statements below
   clean_le: no_clean_le
@@ -34,14 +38,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: libreelec-10.0
+          ref: master
           fetch-depth: 2
           repository: "${{ github.repository_owner }}/LibreELEC.tv"
           path: "LibreELEC.tv"
       - name: print latest_commit of checked out LibreELEC/LibreELEC.tv
         run: |
           cd LibreELEC.tv
-          echo $(git rev-parse HEAD)
+          git rev-parse HEAD
       - id: should_run
         continue-on-error: true
         name: check latest commit is less than a day
@@ -52,79 +56,102 @@ jobs:
           exit 0
 
   # Addons
-  ARMv7_arm-10_0:
-    name: "ARMv7.arm 10.0"
+  ARMv7_arm-12_0:
+    name: "ARMv7.arm 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv7.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: libreelec-10.0
-      group: ARMv7_arm
+      gitref: master
+      group: ARMv7_arm-12_0
       project: ARM
       arch: arm
       device: ARMv7
-      targetbuilddir: build.LibreELEC-ARMv7.arm-10.0-devel
+      targetbuilddir: build.LibreELEC-ARMv7.arm-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "10.0"
+      version: "12.0"
     secrets: inherit
 
-  ARMv8_arm-10_0:
-    name: "ARMv8.arm 10.0"
+  ARMv8_aarch64-12_0:
+    name: "ARMv8.aarch64 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.arm' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'ARMv8.aarch64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: libreelec-10.0
-      group: ARMv8_arm
+      gitref: master
+      group: ARMv8_aarch64-12_0
       project: ARM
-      arch: arm
+      arch: aarch64
       device: ARMv8
-      targetbuilddir: build.LibreELEC-ARMv8.arm-10.0-devel
+      targetbuilddir: build.LibreELEC-ARMv8.aarch64-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "10.0"
+      version: "12.0"
     secrets: inherit
-
-  Generic_x86_64-10_0:
-    name: "Generic.x86_64 10.0"
+    
+  Generic_x86_64-12_0:
+    name: "Generic.x86_64 12.0"
     # Only run if there has been a commit in the last 24 hours
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
         && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic.x86_64' || github.event_name == 'schedule' )
-    uses: ./.github/workflows/create-addon.yml
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }} -chrome -tigervnc"
+      gitref: master
+      group: Generic_x86_64-12_0
+      project: Generic
+      arch: x86_64
+      device: Generic
+      targetbuilddir: build.LibreELEC-Generic.x86_64-12.0-devel
+      buildperiodic: nightly
+      ccachecachesize: 20G
+      version: "12.0"
+    secrets: inherit
+
+  Generic-legacy_x86_64-12_0:
+    name: "Generic-legacy.x86_64 12.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'Generic-legacy.x86_64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/yml-uses-create-addon-LE12.yml
     with:
       clean_le: no_clean_le
       debug: debug
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: libreelec-10.0
-      group: Generic_x86_64
+      gitref: master
+      group: Generic-legacy_x86_64-12_0
       project: Generic
       arch: x86_64
-      # device: Generic ### LE10 does not support DEVICE for PROJECT=Generic
-      #         make sure it is set to empty string
-      device: ""
-      targetbuilddir: build.LibreELEC-Generic.x86_64-10.0-devel
+      device: Generic-legacy
+      targetbuilddir: build.LibreELEC-Generic-legacy.x86_64-12.0-devel
       buildperiodic: nightly
       ccachecachesize: 20G
-      version: "10.0"
+      version: "12.0"
     secrets: inherit
