@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master
+          ref: libreelec-12.0
           fetch-depth: 2
           repository: "${{ github.repository_owner }}/LibreELEC.tv"
           path: "LibreELEC.tv"
@@ -70,7 +70,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: master
+      gitref: libreelec-12.0
       group: ARMv7_arm-12_0
       project: ARM
       arch: arm
@@ -95,7 +95,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: master
+      gitref: libreelec-12.0
       group: ARMv8_aarch64-12_0
       project: ARM
       arch: aarch64
@@ -120,7 +120,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }} -chrome -tigervnc"
-      gitref: master
+      gitref: libreelec-12.0
       group: Generic_x86_64-12_0
       project: Generic
       arch: x86_64
@@ -145,7 +145,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "scripts/create_addon ${{ github.event.inputs.buildcmd_target || 'all' }}"
-      gitref: master
+      gitref: libreelec-12.0
       group: Generic-legacy_x86_64-12_0
       project: Generic
       arch: x86_64

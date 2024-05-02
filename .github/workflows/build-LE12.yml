@@ -12,7 +12,7 @@ on:
           - official
       gitref_to_build:
         description: "gitref tag or hash to build"
-        default: master
+        default: libreelec-12.0
         required: true
         type: string
       target:
@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master
+          ref: libreelec-12.0
           fetch-depth: 2
           repository: "${{ github.repository_owner }}/LibreELEC.tv"
           path: "LibreELEC.tv"
@@ -91,7 +91,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: A64_aarch64-12_0
       project: Allwinner
       arch: aarch64
@@ -116,7 +116,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: H3_arm-12_0
       project: Allwinner
       arch: arm
@@ -141,7 +141,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: H5_aarch64-12_0
       project: Allwinner
       arch: aarch64
@@ -166,7 +166,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: H6_aarch64-12_0
       project: Allwinner
       arch: aarch64
@@ -191,7 +191,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: R40_arm-12_0
       project: Allwinner
       arch: arm
@@ -218,7 +218,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: AMLGX_aarch64-12_0
       project: Amlogic
       arch: aarch64
@@ -245,7 +245,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: Generic_x86_64-12_0
       project: Generic
       arch: x86_64
@@ -272,7 +272,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: Generic-legacy_x86_64-12_0
       project: Generic
       arch: x86_64
@@ -299,7 +299,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: iMX6_arm-12_0
       project: NXP
       arch: arm
@@ -324,7 +324,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: iMX8_aarch64-12_0
       project: NXP
       arch: aarch64
@@ -351,7 +351,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: Dragonboard_aarch64-12_0
       project: Qualcomm
       arch: aarch64
@@ -378,7 +378,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: RK3288_arm-12_0
       project: Rockchip
       arch: arm
@@ -403,7 +403,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: RK3328_aarch64-12_0
       project: Rockchip
       arch: aarch64
@@ -428,7 +428,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: RK3399_aarch64-12_0
       project: Rockchip
       arch: aarch64
@@ -455,7 +455,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: RPi2_arm-12_0
       project: RPi
       arch: arm
@@ -480,7 +480,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: RPi4_aarch64-12_0
       project: RPi
       arch: aarch64
@@ -505,7 +505,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: RPi5_aarch64-12_0
       project: RPi
       arch: aarch64
@@ -532,7 +532,7 @@ jobs:
       ephemeral: ephemeral
       upload: upload
       buildcmd: "make image"
-      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      gitref: ${{ github.event.inputs.gitref_to_build || 'libreelec-12.0' }}
       group: Exynos_arm-12_0
       project: Samsung
       arch: arm
