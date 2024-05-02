@@ -29,3 +29,11 @@ jobs:
           # LE11
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
             "python3 /tmp/prune-archive.py -i /var/www/test/11.0/ -k 200 -d"
+
+          # LE12
+          ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
+            "python3 /tmp/prune-archive.py -i /var/www/test/12.0/ -k 200 -d"
+
+          # LE13
+          ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
+            "python3 /tmp/prune-archive.py -i /var/www/test/13.0/ -k 200 -d"
