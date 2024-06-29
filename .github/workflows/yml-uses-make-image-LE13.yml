@@ -97,6 +97,8 @@ jobs:
   build_image:
     runs-on: [self-hosted, nightly]
 
+    timeout-minutes: 720
+
     steps:
       - uses: actions/checkout@v4
         with:
