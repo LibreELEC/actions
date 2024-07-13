@@ -247,7 +247,9 @@ jobs:
           fi
 
       - name: Upload nightly image
-        if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload')
+        env:
+          NIGHTLY_HOST: ${{ secrets.NIGHTLY_HOST }}
+        if: (inputs.buildperiodic != 'official') && (inputs.upload == 'upload') && (env.NIGHTLY_HOST != null)
         run: |
           cd LibreELEC.tv
           ls -lah target/
