@@ -222,7 +222,9 @@ jobs:
           docker image rm -f gh-${{ github.run_id }}
 
       - name: Upload files
-        if: inputs.upload == 'upload'
+        env:
+          ADDONS_HOST: ${{ secrets.ADDONS_HOST }}
+        if: (inputs.upload == 'upload') && (env.ADDONS_HOST != null)
         run: |
           echo "${{ env.LE_ADDON_VERSION }}"
           cd LibreELEC.tv
