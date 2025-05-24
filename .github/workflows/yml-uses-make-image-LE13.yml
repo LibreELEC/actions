@@ -112,6 +112,7 @@ jobs:
           cd LibreELEC.tv
           sed -i -e "s/RUN useradd docker/RUN useradd docker -o -u $(id -u)/" tools/docker/noble/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
+          sed -i -e 's/USE_REUSABLE="no"/USE_REUSABLE="yes"/' distributions/LibreELEC/options
 
       - name: Build official release
         if: inputs.buildperiodic == 'official'
