@@ -90,7 +90,7 @@ ssh-keygen
 cat ~/.ssh/*.pub
 ```
 
-> Copy the key to the targeted upload server and do a initial connection to allow the key.
+> Copy the key to the targeted upload server (test, addons ...) and do a initial connection to allow the key.
 
 ```shell
 ssh runner@some.url.com -p 3344
