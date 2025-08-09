@@ -87,13 +87,13 @@ sed -i "s/#force_color_prompt=yes/force_color_prompt=yes/" ~/.bashrc && source ~
 
 ```shell
 ssh-keygen
-cat ~/.ssh/id_rsa.pub
+cat ~/.ssh/*.pub
 ```
 
-> Copy the key to the targeted upload server and do a initial connection to allow the key.
+> Copy the key to the targeted upload server (test, addons ...) and do a initial connection to allow the key.
 
 ```shell
-ssh user@some.url.com -p 1234
+ssh runner@some.url.com -p 3344
 ```
 
 > add user keys that are allowed to connect to the runner
