@@ -18,8 +18,16 @@ generate_changelog() {
 <tbody>
 EOF
 
+  # get branchname
+  if [ $1 = $master ]
+  then
+    branchname="master"
+  else
+    branchname="libreelec-${1}"
+  fi
+
   # get commits from GH API
-  gh_output="$(curl -sH "Accept: application/vnd.github.v3+json" https://api.github.com/repos/LibreELEC/LibreELEC.tv/commits?per_page=60 | jq '.[] | "\(.commit.author.date | .[0:10]) \(.sha | .[0:7]) \(.commit.message)"' | grep "Merge pull request")"
+  gh_output="$(curl -sH "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/LibreELEC/LibreELEC.tv/commits?per_page=60&sha=${branchname}" | jq '.[] | "\(.commit.author.date | .[0:10]) \(.sha | .[0:7]) \(.commit.message)"' | grep "Merge pull request")"
 
   while IFS= read -r line; do
     # PR link
@@ -48,4 +56,8 @@ EOF
 }
 
 # generate and output to file
-generate_changelog >/var/www/test/css/changelog.html
+master=$(ls /var/www/test/*/ -v | tail -n1 | rev | cut -c3- | rev)
+for d in /var/www/test/*/ ; do
+    cd=${d::-1}
+    generate_changelog $cd >/var/www/test/changelog-"$cd".html
+done
