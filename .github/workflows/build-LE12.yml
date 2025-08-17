@@ -40,9 +40,6 @@ on:
           - RPi4.aarch64
           - RPi5.aarch64
           - Exynos.arm
-  schedule:
-    # The times are specified in UTC
-    - cron: "15 14 * * *"
 
 env:
   clean_le: no_clean_le

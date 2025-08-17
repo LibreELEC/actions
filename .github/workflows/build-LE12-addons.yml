@@ -18,9 +18,6 @@ on:
           - ARMv8.aarch64
           - Generic.x86_64
           - Generic-legacy.x86_64
-  schedule:
-    # The times are specified in UTC
-    - cron: "15 3 * * *"
  
 env:
   # these ENV variables are not used yet - need to get this working with the with statements below
