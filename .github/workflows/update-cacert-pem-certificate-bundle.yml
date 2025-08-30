@@ -18,7 +18,7 @@ jobs:
       CERTDATA_REPO: gecko-dev
       CERTDATA_PATH: security/nss/lib/ckfw/builtins/certdata.txt
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ secrets.LIBREELECBOT_GITHUB_TOKEN }}
           repository: ${{ github.repository_owner }}/LibreELEC.tv
