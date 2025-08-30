@@ -94,7 +94,7 @@ jobs:
     timeout-minutes: 720
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.gitref }}
           fetch-depth: 2
