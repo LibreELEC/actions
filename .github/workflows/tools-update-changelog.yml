@@ -2,7 +2,7 @@ name: tools-update-changelog
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */2 * * *"
+    - cron: "0 */12 * * *"
 
 jobs:
   update_changelog:
