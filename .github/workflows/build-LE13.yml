@@ -36,6 +36,9 @@ on:
           - RK3288.arm
           - RK3328.aarch64
           - RK3399.aarch64
+          - RK356X.aarch64
+          - RK3576.aarch64
+          - RK3588.aarch64
           - RPi2.arm
           - RPi4.aarch64
           - RPi5.aarch64
@@ -434,6 +437,81 @@ jobs:
       arch: aarch64
       device: RK3399
       targetbuilddir: build.LibreELEC-RK3399.aarch64-13.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "13.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  RK356X_aarch64-13_0:
+    name: "RK356X.aarch64 13.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK356X.aarch64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/yml-uses-make-image-LE13.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      group: RK356X_aarch64-13_0
+      project: Rockchip
+      arch: aarch64
+      device: RK356X
+      targetbuilddir: build.LibreELEC-RK356X.aarch64-13.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "13.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  RK3576_aarch64-13_0:
+    name: "RK3576.aarch64 13.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3576.aarch64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/yml-uses-make-image-LE13.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      group: RK3576_aarch64-13_0
+      project: Rockchip
+      arch: aarch64
+      device: RK3576
+      targetbuilddir: build.LibreELEC-RK3576.aarch64-13.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "13.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  RK3588_aarch64-13_0:
+    name: "RK3588.aarch64 13.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3588.aarch64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/yml-uses-make-image-LE13.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      group: RK3588_aarch64-13_0
+      project: Rockchip
+      arch: aarch64
+      device: RK3588
+      targetbuilddir: build.LibreELEC-RK3588.aarch64-13.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "13.0"
