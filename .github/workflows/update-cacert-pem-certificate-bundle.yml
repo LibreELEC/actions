@@ -18,7 +18,7 @@ jobs:
       CERTDATA_REPO: gecko-dev
       CERTDATA_PATH: security/nss/lib/ckfw/builtins/certdata.txt
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.LIBREELECBOT_GITHUB_TOKEN }}
           repository: ${{ github.repository_owner }}/LibreELEC.tv
@@ -63,7 +63,7 @@ jobs:
 
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.LIBREELECBOT_GITHUB_TOKEN }}
           commit-message: |
