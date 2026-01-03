@@ -1,0 +1,95 @@
+inputs:
+  PACKAGE_NAME:
+    description: "package name to update"
+    required: true
+  PACKAGE_VERSION:
+    description: "version to update to"
+    required: false
+  IS_REPO:
+    description: "is this a repository update?"
+    required: false
+  GIT_TOKEN:
+    description: "Token used to push commits"
+    required: true
+
+name: automated-package-update
+description: "Update package version and create a pull request"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+        repository: LibreELEC/LibreELEC.tv
+        ref: master
+        path: LibreELEC-pr/
+    - name: Configure git
+      shell: bash
+      run: |
+        cd LibreELEC-pr/
+        git config user.name "LibreELECBot"
+        git config user.email "LibreELECBot@users.noreply.github.com"
+    - name: Normalize version
+      shell: bash
+      run: |
+        cd LibreELEC-pr/
+        # shorten the version if it is a git sha256 hash
+        # add a full version variable as well
+        PACKAGE_VERSION="${{ inputs.PACKAGE_VERSION }}"
+        PACKAGE_VERSION_FULL="${{ inputs.PACKAGE_VERSION }}"
+        if [[ "${PACKAGE_VERSION}" =~ ^[0-9a-fA-F]{40}$ ]]; then
+          # Git SHA-256 hash to short hash
+          PACKAGE_VERSION="${PACKAGE_VERSION:0:7}"
+        fi
+        # if IS_REPO is true use date as versioning
+        if [[ "${{ inputs.IS_REPO }}" == "yes" ]]; then
+          PACKAGE_VERSION="$(date '+%Y%m%d-%H%M%S')"
+          PACKAGE_VERSION_FULL="${PACKAGE_VERSION}"
+          echo "IS_REPO=yes" >> $GITHUB_ENV
+        fi
+        # export vars and debug output
+        echo "IS_REPO: ${{ inputs.IS_REPO }}"
+        echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> $GITHUB_ENV
+        echo "PACKAGE_VERSION_FULL=${{ inputs.PACKAGE_VERSION }}" >> $GITHUB_ENV
+        echo "PACKAGE_VERSION: ${PACKAGE_VERSION}"
+        echo "PACKAGE_VERSION_FULL: ${PACKAGE_VERSION_FULL}"
+    - name: Run update script
+      shell: bash
+      run: |
+        cd LibreELEC-pr/
+        echo "running update for package..."
+        echo "package name: ${{ inputs.PACKAGE_NAME }}"
+        echo "package version: ${{ env.PACKAGE_VERSION_FULL }}"
+        echo "is repo: ${{ inputs.IS_REPO }}"
+        echo "$IS_REPO"
+        if [[ "${IS_REPO}" == "yes" ]]; then
+          echo "--------111111111----------"
+          ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}"
+        else
+          echo "--------222222222----------"
+          ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}" "$PACKAGE_VERSION_FULL"
+        fi
+    - name: Push branch
+      shell: bash
+      run: |
+        cd LibreELEC-pr/
+        # git config user.name "CvH"
+        # git config user.email "CvH@users.noreply.github.com"
+        git checkout -b "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
+        git remote set-url origin https://x-access-token:${LEBOT_TOKEN}@github.com/LibreELECBot/LibreELEC.tv.git
+        git push -f origin "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
+    - name: Create Pull Request
+      shell: bash
+      run: |
+        cd LibreELEC-pr/
+        # get the LE base version
+        LE_VERSION=$(sed -nE 's/^[[:space:]]*OS_VERSION="([^"]+)".*/\1/p' distributions/LibreELEC/version)
+        # create the pr
+        gh pr create \
+          --repo LibreELEC/LibreELEC.tv \
+          --base master \
+          --head "LibreELECBot:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
+          --title "[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
+          --body "Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION} using tools/update-pkg."

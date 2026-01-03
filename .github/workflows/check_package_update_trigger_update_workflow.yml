@@ -1,0 +1,73 @@
+name: check for package update and trigger update workflow
+on:
+  workflow_dispatch:
+    inputs:
+      TEST_RUN:
+        description: 'just do a test run'
+        required: true
+        type: boolean
+        default: true
+jobs:
+  check-package-update:
+    runs-on: ubuntu-24.04
+    # Hard stop if not running in the intended repository
+    if: github.repository == 'LibreELEC/actions'
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          repository: LibreELEC/LibreELEC.tv
+          path: LibreELEC-upstream
+      - name: Check for package update
+        id: set-matrix
+        shell: bash
+        run: |
+          cd LibreELEC-upstream/
+          # run the update-scan script to get list of updated packages
+          updated_packages=$(bash tools/update-scan autoupdate=yes)
+          # debug output
+          echo "updated packages:"
+          echo "-----"
+          echo "$updated_packages"
+          echo "-----"
+          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[1] })')
+          echo "matrix=$pair" >> $GITHUB_OUTPUT
+      - name: Job summary
+        shell: bash
+        run: |
+          echo "### 📌 Updating these Packages" >> $GITHUB_STEP_SUMMARY
+          {
+            # Use jq to output a markdown table
+            echo "| Package | Version |"
+            echo "|---------|---------|"
+            echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) | \(.version) |"'
+          } >> "$GITHUB_STEP_SUMMARY"
+  call-package-update:
+    if: ${{ github.event.inputs.TEST_RUN == 'false' }}
+    needs: check-package-update
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.check-package-update.outputs.matrix) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          repository: LibreELEC/actions
+      - name: Debug output
+        run: |
+          echo "Package:  ${{ matrix.name }}"
+          echo "Version:  ${{ matrix.version }}"
+      - name: Call composite function
+        uses: ./.github/actions/package_version_bump_and_pr_changes
+        env:
+          GH_TOKEN: ${{ secrets.LEBOT_PAT }}
+          LEBOT_TOKEN: ${{ secrets.LEBOT_PAT }}
+        with:
+          PACKAGE_NAME: ${{ matrix.name }}
+          PACKAGE_VERSION: ${{ matrix.version }}
+          GIT_TOKEN: ${{ secrets.LEBOT_PAT }}
