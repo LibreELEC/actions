@@ -8,5 +8,4 @@ libheif
 libopenmpt
 minisatip
 rust
-tvheadend43
 vulkan-tools
