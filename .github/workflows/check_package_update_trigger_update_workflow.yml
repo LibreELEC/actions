@@ -70,9 +70,8 @@ jobs:
           echo "Version:  ${{ matrix.version }}"
       - name: Call composite function
         uses: ./.github/actions/package_version_bump_and_pr_changes
-        env:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
         with:
           PACKAGE_NAME: ${{ matrix.name }}
           PACKAGE_VERSION: ${{ matrix.version }}
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
