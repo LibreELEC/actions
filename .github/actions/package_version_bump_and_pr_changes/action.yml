@@ -25,6 +25,14 @@ runs:
         repository: LibreELEC/LibreELEC.tv
         ref: master
         path: LibreELEC-pr/
+    - name: Generate GitHub App token
+      id: app-token
+      uses: actions/create-github-app-token@v2
+      with:
+        app-id: ${{ secrets.GH_APP_ID }}
+        private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        owner: LibreELEC
+        repositories: pr-actions
     - name: Configure git
       shell: bash
       run: |
@@ -65,22 +73,22 @@ runs:
         echo "is repo: ${{ inputs.IS_REPO }}"
         echo "$IS_REPO"
         if [[ "${IS_REPO}" == "yes" ]]; then
-          echo "--------111111111----------"
           ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}"
         else
-          echo "--------222222222----------"
           ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}" "$PACKAGE_VERSION_FULL"
         fi
-    - name: Push branch
+    - name: Push branch to pr-actions
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
       shell: bash
       run: |
         cd LibreELEC-pr/
-        # git config user.name "CvH"
-        # git config user.email "CvH@users.noreply.github.com"
         git checkout -b "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
-        git remote set-url origin https://x-access-token:${LEBOT_TOKEN}@github.com/LibreELECBot/LibreELEC.tv.git
+        git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/LibreELEC/pr-actions.git
         git push -f origin "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
     - name: Create Pull Request
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
       shell: bash
       run: |
         cd LibreELEC-pr/
