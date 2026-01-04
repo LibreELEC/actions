@@ -15,11 +15,17 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Checkout repository
+      - name: Checkout repository - actions
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-          repository: LibreELEC/LibreELEC.tv
+          repository: ${{ github.repository_owner }}/actions
+          path: actions
+      - name: Checkout repository - LibreELEC.tv
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          repository: ${{ github.repository_owner }}/LibreELEC.tv
           path: LibreELEC-upstream
       - name: Check for package update
         id: set-matrix
@@ -27,13 +33,13 @@ jobs:
         run: |
           cd LibreELEC-upstream/
           # run the update-scan script to get list of updated packages
-          updated_packages=$(bash tools/update-scan autoupdate=yes)
+          updated_packages=$(AUTO_UPDATE=yes tools/update-scan $(cat ../actions/packages_for_autoupdate.txt))
           # debug output
           echo "updated packages:"
           echo "-----"
           echo "$updated_packages"
           echo "-----"
-          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[1] })')
+          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[2] })')
           echo "matrix=$pair" >> $GITHUB_OUTPUT
       - name: Job summary
         shell: bash
@@ -57,7 +63,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-          repository: LibreELEC/actions
+          repository: ${{ github.repository_owner }}/actions
       - name: Debug output
         run: |
           echo "Package:  ${{ matrix.name }}"

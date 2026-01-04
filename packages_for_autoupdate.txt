@@ -1,0 +1,12 @@
+chrome
+docker-compose
+dotnet-runtime
+filebrowser
+glslang
+jellyfin
+libheif
+libopenmpt
+minisatip
+rust
+tvheadend43
+vulkan-tools
