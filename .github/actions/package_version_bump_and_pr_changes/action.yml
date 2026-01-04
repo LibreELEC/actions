@@ -122,6 +122,6 @@ runs:
         gh pr create \
           --repo LibreELEC/LibreELEC.tv \
           --base master \
-          --head "LibreELECBot:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
+          --head "LibreELEC:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
           --title "[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
           --body "Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION} using tools/update-pkg."
