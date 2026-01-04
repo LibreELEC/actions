@@ -120,8 +120,11 @@ runs:
         LE_VERSION=$(sed -nE 's/^[[:space:]]*OS_VERSION="([^"]+)".*/\1/p' distributions/LibreELEC/version)
         echo "---1---"
         FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
-        echo "---2---"
         echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
+        echo "---2---"
+        echo "check gh auth status"
+        gh auth status
+        echo "---3---"
         # create the pr
         gh api repos/LibreELEC/LibreELEC.tv/pulls \
           -f title="[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
