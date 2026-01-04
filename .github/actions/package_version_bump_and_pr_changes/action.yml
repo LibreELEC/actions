@@ -27,9 +27,21 @@ runs:
         repository: LibreELEC/LibreELEC.tv
         ref: master
         path: LibreELEC-pr/
+    - name: Debug input values
+      shell: bash
+      run: |
+        echo "PACKAGE_NAME: ${{ inputs.PACKAGE_NAME }}"
+        echo "PACKAGE_VERSION: ${{ inputs.PACKAGE_VERSION }}"
+        echo "IS_REPO: ${{ inputs.IS_REPO }}"
+        FULL_APP_ID: ${{ inputs.app-id }}
+        FULL_PRIVATE_KEY: ${{ inputs.private-key }}
+        echo "--------------------------------"
+        echo "PEM: ${FULL_PRIVATE_KEY:0:4}"
+        echo "APP_ID: ${FULL_APP_ID:0:4}"
+        echo "--------------------------------"
     - name: Generate GitHub App token
       id: app-token
-      uses: actions/create-github-app-token@v1
+      uses: actions/create-github-app-token@v2
       with:
         app-id: ${{ inputs.app-id }}
         private-key: ${{ inputs.private-key }}
