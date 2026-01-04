@@ -126,6 +126,6 @@ runs:
         gh api repos/LibreELEC/LibreELEC.tv/pulls \
           -f title="[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
           -f body="Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION} using tools/update-pkg."
-          -f head="LibreELEC:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
+          -f head="pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
           --header "Authorization: token ${GH_TOKEN}" \
           -f base="master"
