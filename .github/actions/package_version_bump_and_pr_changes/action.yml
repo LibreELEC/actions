@@ -110,38 +110,22 @@ runs:
         echo "Pushing branch to remote..."
         git push -f origin "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
         echo "---3---"
-    # - name: Create Pull Request
-    #   env:
-    #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
-    #   shell: bash
-    #   run: |
-    #     cd LibreELEC-pr/
-    #     # get the LE base version
-    #     LE_VERSION=$(sed -nE 's/^[[:space:]]*OS_VERSION="([^"]+)".*/\1/p' distributions/LibreELEC/version)
-    #     echo "---1---"
-    #     FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
-    #     echo "---2---"
-    #     echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
-    #     # create the pr
-    #     gh api repos/LibreELEC/LibreELEC.tv/pulls \
-    #       -f title="[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
-    #       -f body="Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION} using tools/update-pkg."
-    #       -f head="LibreELEC:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
-    #       --header "Authorization: token ${GH_TOKEN}" \
-    #       -f base="master"
     - name: Create Pull Request
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        github-token: ${{ steps.app-token.outputs.token }}
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ steps.app-token.outputs.token }}
-        script: |
-          await github.rest.pulls.create({
-            owner: "LibreELEC",
-            repo: "LibreELEC.tv",
-            title: "[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}",
-            head: "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}",
-            base: "master",
-            body: "Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION}."
-          })
+      shell: bash
+      run: |
+        cd LibreELEC-pr/
+        # get the LE base version
+        LE_VERSION=$(sed -nE 's/^[[:space:]]*OS_VERSION="([^"]+)".*/\1/p' distributions/LibreELEC/version)
+        echo "---1---"
+        FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
+        echo "---2---"
+        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
+        # create the pr
+        gh api repos/LibreELEC/LibreELEC.tv/pulls \
+          -f title="[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
+          -f body="Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION} using tools/update-pkg."
+          -f head="LibreELEC:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
+          --header "Authorization: token ${GH_TOKEN}" \
+          -f base="master"
