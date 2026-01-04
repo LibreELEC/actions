@@ -29,7 +29,7 @@ runs:
         path: LibreELEC-pr/
     - name: Generate GitHub App token
       id: app-token
-      uses: actions/create-github-app-token@v2
+      uses: actions/create-github-app-token@v1
       with:
         app-id: ${{ inputs.app-id }}
         private-key: ${{ inputs.private-key }}
