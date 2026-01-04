@@ -97,6 +97,9 @@ runs:
       shell: bash
       run: |
         cd LibreELEC-pr/
+        FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
+        echo "---0---"
+        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
         git checkout -b "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
         echo "---1---"
         git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/LibreELEC/pr-actions.git
