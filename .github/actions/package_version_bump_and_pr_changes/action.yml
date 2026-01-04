@@ -118,10 +118,14 @@ runs:
         cd LibreELEC-pr/
         # get the LE base version
         LE_VERSION=$(sed -nE 's/^[[:space:]]*OS_VERSION="([^"]+)".*/\1/p' distributions/LibreELEC/version)
+        echo "---1---"
+        FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
+        echo "---2---"
+        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
         # create the pr
         gh pr create \
           --repo LibreELEC/LibreELEC.tv \
           --base master \
-          --head "LibreELEC:pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
+          --head "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}" \
           --title "[LE${LE_VERSION}] ${{ inputs.PACKAGE_NAME }}: update to ${PACKAGE_VERSION}" \
           --body "Automated update of ${{ inputs.PACKAGE_NAME }} to version ${PACKAGE_VERSION} using tools/update-pkg."
