@@ -8,10 +8,12 @@ inputs:
   IS_REPO:
     description: "is this a repository update?"
     required: false
-  GIT_TOKEN:
-    description: "Token used to push commits"
+  app-id:
+    description: "GitHub App ID"
     required: true
-
+  private-key:
+    description: "GitHub App private key"
+    required: true
 name: automated-package-update
 description: "Update package version and create a pull request"
 runs:
@@ -29,8 +31,8 @@ runs:
       id: app-token
       uses: actions/create-github-app-token@v2
       with:
-        app-id: ${{ secrets.GH_APP_ID }}
-        private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        app-id: ${{ inputs.app-id }}
+        private-key: ${{ inputs.private-key }}
         owner: LibreELEC
         repositories: pr-actions
     - name: Configure git
