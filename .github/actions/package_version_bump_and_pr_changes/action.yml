@@ -37,7 +37,7 @@ runs:
         FULL_PRIVATE_KEY="${{ inputs.private-key }}"
         echo "--------------------------------"
         echo "PEM: ${FULL_PRIVATE_KEY:0:4}"
-        echo "APP_ID: ${FULL_APP_ID:0:4}"
+        echo "APP_ID: ${FULL_APP_ID:0:6}"
         echo "--------------------------------"
     - name: Generate GitHub App token
       id: app-token
@@ -99,7 +99,7 @@ runs:
         cd LibreELEC-pr/
         FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
         echo "---0---"
-        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
+        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:6}"
         git checkout -b "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
         echo "---1---"
         git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/LibreELEC/pr-actions.git
@@ -120,7 +120,7 @@ runs:
         LE_VERSION=$(sed -nE 's/^[[:space:]]*OS_VERSION="([^"]+)".*/\1/p' distributions/LibreELEC/version)
         echo "---1---"
         FULL_GH_TOKEN="${{ steps.app-token.outputs.token }}"
-        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:4}"
+        echo "FULL_GH_TOKEN: ${FULL_GH_TOKEN:0:6}"
         echo "---2---"
         echo "check gh auth status"
         gh auth status
