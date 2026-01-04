@@ -103,8 +103,10 @@ runs:
         git checkout -b "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
         echo "---1---"
         git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/LibreELEC/pr-actions.git
-        echo "---2---"
+        echo "rev-parse before push"
         git rev-parse --is-shallow-repository
+        echo "Unshallowing repository..."
+        git fetch --unshallow
         echo "Pushing branch to remote..."
         git push -f origin "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
         echo "---3---"
