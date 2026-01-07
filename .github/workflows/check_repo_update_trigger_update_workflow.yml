@@ -1,91 +1,31 @@
-name: check for repo update and trigger update workflow
+name: Create Pull Request for filebrowser
 on:
   workflow_dispatch:
-    inputs:
-      repository:
-        description: "select a repository"
-        required: true
-        type: choice
-        options:
-          - LibreELEC/amlogic-boot-fip
-          - LibreELEC/brcmfmac_sdio-firmware
-          - LibreELEC/dt-overlays
-          - LibreELEC/dvb-firmware
-          - LibreELEC/eventlircd
-          - LibreELEC/iwlwifi-firmware
-          - LibreELEC/meson-firmware
-          - LibreELEC/misc-firmware
-          - LibreELEC/script.config.vdr
-          - LibreELEC/service.libreelec.settings
-          - LibreELEC/wlan-firmware
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
-  check-package-update:
-    runs-on: ubuntu-24.04
-    # Hard stop if not running in the intended repository
-    if: github.repository == 'LibreELEC/actions'
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+  create-pr:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
         with:
-          fetch-depth: 1
-          repository: LibreELEC/LibreELEC.tv
-          path: LibreELEC-upstream
-      - name: Get latest commit hash from the repository
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - name: Create pull request
         env:
-          REPO: ${{ github.event.inputs.repository }}
-        id: set-matrix
-        shell: bash
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          echo "Selected repo: $REPO"
-          REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
-          # if repo name is not package name, map it accordingly
-          case "$REPO" in
-            "LibreELEC/service.libreelec.settings")
-              REPO_NAME="LibreELEC-settings"
-              ;;
-          esac
-          echo "---"
-          updated_packages="${REPO_NAME}"
-          echo $updated_packages
-          echo "---"
-          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: (.[1] // "") })')
-          echo "matrix=$pair" >> $GITHUB_OUTPUT
-          echo $pair
-      - name: Job summary
-        shell: bash
-        run: |
-          echo "### 📌 Updating these Packages" >> $GITHUB_STEP_SUMMARY
-          {
-            # Use jq to output a markdown table
-            echo "| Package | Version |"
-            echo "|---------|---------|"
-            echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) | \(.version) |"'
-          } >> "$GITHUB_STEP_SUMMARY"
-  call-package-update:
-    needs: check-package-update
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        include: ${{ fromJson(needs.check-package-update.outputs.matrix) }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-          repository: LibreELEC/actions
-      - name: Debug output
-        run: |
-          echo "Package:  ${{ matrix.name }}"
-          echo "Version:  ${{ matrix.version }}"
-      - name: Call composite function
-        uses: ./.github/actions/package_version_bump_and_pr_changes
-        env:
-          GH_TOKEN: ${{ secrets.LEBOT_PAT }}
-          LEBOT_TOKEN: ${{ secrets.LEBOT_PAT }}
-        with:
-          PACKAGE_NAME: ${{ matrix.name }}
-          PACKAGE_VERSION: ${{ matrix.version }}
-          IS_REPO: yes
-          GIT_TOKEN: ${{ secrets.LEBOT_PAT }}
+          # test 1
+          gh api repos/LibreELEC/LibreELEC.tv
+          # test 2
+          gh api repos/LibreELEC/pr-actions
+          # create PR
+          gh pr create \
+            --repo LibreELEC/LibreELEC.tv \
+            --head LibreELEC/pr-actions:filebrowser-2.53.1 \
+            --base master \
+            --title "filebrowser: update to 2.53.1" \
+            --body "Automated PR created by GitHub App."
