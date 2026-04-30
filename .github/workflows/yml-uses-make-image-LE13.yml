@@ -110,7 +110,7 @@ jobs:
       - name: Customise the checked out git repository
         run: |
           cd LibreELEC.tv
-          sed -i -e "s/RUN useradd docker/RUN useradd docker -o -u $(id -u)/" tools/docker/noble/Dockerfile
+          sed -i -e "s/RUN useradd docker/RUN useradd docker -o -u $(id -u)/" tools/docker/resolute/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
           sed -i -e 's/USE_REUSABLE="no"/USE_REUSABLE="yes"/' distributions/LibreELEC/options
 
@@ -123,10 +123,10 @@ jobs:
           echo "building official ${{ inputs.gitref }}"
           if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> $GITHUB_ENV; fi
 
-      - name: Create docker image for build - tools/docker/noble
+      - name: Create docker image for build - tools/docker/resolute
         run: |
           cd LibreELEC.tv
-          docker build --pull -t gh-${{ github.run_id }} tools/docker/noble
+          docker build --pull -t gh-${{ github.run_id }} tools/docker/resolute
 
       - name: Prepare the LibreELEC.tv directory - setup /sources
         run: |
