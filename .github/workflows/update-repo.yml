@@ -1,5 +1,4 @@
-name: Check for repo update and trigger update workflow
-
+name: Update repositories
 on:
   workflow_dispatch:
     inputs:
@@ -19,22 +18,18 @@ on:
           - LibreELEC/script.config.vdr
           - LibreELEC/service.libreelec.settings
           - LibreELEC/wlan-firmware
-
+      BASE_BRANCH:
+        description: Branch to checkout from the fork and PR base branch on the target repository
+        required: false
+        default: master
 jobs:
-  check-package-update:
+  check-repo-update:
     runs-on: ubuntu-24.04
     if: github.repository == 'LibreELEC/actions'
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Checkout LibreELEC.tv
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-          repository: LibreELEC/LibreELEC.tv
-          path: LibreELEC-upstream
-
-      - name: Get latest commit hash from the repository
+      - name: Map repository choice to package matrix
         id: set-matrix
         shell: bash
         env:
@@ -48,45 +43,38 @@ jobs:
               ;;
           esac
           updated_packages="${REPO_NAME}"
-          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: (.[1] // "") })')
+          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0] })')
           echo "matrix=$pair" >> $GITHUB_OUTPUT
-
       - name: Job summary
         shell: bash
         run: |
           echo "### 📌 Updating these Packages" >> $GITHUB_STEP_SUMMARY
           {
-            echo "| Package | Version |"
-            echo "|---------|---------|"
-            echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) | \(.version) |"'
+            echo "| Package |"
+            echo "|---------|"
+            echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) |"'
           } >> "$GITHUB_STEP_SUMMARY"
-
   call-package-update:
-    needs: check-package-update
+    needs: check-repo-update
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJson(needs.check-package-update.outputs.matrix) }}
+        include: ${{ fromJson(needs.check-repo-update.outputs.matrix) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-          repository: LibreELEC/actions
-
+          repository: ${{ github.repository_owner }}/actions
       - name: Log matrix entry
         run: |
           echo "Package:  ${{ matrix.name }}"
-          echo "Version:  ${{ matrix.version }}"
-
       - name: Package version bump and PR
         uses: ./.github/actions/package_version_bump_and_pr_changes
-        env:
-          GH_TOKEN: ${{ secrets.LEBOT_PAT }}
-          LEBOT_TOKEN: ${{ secrets.LEBOT_PAT }}
         with:
           PACKAGE_NAME: ${{ matrix.name }}
-          PACKAGE_VERSION: ${{ matrix.version }}
           IS_REPO: yes
-          GIT_TOKEN: ${{ secrets.LEBOT_PAT }}
+          GH_APP_ID: ${{ secrets.GH_APP_ID }}
+          GH_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          BASE_BRANCH: ${{ github.event.inputs.BASE_BRANCH }}

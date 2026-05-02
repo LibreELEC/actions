@@ -17,6 +17,21 @@ inputs:
   GH_PRIVATE_KEY:
     description: GitHub App private key
     required: true
+  WORKING_DIRECTORY:
+    description: Working directory for checked out forked repository
+    required: false
+    default: pr-le
+  FORK_REPOSITORY:
+    description: Fork repository to checkout and use as PR head (owner/name)
+    required: false
+    default: LibreELEC/pr-le
+  TARGET_REPOSITORY:
+    description: Target repository for PR base (owner/name)
+    required: false
+    default: LibreELEC/LibreELEC.tv
+  BASE_BRANCH:
+    description: Branch to checkout from the fork and PR base branch on the target repository
+    required: false
 
 runs:
   using: composite
@@ -25,17 +40,17 @@ runs:
       id: app-token
       uses: actions/create-github-app-token@v3
       with:
-        app-id: ${{ inputs.GH_APP_ID }}
+        client-id: ${{ inputs.GH_APP_ID }}
         private-key: ${{ inputs.GH_PRIVATE_KEY }}
         owner: LibreELEC
 
-    - name: Checkout pr-actions repository
+    - name: Checkout forked pr-le repository
       uses: actions/checkout@v6
       with:
-        repository: LibreELEC/pr-actions-fork
-        ref: master
+        repository: ${{ inputs.FORK_REPOSITORY }}
+        ref: ${{ inputs.BASE_BRANCH }}
         token: ${{ steps.app-token.outputs.token }}
-        path: pr-actions-fork
+        path: ${{ inputs.WORKING_DIRECTORY }}
 
     - name: Get GitHub App User ID
       id: get-user-id
@@ -46,14 +61,18 @@ runs:
 
     - name: Configure git
       shell: bash
-      working-directory: pr-actions-fork
+      working-directory: ${{ inputs.WORKING_DIRECTORY }}
       run: |
         git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
         git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
 
+    - name: Set automation environment flag for LE scripts
+      shell: bash
+      run: echo 'GHA_AUTO=true' >> "$GITHUB_ENV"
+
     - name: Normalize version
       shell: bash
-      working-directory: pr-actions-fork
+      working-directory: ${{ inputs.WORKING_DIRECTORY }}
       run: |
         # Shorten version if it is a git SHA-256 hash; also set full version variable
         PACKAGE_VERSION="${{ inputs.PACKAGE_VERSION }}"
@@ -74,7 +93,7 @@ runs:
 
     - name: Run update script
       shell: bash
-      working-directory: pr-actions-fork
+      working-directory: ${{ inputs.WORKING_DIRECTORY }}
       run: |
         echo "running update for package..."
         echo "package name: ${{ inputs.PACKAGE_NAME }}"
@@ -86,60 +105,88 @@ runs:
           ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}" "$PACKAGE_VERSION_FULL"
         fi
 
-    - name: Push branch to pr-actions-fork
+    - name: Push branch to fork
       shell: bash
-      working-directory: pr-actions-fork
+      working-directory: ${{ inputs.WORKING_DIRECTORY }}
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token }}
       run: |
-        git checkout -b "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
-        git push -f origin "pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
+        BRANCH="pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
+        git checkout -b "$BRANCH"
+        if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+          echo "Branch '$BRANCH' already exists on origin. This change was already pushed before."
+          echo "CHANGE_ALREADY_PUSHED=true" >> "$GITHUB_ENV"
+        else
+          git push origin "$BRANCH"
+          echo "CHANGE_ALREADY_PUSHED=false" >> "$GITHUB_ENV"
+        fi
 
     - name: Create Pull Request via GraphQL
       shell: bash
-      working-directory: pr-actions-fork
+      working-directory: ${{ inputs.WORKING_DIRECTORY }}
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token }}
       run: |
-        BRANCH=$(git rev-parse --abbrev-ref HEAD)
-        echo "BRANCH=$BRANCH"
-
-        REPO_ID=$(gh api graphql -f query='
-          query {
-            repository(owner: "LibreELEC", name: "pr-actions") {
-              id
-            }
-          }' --jq '.data.repository.id')
-
-        HEAD_REPO_ID=$(gh api graphql -f query='
-          query {
-            repository(owner: "LibreELEC", name: "pr-actions-fork") {
-              id
-            }
-          }' --jq '.data.repository.id')
-
         PKG='${{ inputs.PACKAGE_NAME }}'
+        FORK_REPOSITORY='${{ inputs.FORK_REPOSITORY }}'
+        FORK_OWNER="${FORK_REPOSITORY%%/*}"
+        FORK_NAME="${FORK_REPOSITORY##*/}"
+        TARGET_REPOSITORY='${{ inputs.TARGET_REPOSITORY }}'
+        TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+        TARGET_NAME="${TARGET_REPOSITORY##*/}"
+        TARGET_REPOSITORY_QUERY='repository(owner: "'"${TARGET_OWNER}"'", name: "'"${TARGET_NAME}"'")'
         PR_TITLE="${PKG}: update package to ${PACKAGE_VERSION}"
-        PR_BODY="${PR_TITLE}"
+        if [[ "${CHANGE_ALREADY_PUSHED}" == "true" ]]; then
+          PR_SUMMARY_CELL="Already pushed in a previous run (no new PR created)"
+        else
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo "BRANCH=$BRANCH"
 
-        gh api graphql -f query='
-        mutation($repo: ID!, $headRepo: ID!, $head: String!, $base: String!, $title: String!, $body: String!) {
-          createPullRequest(input: {
-            repositoryId: $repo,
-            headRepositoryId: $headRepo,
-            baseRefName: $base,
-            headRefName: $head,
-            title: $title,
-            body: $body
-          }) {
-            pullRequest {
-              url
+          REPO_ID=$(gh api graphql -f query='
+            query {
+              '"${TARGET_REPOSITORY_QUERY}"' {
+                id
+              }
+            }' --jq '.data.repository.id')
+
+          HEAD_REPO_ID=$(gh api graphql -f query='
+            query {
+              repository(owner: "'"${FORK_OWNER}"'", name: "'"${FORK_NAME}"'") {
+                id
+              }
+            }' --jq '.data.repository.id')
+
+          PR_BODY="${PR_TITLE}"
+          PR_URL=$(gh api graphql -f query='
+          mutation($repo: ID!, $headRepo: ID!, $head: String!, $base: String!, $title: String!, $body: String!) {
+            createPullRequest(input: {
+              repositoryId: $repo,
+              headRepositoryId: $headRepo,
+              baseRefName: $base,
+              headRefName: $head,
+              title: $title,
+              body: $body
+            }) {
+              pullRequest {
+                url
+              }
             }
-          }
-        }' \
-          -f repo="$REPO_ID" \
-          -f headRepo="$HEAD_REPO_ID" \
-          -f head="$BRANCH" \
-          -f base="master" \
-          -f title="$PR_TITLE" \
-          -f body="$PR_BODY"
+          }' \
+            -f repo="$REPO_ID" \
+            -f headRepo="$HEAD_REPO_ID" \
+            -f head="$BRANCH" \
+            -f base="${{ inputs.BASE_BRANCH }}" \
+            -f title="$PR_TITLE" \
+            -f body="$PR_BODY" \
+            --jq '.data.createPullRequest.pullRequest.url')
+
+          echo "Created pull request: $PR_URL"
+          PR_SUMMARY_CELL="[${PR_TITLE}](${PR_URL})"
+        fi
+
+        echo "### 📌 Pull Request Status" >> "$GITHUB_STEP_SUMMARY"
+        {
+          echo "| Package | Pull Request |"
+          echo "|---------|--------------|"
+          echo "| ${PKG} | ${PR_SUMMARY_CELL} |"
+        } >> "$GITHUB_STEP_SUMMARY"

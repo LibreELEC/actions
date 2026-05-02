@@ -1,5 +1,4 @@
-name: Check for package update and trigger update workflow
-
+name: Update packages
 on:
   workflow_dispatch:
     inputs:
@@ -8,7 +7,10 @@ on:
         required: true
         type: boolean
         default: true
-
+      BASE_BRANCH:
+        description: Branch to checkout from the fork and PR base branch on the target repository
+        required: false
+        default: master
 jobs:
   check-package-update:
     runs-on: ubuntu-24.04
@@ -22,27 +24,20 @@ jobs:
           fetch-depth: 1
           repository: ${{ github.repository_owner }}/actions
           path: actions
-
       - name: Checkout LibreELEC.tv
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
           repository: ${{ github.repository_owner }}/LibreELEC.tv
           path: LibreELEC-upstream
-
       - name: Check for package update
         id: set-matrix
         shell: bash
         run: |
           cd LibreELEC-upstream/
           updated_packages=$(AUTO_UPDATE=yes tools/update-scan $(cat ../actions/packages_for_autoupdate.txt))
-          echo "updated packages:"
-          echo "-----"
-          echo "$updated_packages"
-          echo "-----"
           pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[2] })')
           echo "matrix=$pair" >> $GITHUB_OUTPUT
-
       - name: Job summary
         shell: bash
         run: |
@@ -52,7 +47,6 @@ jobs:
             echo "|---------|---------|"
             echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) | \(.version) |"'
           } >> "$GITHUB_STEP_SUMMARY"
-
   call-package-update:
     if: ${{ github.event.inputs.TEST_RUN == 'false' }}
     needs: check-package-update
@@ -67,12 +61,10 @@ jobs:
         with:
           fetch-depth: 1
           repository: ${{ github.repository_owner }}/actions
-
       - name: Log matrix entry
         run: |
           echo "Package:  ${{ matrix.name }}"
           echo "Version:  ${{ matrix.version }}"
-
       - name: Package version bump and PR
         uses: ./.github/actions/package_version_bump_and_pr_changes
         with:
@@ -80,3 +72,4 @@ jobs:
           PACKAGE_VERSION: ${{ matrix.version }}
           GH_APP_ID: ${{ secrets.GH_APP_ID }}
           GH_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          BASE_BRANCH: ${{ github.event.inputs.BASE_BRANCH }}
