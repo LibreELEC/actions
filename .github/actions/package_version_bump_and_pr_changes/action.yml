@@ -66,10 +66,6 @@ runs:
         git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
         git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
 
-    - name: Set automation environment flag for LE scripts
-      shell: bash
-      run: echo 'GHA_AUTO=true' >> "$GITHUB_ENV"
-
     - name: Normalize version
       shell: bash
       working-directory: ${{ inputs.WORKING_DIRECTORY }}
@@ -100,8 +96,10 @@ runs:
         echo "package version: ${{ env.PACKAGE_VERSION_FULL }}"
         echo "is repo: ${{ inputs.IS_REPO }}"
         if [[ "${IS_REPO}" == "yes" ]]; then
+          echo 'GHA_AUTO=false' >> "$GITHUB_ENV"
           ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}"
         else
+          echo 'GHA_AUTO=true' >> "$GITHUB_ENV"
           ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}" "$PACKAGE_VERSION_FULL"
         fi
 
