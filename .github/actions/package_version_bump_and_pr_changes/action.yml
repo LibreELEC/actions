@@ -44,13 +44,20 @@ runs:
         private-key: ${{ inputs.GH_PRIVATE_KEY }}
         owner: LibreELEC
 
-    - name: Checkout forked pr-le repository
+    - name: Checkout target repository
       uses: actions/checkout@v6
       with:
-        repository: ${{ inputs.FORK_REPOSITORY }}
+        repository: ${{ inputs.TARGET_REPOSITORY }}
         ref: ${{ inputs.BASE_BRANCH }}
         token: ${{ steps.app-token.outputs.token }}
         path: ${{ inputs.WORKING_DIRECTORY }}
+
+    - name: Configure fork remote
+      shell: bash
+      working-directory: ${{ inputs.WORKING_DIRECTORY }}
+      run: |
+        git remote rename origin upstream
+        git remote add fork "https://github.com/${{ inputs.FORK_REPOSITORY }}.git"
 
     - name: Get GitHub App User ID
       id: get-user-id
@@ -110,12 +117,14 @@ runs:
         GH_TOKEN: ${{ steps.app-token.outputs.token }}
       run: |
         BRANCH="pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
+
         git checkout -b "$BRANCH"
-        if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-          echo "Branch '$BRANCH' already exists on origin. This change was already pushed before."
+
+        if git ls-remote --exit-code --heads fork "$BRANCH" >/dev/null 2>&1; then
+          echo "Branch '$BRANCH' already exists on fork. This change was already pushed before."
           echo "CHANGE_ALREADY_PUSHED=true" >> "$GITHUB_ENV"
         else
-          git push origin "$BRANCH"
+          git push fork "$BRANCH"
           echo "CHANGE_ALREADY_PUSHED=false" >> "$GITHUB_ENV"
         fi
 
