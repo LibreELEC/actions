@@ -6,12 +6,8 @@ inputs:
     description: Package name to update
     required: true
   PACKAGE_VERSION:
-    description: Version to update to
+    description: Version to update to; omit for self-versioning packages (repos, git-hash packages)
     required: false
-  IS_REPO:
-    description: Whether this is a repository update (use "yes" for date-based versioning)
-    required: false
-    default: no
   GH_APP_ID:
     description: GitHub App ID for authentication
     required: true
@@ -84,14 +80,13 @@ runs:
         if [[ "${PACKAGE_VERSION}" =~ ^[0-9a-fA-F]{40}$ ]]; then
           PACKAGE_VERSION="${PACKAGE_VERSION:0:7}"
         fi
-        if [[ "${{ inputs.IS_REPO }}" == "yes" ]]; then
+        if [[ -z "${PACKAGE_VERSION}" ]]; then
+          # No version supplied — self-versioning package (repo/git-hash).
+          # Use a timestamp so the branch and PR title are still unique.
           PACKAGE_VERSION="$(date '+%Y%m%d-%H%M%S')"
-          PACKAGE_VERSION_FULL="${PACKAGE_VERSION}"
-          echo "IS_REPO=yes" >> $GITHUB_ENV
         fi
-        echo "IS_REPO: ${{ inputs.IS_REPO }}"
         echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> $GITHUB_ENV
-        echo "PACKAGE_VERSION_FULL=${{ inputs.PACKAGE_VERSION }}" >> $GITHUB_ENV
+        echo "PACKAGE_VERSION_FULL=${PACKAGE_VERSION_FULL}" >> $GITHUB_ENV
         echo "PACKAGE_VERSION: ${PACKAGE_VERSION}"
         echo "PACKAGE_VERSION_FULL: ${PACKAGE_VERSION_FULL}"
 
@@ -101,12 +96,13 @@ runs:
       run: |
         echo "running update for package..."
         echo "package name: ${{ inputs.PACKAGE_NAME }}"
-        echo "package version: ${{ env.PACKAGE_VERSION_FULL }}"
-        echo "is repo: ${{ inputs.IS_REPO }}"
-        if [[ "${IS_REPO}" == "yes" ]]; then
-          GHA_AUTO=false ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}"
+        echo "package version: ${PACKAGE_VERSION_FULL}"
+        # if there is no PACKAGE_VERSION_FULL call update package without version
+        # caller handles the logic.
+        if [[ -n "${PACKAGE_VERSION_FULL}" ]]; then
+          ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}" "${PACKAGE_VERSION_FULL}"
         else
-          GHA_AUTO=true ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}" "$PACKAGE_VERSION_FULL"
+          ./tools/update-pkg "${{ inputs.PACKAGE_NAME }}"
         fi
 
     - name: Push branch to fork
