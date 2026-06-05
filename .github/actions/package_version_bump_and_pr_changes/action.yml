@@ -29,6 +29,10 @@ inputs:
   BASE_BRANCH:
     description: Branch to checkout from the fork and PR base branch on the target repository
     required: false
+  LABELS:
+    description: Comma-separated list of labels to apply to the created PR
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -159,7 +163,7 @@ runs:
             }' --jq '.data.repository.id')
 
           PR_BODY="${PR_TITLE}"
-          PR_URL=$(gh api graphql -f query='
+          PR_RESULT=$(gh api graphql -f query='
           mutation($repo: ID!, $headRepo: ID!, $head: String!, $base: String!, $title: String!, $body: String!) {
             createPullRequest(input: {
               repositoryId: $repo,
@@ -170,6 +174,7 @@ runs:
               body: $body
             }) {
               pullRequest {
+                id
                 url
               }
             }
@@ -180,9 +185,13 @@ runs:
             -f base="${{ inputs.BASE_BRANCH }}" \
             -f title="$PR_TITLE" \
             -f body="$PR_BODY" \
-            --jq '.data.createPullRequest.pullRequest.url')
+            --jq '.data.createPullRequest.pullRequest')
+          PR_URL=$(echo "$PR_RESULT" | jq -r '.url')
+          PR_NODE_ID=$(echo "$PR_RESULT" | jq -r '.id')
 
           echo "Created pull request: $PR_URL"
+          echo "PR_URL=${PR_URL}" >> "$GITHUB_ENV"
+          echo "PR_NODE_ID=${PR_NODE_ID}" >> "$GITHUB_ENV"
           PR_SUMMARY_CELL="[${PR_TITLE}](${PR_URL})"
         fi
 
@@ -192,3 +201,52 @@ runs:
           echo "|---------|--------------|"
           echo "| ${PKG} | ${PR_SUMMARY_CELL} |"
         } >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Add labels to Pull Request
+      if: env.CHANGE_ALREADY_PUSHED != 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      run: |
+        OS_VERSION=$(grep 'OS_VERSION=' '${{ inputs.WORKING_DIRECTORY }}/distributions/LibreELEC/version' | cut -d'"' -f2)
+        COMMIT_MSG=$(git -C '${{ inputs.WORKING_DIRECTORY }}' log -1 --format="%s")
+        LABELS='${{ inputs.LABELS }}'
+        if [[ -n "$OS_VERSION" ]]; then
+          LABELS="${LABELS},LE ${OS_VERSION}"
+        fi
+        if echo "$COMMIT_MSG" | grep -qE 'addon \([0-9]+\)$'; then
+          LABELS="${LABELS},ADDONS"
+        fi
+
+        TARGET_REPOSITORY='${{ inputs.TARGET_REPOSITORY }}'
+        TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+        TARGET_NAME="${TARGET_REPOSITORY##*/}"
+
+        LABEL_NAMES_JSON=$(echo "$LABELS" | tr ',' '\n' | jq -R . | jq -s .)
+
+        ALL_LABELS=$(gh api graphql -f query='
+          query($owner: String!, $name: String!) {
+            repository(owner: $owner, name: $name) {
+              labels(first: 100) {
+                nodes { id name }
+              }
+            }
+          }' \
+          -f owner="$TARGET_OWNER" \
+          -f name="$TARGET_NAME" \
+          --jq '.data.repository.labels.nodes')
+
+        LABEL_IDS_JSON=$(echo "$ALL_LABELS" | jq --argjson names "$LABEL_NAMES_JSON" \
+          '[.[] | select(.name | IN($names[])) | .id]')
+
+        gh api graphql -f query='
+          mutation($labelableId: ID!, $labelIds: [ID!]!) {
+            addLabelsToLabelable(input: {
+              labelableId: $labelableId
+              labelIds: $labelIds
+            }) {
+              clientMutationId
+            }
+          }' \
+          -f labelableId="$PR_NODE_ID" \
+          -F labelIds="$LABEL_IDS_JSON"
