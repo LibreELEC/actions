@@ -239,14 +239,14 @@ runs:
         LABEL_IDS_JSON=$(echo "$ALL_LABELS" | jq --argjson names "$LABEL_NAMES_JSON" \
           '[.[] | select(.name | IN($names[])) | .id]')
 
-        gh api graphql -f query='
-          mutation($labelableId: ID!, $labelIds: [ID!]!) {
+        jq -n \
+          --arg query 'mutation($labelableId: ID!, $labelIds: [ID!]!) {
             addLabelsToLabelable(input: {
               labelableId: $labelableId
               labelIds: $labelIds
-            }) {
-              clientMutationId
-            }
+            }) { clientMutationId }
           }' \
-          -f labelableId="$PR_NODE_ID" \
-          -F labelIds="$LABEL_IDS_JSON"
+          --arg labelableId "$PR_NODE_ID" \
+          --argjson labelIds "$LABEL_IDS_JSON" \
+          '{query: $query, variables: {labelableId: $labelableId, labelIds: $labelIds}}' \
+        | gh api graphql --input -
