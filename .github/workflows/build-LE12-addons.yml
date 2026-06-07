@@ -18,7 +18,7 @@ on:
           - ARMv8.aarch64
           - Generic.x86_64
           - Generic-legacy.x86_64
- 
+
 env:
   # these ENV variables are not used yet - need to get this working with the with statements below
   clean_le: no_clean_le
@@ -102,7 +102,7 @@ jobs:
       ccachecachesize: 20G
       version: "12.0"
     secrets: inherit
-    
+
   Generic_x86_64-12_0:
     name: "Generic.x86_64 12.0"
     # Only run if there has been a commit in the last 24 hours
