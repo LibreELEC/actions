@@ -58,27 +58,24 @@ rsync_log () {
 
 # create addon.xml
 create_addon_xml(){
-  for PROJECT in $(find "$PATH_ADDON_REPO"/* -maxdepth 0 -type d); do
-    PROJECT=$(basename "$PROJECT")
-    for ARCH in $(find "$PATH_ADDON_REPO/$PROJECT"/* -maxdepth 0 -type d); do
-      ARCH=$(basename "$ARCH")
+  while IFS= read -r PROJECT; do
+    while IFS= read -r ARCH; do
       ARCH_XML='<?xml version="1.0" encoding="UTF-8"?>\n<addons>\n'
-      for ADDON in $(find "$PATH_ADDON_REPO/$PROJECT/$ARCH"/* -maxdepth 0 -type d); do
-        ADDON=$(basename "$ADDON")
-        for ARCHIVE in $(find "$PATH_ADDON_REPO/$PROJECT/$ARCH/$ADDON" -type f -name "*.zip" | sort -V); do
+      while IFS= read -r ADDON; do
+        while IFS= read -r ARCHIVE; do
           if [ -n "$ARCHIVE" ]; then
             ARCHIVE_XML=$(unzip -pv "$ARCHIVE" "$ADDON/addon.xml" | sed '1d' | cat)
             ARCH_XML="$ARCH_XML$ARCHIVE_XML\n"
           fi
-        done
-      done
+        done < <(find "$PATH_ADDON_REPO/$PROJECT/$ARCH/$ADDON" -type f -name "*.zip" | sort -V)
+      done < <(find "$PATH_ADDON_REPO/$PROJECT/$ARCH" -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
       ARCH_XML="$ARCH_XML</addons>"
       echo -e "$ARCH_XML" > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml"
       gzip -f "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml"
       md5sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.md5"
       sha256sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.sha256"
-    done
-  done
+    done < <(find "$PATH_ADDON_REPO/$PROJECT" -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
+  done < <(find "$PATH_ADDON_REPO" -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
 }
 
 ###############
