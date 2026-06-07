@@ -17,11 +17,44 @@ jobs:
       CERTDATA_OWNER: mozilla-firefox
       CERTDATA_REPO: firefox
       CERTDATA_PATH: security/nss/lib/ckfw/builtins/certdata.txt
+      FORK_REPOSITORY: LibreELEC/pr-le
+      TARGET_REPOSITORY: LibreELEC/LibreELEC.tv
+      WORKING_DIRECTORY: pr-le
     steps:
-      - uses: actions/checkout@v6
+      - name: Create GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
         with:
-          token: ${{ secrets.LIBREELECBOT_GITHUB_TOKEN }}
-          repository: ${{ github.repository_owner }}/LibreELEC.tv
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: LibreELEC
+
+      - name: Checkout LibreELEC.tv
+        uses: actions/checkout@v6
+        with:
+          repository: LibreELEC/LibreELEC.tv
+          ref: master
+          token: ${{ steps.app-token.outputs.token }}
+          path: ${{ env.WORKING_DIRECTORY }}
+          fetch-depth: 1
+
+      - name: Configure fork remote
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          git remote rename origin upstream
+          git remote add fork "https://github.com/${{ env.FORK_REPOSITORY }}.git"
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure git
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
 
       - name: Get sha and canonical download url for latest version of certdata.txt file
         id: latest_certdata
@@ -38,53 +71,151 @@ jobs:
           download_url="https://github.com/${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}/blob/${sha}/${{ env.CERTDATA_PATH }}?raw=true"
           echo "download_url=${download_url}" >> $GITHUB_OUTPUT
 
-      - name: Download certdata.txt from https://github.com/mozilla-firefox/firefox
+      - name: Download certdata.txt, generate and update cacert.pem
+        working-directory: ${{ env.WORKING_DIRECTORY }}/packages/security/openssl/cert
         run: |
-          cd packages/security/openssl/cert                        &&
-          curl -L# -o certdata.txt ${{ steps.latest_certdata.outputs.download_url }} &&
-          curl -L# -o mk-ca-bundle.pl https://raw.githubusercontent.com/curl/curl/master/scripts/mk-ca-bundle.pl &&
+          curl -L# -o certdata.txt ${{ steps.latest_certdata.outputs.download_url }}
+          curl -L# -o mk-ca-bundle.pl https://raw.githubusercontent.com/curl/curl/master/scripts/mk-ca-bundle.pl
           chmod 755 mk-ca-bundle.pl
-
-      - name: Generate cacert.pem
-        run: |
-          cd packages/security/openssl/cert                        &&
           ./mk-ca-bundle.pl -n cacert.pem
-
-      - name: Cleanup
-        run: |
-          cd packages/security/openssl/cert                        &&
           rm certdata.txt mk-ca-bundle.pl
 
-      - name: Get SHA of the branch that triggered the workflow run
-        id: head_branch
+      - name: Commit and push branch to fork
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          sha=$(git rev-parse HEAD)
-          echo "sha=${sha}" >> $GITHUB_OUTPUT
+          AUTHORDATE='${{ steps.latest_certdata.outputs.authordate }}'
+          SHA='${{ steps.latest_certdata.outputs.sha }}'
+          DOWNLOAD_URL='${{ steps.latest_certdata.outputs.download_url }}'
+          BRANCH="pr-automated/cacert.pem-${AUTHORDATE}"
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.LIBREELECBOT_GITHUB_TOKEN }}
-          commit-message: |
-            cacert.pem: update to ${{ steps.latest_certdata.outputs.authordate }}
+          if git diff --quiet; then
+            echo "No changes to cacert.pem — skipping PR."
+            echo "SKIP_PR=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
 
-            This commit updates cacert.pem certificate bundle with mk-ca-bundle.pl script using the
-            content of [certdata][1] associated with ${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}@${{ steps.latest_certdata.outputs.sha }},
+          git add packages/security/openssl/cert/cacert.pem
+          git commit -m "cacert.pem: update to ${AUTHORDATE}
 
-            [1]: ${{ steps.latest_certdata.outputs.download_url }}
-          committer: LibreELEC Bot <libreelec-bot@libreelec.tv>
-          author: LibreELEC Bot <libreelec-bot@libreelec.tv>
-          reviewers: LibreELEC Bot <libreelec-bot@libreelec.tv>
-          labels: 'github-action'
-          signoff: false
-          branch-suffix: short-commit-hash
-          delete-branch: true
-          title: "cacert.pem CA bundle: update to ${{ steps.latest_certdata.outputs.authordate }}"
-          body: |
-            This pull-request was auto-generated by the [update-cacert-pem-certificate-bundle][1] GitHub action workflow.
+          This commit updates cacert.pem certificate bundle with mk-ca-bundle.pl script using the
+          content of [certdata][1] associated with ${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}@${SHA},
 
-            [1]: https://github.com/${{ github.repository }}/blob/${{ steps.head_branch.outputs.sha }}/.github/workflows/update-cacert-pem-certificate-bundle.yml
-          draft: false
-          add-paths: |
-            packages/security/openssl/cert/cacert.pem
+          [1]: ${DOWNLOAD_URL}"
+
+          git checkout -b "$BRANCH"
+
+          if git ls-remote --exit-code --heads fork "$BRANCH" >/dev/null 2>&1; then
+            echo "Branch '$BRANCH' already exists on fork. This change was already pushed before."
+            echo "SKIP_PR=true" >> "$GITHUB_ENV"
+          else
+            git push fork "$BRANCH"
+            echo "SKIP_PR=false" >> "$GITHUB_ENV"
+          fi
+
+          echo "BRANCH=${BRANCH}" >> "$GITHUB_ENV"
+
+      - name: Create Pull Request via GraphQL
+        if: env.SKIP_PR != 'true'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          FORK_REPOSITORY='${{ env.FORK_REPOSITORY }}'
+          FORK_OWNER="${FORK_REPOSITORY%%/*}"
+          FORK_NAME="${FORK_REPOSITORY##*/}"
+          TARGET_REPOSITORY='${{ env.TARGET_REPOSITORY }}'
+          TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+          TARGET_NAME="${TARGET_REPOSITORY##*/}"
+          PR_TITLE="cacert.pem CA bundle: update to ${{ steps.latest_certdata.outputs.authordate }}"
+          PR_BODY="${PR_TITLE}"
+
+          REPO_ID=$(gh api graphql -f query='
+            query {
+              repository(owner: "'"${TARGET_OWNER}"'", name: "'"${TARGET_NAME}"'") {
+                id
+              }
+            }' --jq '.data.repository.id')
+
+          HEAD_REPO_ID=$(gh api graphql -f query='
+            query {
+              repository(owner: "'"${FORK_OWNER}"'", name: "'"${FORK_NAME}"'") {
+                id
+              }
+            }' --jq '.data.repository.id')
+
+          PR_RESULT=$(gh api graphql -f query='
+          mutation($repo: ID!, $headRepo: ID!, $head: String!, $base: String!, $title: String!, $body: String!) {
+            createPullRequest(input: {
+              repositoryId: $repo,
+              headRepositoryId: $headRepo,
+              baseRefName: $base,
+              headRefName: $head,
+              title: $title,
+              body: $body
+            }) {
+              pullRequest {
+                id
+                url
+              }
+            }
+          }' \
+            -f repo="$REPO_ID" \
+            -f headRepo="$HEAD_REPO_ID" \
+            -f head="$BRANCH" \
+            -f base="master" \
+            -f title="$PR_TITLE" \
+            -f body="$PR_BODY" \
+            --jq '.data.createPullRequest.pullRequest')
+
+          PR_URL=$(echo "$PR_RESULT" | jq -r '.url')
+          PR_NODE_ID=$(echo "$PR_RESULT" | jq -r '.id')
+
+          echo "Created pull request: $PR_URL"
+          echo "PR_URL=${PR_URL}" >> "$GITHUB_ENV"
+          echo "PR_NODE_ID=${PR_NODE_ID}" >> "$GITHUB_ENV"
+
+      - name: Add labels to Pull Request
+        if: env.SKIP_PR != 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          OS_VERSION=$(grep 'OS_VERSION=' '${{ env.WORKING_DIRECTORY }}/distributions/LibreELEC/version' | cut -d'"' -f2)
+          LABELS="PACKAGE,BOT"
+          if [[ -n "$OS_VERSION" ]]; then
+            LABELS="${LABELS},LE ${OS_VERSION}"
+          fi
+
+          TARGET_REPOSITORY='${{ env.TARGET_REPOSITORY }}'
+          TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+          TARGET_NAME="${TARGET_REPOSITORY##*/}"
+
+          LABEL_NAMES_JSON=$(echo "$LABELS" | tr ',' '\n' | jq -R . | jq -s .)
+
+          ALL_LABELS=$(gh api graphql -f query='
+            query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                labels(first: 100) {
+                  nodes { id name }
+                }
+              }
+            }' \
+            -f owner="$TARGET_OWNER" \
+            -f name="$TARGET_NAME" \
+            --jq '.data.repository.labels.nodes')
+
+          LABEL_IDS_JSON=$(echo "$ALL_LABELS" | jq --argjson names "$LABEL_NAMES_JSON" \
+            '[.[] | select(.name | IN($names[])) | .id]')
+
+          jq -n \
+            --arg query 'mutation($labelableId: ID!, $labelIds: [ID!]!) {
+              addLabelsToLabelable(input: {
+                labelableId: $labelableId
+                labelIds: $labelIds
+              }) { clientMutationId }
+            }' \
+            --arg labelableId "$PR_NODE_ID" \
+            --argjson labelIds "$LABEL_IDS_JSON" \
+            '{query: $query, variables: {labelableId: $labelableId, labelIds: $labelIds}}' \
+          | gh api graphql --input -
