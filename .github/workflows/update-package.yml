@@ -41,7 +41,7 @@ jobs:
       - name: Job summary
         shell: bash
         run: |
-          echo "### 📌 Updating these Packages" >> $GITHUB_STEP_SUMMARY
+          echo "### 📌 Updating these Packages" >> "$GITHUB_STEP_SUMMARY"
           {
             echo "| Package | Version |"
             echo "|---------|---------|"
