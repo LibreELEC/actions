@@ -93,7 +93,7 @@ fi
 mkdir -p "$PATH_TARGET" "$PATH_ADDON_REPO"
 
 # check for enough free disk space
-if [ $(df "$PATH_ADDON_REPO" | awk 'END {print $4}') -lt 6000000 ]; then
+if [[ $(df "$PATH_ADDON_REPO" | awk 'END {print $4}') -lt 6000000 ]]; then
   slack "*WARNING*: not enough storage is available\n\`\`\`$(df "$PATH_ADDON_REPO")\`\`\`"
   exit 0;
 fi
@@ -156,7 +156,7 @@ create_addon_xml
 
 # post to slack
 if [ -s "$PATH_LOG" ]; then
-  slack $(rsync_log)
+  slack "$(rsync_log)"
 fi
 
 exit 0
