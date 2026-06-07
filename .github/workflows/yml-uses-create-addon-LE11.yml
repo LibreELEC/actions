@@ -108,7 +108,7 @@ jobs:
           # workaround until buildsystem does not require local cc
           #sed -i -e "/^USER docker/i RUN ln -s /usr/bin/gcc-10 /usr/bin/cc" tools/docker/jammy/Dockerfile
           sed -i -e 's/^CCACHE_CACHE_SIZE=.*/CCACHE_CACHE_SIZE="${{ inputs.ccachecachesize }}"/' config/options
-          echo "LE_ADDON_VERSION=$(grep -oP -m 1 '(?<=ADDON_VERSION=\").*(?=\")' distributions/LibreELEC/version)" >> $GITHUB_ENV
+          echo "LE_ADDON_VERSION=$(grep -oP -m 1 '(?<=ADDON_VERSION=\").*(?=\")' distributions/LibreELEC/version)" >> "$GITHUB_ENV"
 
       - name: Create docker image for build - tools/docker/jammy
         run: |
@@ -126,8 +126,8 @@ jobs:
         run: |
           cd LibreELEC.tv
           # set the build_dir=/build
-          echo "build_dir=/build" >> $GITHUB_ENV
-          echo "CCACHE_DISABLE=1" >> $GITHUB_ENV
+          echo "build_dir=/build" >> "$GITHUB_ENV"
+          echo "CCACHE_DISABLE=1" >> "$GITHUB_ENV"
 
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         if: inputs.ephemeral == 'no_ephemeral'
@@ -136,7 +136,7 @@ jobs:
           # create links that will be used from within the docker containers
           [ ! -h target ] && ln -s /target .
           # set the build_dir=/build-root - for NON ephemeral builds
-          echo "build_dir=/build-root" >> $GITHUB_ENV
+          echo "build_dir=/build-root" >> "$GITHUB_ENV"
 
       - name: Display environment
         if: inputs.debug == 'debug'
@@ -165,7 +165,7 @@ jobs:
           docker run --rm -v ${{ env.BASEDIR }}/sources:/sources \
                           -v ${{ env.BASEDIR }}/target:/target \
                           -v ${{ env.BASEDIR }}/build-root:/build-root \
-                          -v `pwd`:/build \
+                          -v "$(pwd)":/build \
                           -w /build -i \
                           -e PROJECT=${{ env.PROJECT }} \
                           -e ARCH=${{ env.ARCH }} \
@@ -185,7 +185,7 @@ jobs:
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
           grep ^FAIL ${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
-              while read failedpkg failedlog; do
+              while read -r failedpkg failedlog; do
                 mv $(echo ${failedlog} | sed 's#/build/##') \
                   ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
@@ -197,7 +197,7 @@ jobs:
           mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
           grep ^FAIL ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
-              while read failedpkg failedlog; do
+              while read -r failedpkg failedlog; do
                 mv ${{ env.BASEDIR }}/${failedlog} \
                   ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
@@ -230,7 +230,7 @@ jobs:
           cd LibreELEC.tv
           ssh ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }} -p ${{ secrets.ADDONS_HOST_PORT }} "mkdir -p ${{ secrets.ADDONS_UPLOAD_PATH }}/${{ env.LE_ADDON_VERSION }}" && \
           find target/jenkins/ -name "*.zip" -or -name "*.sha256" | \
-          while read addonfiles; do
+          while read -r addonfiles; do
             scp -q -P ${{ secrets.ADDONS_HOST_PORT }} ${addonfiles} \
             ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }}:${{ secrets.ADDONS_UPLOAD_PATH }}/${{ env.LE_ADDON_VERSION }}
             printf "[\xE2\x9C\x94] %s\n" "$(basename ${addonfiles})"

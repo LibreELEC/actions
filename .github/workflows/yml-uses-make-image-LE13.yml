@@ -121,7 +121,7 @@ jobs:
           sed -i -e 's/LIBREELEC_VERSION="devel"/LIBREELEC_VERSION="${{ inputs.gitref }}"/' distributions/LibreELEC/version
           echo "OFFICIAL=\"yes\"" >> distributions/LibreELEC/version
           echo "building official ${{ inputs.gitref }}"
-          if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> $GITHUB_ENV; fi
+          if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> "$GITHUB_ENV"; fi
 
       - name: Create docker image for build - tools/docker/resolute
         run: |
@@ -139,8 +139,8 @@ jobs:
         run: |
           cd LibreELEC.tv
           # set the build_dir=/build
-          echo "build_dir=/build" >> $GITHUB_ENV
-          echo "CCACHE_DISABLE=1" >> $GITHUB_ENV
+          echo "build_dir=/build" >> "$GITHUB_ENV"
+          echo "CCACHE_DISABLE=1" >> "$GITHUB_ENV"
 
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         if: inputs.ephemeral == 'no_ephemeral'
@@ -149,7 +149,7 @@ jobs:
           # create links that will be used from within the docker containers
           [ ! -h target ] && ln -s /target .
           # set the build_dir=/build-root - for NON ephemeral builds
-          echo "build_dir=/build-root" >> $GITHUB_ENV
+          echo "build_dir=/build-root" >> "$GITHUB_ENV"
 
       - name: Display environment
         if: inputs.debug == 'debug'
@@ -177,7 +177,7 @@ jobs:
           docker run --rm -v ${{ env.BASEDIR }}/sources:/sources \
                           -v ${{ env.BASEDIR }}/target:/target \
                           -v ${{ env.BASEDIR }}/build-root:/build-root \
-                          -v `pwd`:/build \
+                          -v "$(pwd)":/build \
                           -w /build -i \
                           -e PROJECT=${{ env.PROJECT }} \
                           -e ARCH=${{ env.ARCH }} \
@@ -196,7 +196,7 @@ jobs:
           mkdir -p ${{ env.TARGETBUILDDIR }}/artifact
           grep ^FAIL ${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
-              while read failedpkg failedlog; do
+              while read -r failedpkg failedlog; do
                 mv $(echo ${failedlog} | sed 's#/build/##') \
                   ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
@@ -208,7 +208,7 @@ jobs:
           mkdir -p ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact
           grep ^FAIL ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
-              while read failedpkg failedlog; do
+              while read -r failedpkg failedlog; do
                 mv ${{ env.BASEDIR }}/${failedlog} \
                   ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
               done
@@ -274,7 +274,7 @@ jobs:
               ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} \
                 -p ${{ secrets.NIGHTLY_HOST_PORT }} \
                 "mkdir -p ${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${uboot_device}"
-              scp -P ${{ secrets.NIGHTLY_HOST_PORT }} ${f} ${f}.sha256 \
-                ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${uboot_device}/
+              scp -P ${{ secrets.NIGHTLY_HOST_PORT }} "${f}" "${f}.sha256" \
+                "${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${uboot_device}/"
             done
           fi

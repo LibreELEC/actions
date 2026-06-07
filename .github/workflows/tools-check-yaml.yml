@@ -2,6 +2,7 @@ name: tools-check-yaml
 on:
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   actionlint:
