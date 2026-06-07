@@ -186,8 +186,8 @@ jobs:
           grep ^FAIL ${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
               while read -r failedpkg failedlog; do
-                mv $(echo ${failedlog} | sed 's#/build/##') \
-                  ${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
+                mv "${failedlog/\/build\//}" \
+                  "${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-${failedlog##*/}"
               done
 
       - name: Prepare artifacts - no_ephemeral
@@ -198,8 +198,8 @@ jobs:
           grep ^FAIL ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog | \
             awk '{ print $5, $12 }' | tr ':' '_' | \
               while read -r failedpkg failedlog; do
-                mv ${{ env.BASEDIR }}/${failedlog} \
-                  ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-$(echo ${failedlog} | sed 's#.*/##')
+                mv "${{ env.BASEDIR }}/${failedlog}" \
+                  "${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/${{ env.TARGETBUILDDIR }}-${failedpkg}-${failedlog##*/}"
               done
 
       - name: Upload failed artifacts - ephemeral
