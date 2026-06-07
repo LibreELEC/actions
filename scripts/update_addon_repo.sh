@@ -34,7 +34,7 @@ slack () {
       text="$text$line\n"
     done
   fi
-  escapedText=$(echo $text | sed 's/"/\"/g' | sed "s/'/\'/g" )
+  escapedText=$(echo "$text" | sed 's/"/\"/g' | sed "s/'/\'/g" )
   json="{\"channel\": \"$slack_channel\", \"username\":\"$username\", \"icon_emoji\":\"ghost\", \"attachments\":[{\"color\":\"$color\" , \"text\": \"$escapedText\"}]}"
   curl -s -d "payload=$json" "$slack_webhook_url"
 }
@@ -60,12 +60,12 @@ rsync_log () {
 create_addon_xml(){
   for PROJECT in $(find "$PATH_ADDON_REPO"/* -maxdepth 0 -type d); do
     PROJECT=$(basename "$PROJECT")
-    for ARCH in $(find "$PATH_ADDON_REPO"/$PROJECT/* -maxdepth 0 -type d); do
+    for ARCH in $(find "$PATH_ADDON_REPO/$PROJECT"/* -maxdepth 0 -type d); do
       ARCH=$(basename "$ARCH")
       ARCH_XML='<?xml version="1.0" encoding="UTF-8"?>\n<addons>\n'
-      for ADDON in $(find "$PATH_ADDON_REPO"/$PROJECT/$ARCH/* -maxdepth 0 -type d); do
+      for ADDON in $(find "$PATH_ADDON_REPO/$PROJECT/$ARCH"/* -maxdepth 0 -type d); do
         ADDON=$(basename "$ADDON")
-        for ARCHIVE in $(find "$PATH_ADDON_REPO"/$PROJECT/$ARCH/$ADDON -type f -name "*.zip" | sort -V); do
+        for ARCHIVE in $(find "$PATH_ADDON_REPO/$PROJECT/$ARCH/$ADDON" -type f -name "*.zip" | sort -V); do
           if [ -n "$ARCHIVE" ]; then
             ARCHIVE_XML=$(unzip -pv "$ARCHIVE" "$ADDON/addon.xml" | sed '1d' | cat)
             ARCH_XML="$ARCH_XML$ARCHIVE_XML\n"
@@ -73,10 +73,10 @@ create_addon_xml(){
         done
       done
       ARCH_XML="$ARCH_XML</addons>"
-      echo -e "$ARCH_XML" > "$PATH_ADDON_REPO"/$PROJECT/$ARCH/addons.xml
-      gzip -f "$PATH_ADDON_REPO"/$PROJECT/$ARCH/addons.xml
-      md5sum "$PATH_ADDON_REPO"/$PROJECT/$ARCH/addons.xml.gz | cut -f1 -d ' ' > "$PATH_ADDON_REPO"/$PROJECT/$ARCH/addons.xml.gz.md5
-      sha256sum "$PATH_ADDON_REPO"/$PROJECT/$ARCH/addons.xml.gz | cut -f1 -d ' ' > "$PATH_ADDON_REPO"/$PROJECT/$ARCH/addons.xml.gz.sha256
+      echo -e "$ARCH_XML" > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml"
+      gzip -f "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml"
+      md5sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.md5"
+      sha256sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.sha256"
     done
   done
 }
@@ -90,11 +90,11 @@ if [ ! -d "$PATH_STAGING" ]; then
 fi
 
 # preparing folder
-mkdir -p $PATH_TARGET $PATH_ADDON_REPO
+mkdir -p "$PATH_TARGET" "$PATH_ADDON_REPO"
 
 # check for enough free disk space
-if [ $(df $PATH_ADDON_REPO | awk 'END {print $4}') -lt 6000000 ]; then
-  slack "*WARNING*: not enough storage is available\n\`\`\`$(df $PATH_ADDON_REPO)\`\`\`"
+if [ $(df "$PATH_ADDON_REPO" | awk 'END {print $4}') -lt 6000000 ]; then
+  slack "*WARNING*: not enough storage is available\n\`\`\`$(df "$PATH_ADDON_REPO")\`\`\`"
   exit 0;
 fi
 
@@ -111,12 +111,12 @@ mkdir -p "$PATH_TARGET"
 # check for sha256sum
 for PROJECT in "$PATH_STAGING"/*.zip; do
   cd "$PATH_STAGING" || exit
-    if sha256sum --status -c $PROJECT.sha256 2>&1; then
+    if sha256sum --status -c "$PROJECT.sha256" 2>&1; then
       continue;
     else
       # remove files that fail at checksum test
       mv "$PROJECT" "$PROJECT"-ohohhhhh
-      slack "*WARNING:* $(basename $PROJECT) wrong checksum \n"
+      slack "*WARNING:* $(basename "$PROJECT") wrong checksum \n"
     fi
 done
 
