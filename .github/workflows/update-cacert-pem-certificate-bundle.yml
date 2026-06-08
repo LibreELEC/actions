@@ -105,13 +105,13 @@ jobs:
 
           [1]: ${DOWNLOAD_URL}"
 
-          git checkout -b "$BRANCH"
+          git checkout -b "${BRANCH}"
 
-          if git ls-remote --exit-code --heads fork "$BRANCH" >/dev/null 2>&1; then
-            echo "Branch '$BRANCH' already exists on fork. This change was already pushed before."
+          if git ls-remote --exit-code --heads fork "${BRANCH}" >/dev/null 2>&1; then
+            echo "Branch '${BRANCH}' already exists on fork. This change was already pushed before."
             echo "SKIP_PR=true" >> "${GITHUB_ENV}"
           else
-            git push fork "$BRANCH"
+            git push fork "${BRANCH}"
             echo "SKIP_PR=false" >> "${GITHUB_ENV}"
           fi
 
@@ -163,18 +163,18 @@ jobs:
               }
             }
           }' \
-            -f repo="$REPO_ID" \
-            -f headRepo="$HEAD_REPO_ID" \
-            -f head="$BRANCH" \
+            -f repo="${REPO_ID}" \
+            -f headRepo="${HEAD_REPO_ID}" \
+            -f head="${BRANCH}" \
             -f base="master" \
-            -f title="$PR_TITLE" \
-            -f body="$PR_BODY" \
+            -f title="${PR_TITLE}" \
+            -f body="${PR_BODY}" \
             --jq '.data.createPullRequest.pullRequest')
 
-          PR_URL=$(echo "$PR_RESULT" | jq -r '.url')
-          PR_NODE_ID=$(echo "$PR_RESULT" | jq -r '.id')
+          PR_URL=$(echo "${PR_RESULT}" | jq -r '.url')
+          PR_NODE_ID=$(echo "${PR_RESULT}" | jq -r '.id')
 
-          echo "Created pull request: $PR_URL"
+          echo "Created pull request: ${PR_URL}"
           echo "PR_URL=${PR_URL}" >> "${GITHUB_ENV}"
           echo "PR_NODE_ID=${PR_NODE_ID}" >> "${GITHUB_ENV}"
 
@@ -185,7 +185,7 @@ jobs:
         run: |
           OS_VERSION=$(grep 'OS_VERSION=' '${{ env.WORKING_DIRECTORY }}/distributions/LibreELEC/version' | cut -d'"' -f2)
           LABELS="PACKAGE,BOT"
-          if [[ -n "$OS_VERSION" ]]; then
+          if [[ -n "${OS_VERSION}" ]]; then
             LABELS="${LABELS},LE ${OS_VERSION}"
           fi
 
@@ -193,7 +193,7 @@ jobs:
           TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
           TARGET_NAME="${TARGET_REPOSITORY##*/}"
 
-          LABEL_NAMES_JSON=$(echo "$LABELS" | tr ',' '\n' | jq -R . | jq -s .)
+          LABEL_NAMES_JSON=$(echo "${LABELS}" | tr ',' '\n' | jq -R . | jq -s .)
 
           # shellcheck disable=SC2016
           ALL_LABELS=$(gh api graphql -f query='
@@ -204,11 +204,11 @@ jobs:
                 }
               }
             }' \
-            -f owner="$TARGET_OWNER" \
-            -f name="$TARGET_NAME" \
+            -f owner="${TARGET_OWNER}" \
+            -f name="${TARGET_NAME}" \
             --jq '.data.repository.labels.nodes')
 
-          LABEL_IDS_JSON=$(echo "$ALL_LABELS" | jq --argjson names "$LABEL_NAMES_JSON" \
+          LABEL_IDS_JSON=$(echo "${ALL_LABELS}" | jq --argjson names "${LABEL_NAMES_JSON}" \
             '[.[] | select(.name | IN($names[])) | .id]')
 
           jq -n \
@@ -218,7 +218,7 @@ jobs:
                 labelIds: $labelIds
               }) { clientMutationId }
             }' \
-            --arg labelableId "$PR_NODE_ID" \
-            --argjson labelIds "$LABEL_IDS_JSON" \
+            --arg labelableId "${PR_NODE_ID}" \
+            --argjson labelIds "${LABEL_IDS_JSON}" \
             '{query: $query, variables: {labelableId: $labelableId, labelIds: $labelIds}}' \
           | gh api graphql --input -

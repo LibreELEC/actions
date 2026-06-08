@@ -37,8 +37,8 @@ jobs:
           cd LibreELEC-upstream/
           # shellcheck disable=SC2046
           updated_packages=$(AUTO_UPDATE=yes tools/update-scan $(cat ../actions/packages_for_autoupdate.txt))
-          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[2] })')
-          echo "matrix=$pair" >> "${GITHUB_OUTPUT}"
+          pair=$(echo "${updated_packages}" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[2] })')
+          echo "matrix=${pair}" >> "${GITHUB_OUTPUT}"
       - name: Job summary
         shell: bash
         run: |

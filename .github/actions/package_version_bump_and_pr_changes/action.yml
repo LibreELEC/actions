@@ -89,8 +89,8 @@ runs:
           # Use a timestamp so the branch and PR title are still unique.
           PACKAGE_VERSION="$(date '+%Y%m%d-%H%M%S')"
         fi
-        echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> $GITHUB_ENV
-        echo "PACKAGE_VERSION_FULL=${PACKAGE_VERSION_FULL}" >> $GITHUB_ENV
+        echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> ${GITHUB_ENV}
+        echo "PACKAGE_VERSION_FULL=${PACKAGE_VERSION_FULL}" >> ${GITHUB_ENV}
         echo "PACKAGE_VERSION: ${PACKAGE_VERSION}"
         echo "PACKAGE_VERSION_FULL: ${PACKAGE_VERSION_FULL}"
 
@@ -117,13 +117,13 @@ runs:
       run: |
         BRANCH="pr-automated/${{ inputs.PACKAGE_NAME }}-${PACKAGE_VERSION}"
 
-        git checkout -b "$BRANCH"
+        git checkout -b "${BRANCH}"
 
-        if git ls-remote --exit-code --heads fork "$BRANCH" >/dev/null 2>&1; then
-          echo "Branch '$BRANCH' already exists on fork. This change was already pushed before."
+        if git ls-remote --exit-code --heads fork "${BRANCH}" >/dev/null 2>&1; then
+          echo "Branch '${BRANCH}' already exists on fork. This change was already pushed before."
           echo "CHANGE_ALREADY_PUSHED=true" >> "${GITHUB_ENV}"
         else
-          git push fork "$BRANCH"
+          git push fork "${BRANCH}"
           echo "CHANGE_ALREADY_PUSHED=false" >> "${GITHUB_ENV}"
         fi
 
@@ -146,7 +146,7 @@ runs:
           PR_SUMMARY_CELL="Already pushed in a previous run (no new PR created)"
         else
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          echo "BRANCH=$BRANCH"
+          echo "BRANCH=${BRANCH}"
 
           REPO_ID=$(gh api graphql -f query='
             query {
@@ -179,17 +179,17 @@ runs:
               }
             }
           }' \
-            -f repo="$REPO_ID" \
-            -f headRepo="$HEAD_REPO_ID" \
-            -f head="$BRANCH" \
+            -f repo="${REPO_ID}" \
+            -f headRepo="${HEAD_REPO_ID}" \
+            -f head="${BRANCH}" \
             -f base="${{ inputs.BASE_BRANCH }}" \
-            -f title="$PR_TITLE" \
-            -f body="$PR_BODY" \
+            -f title="${PR_TITLE}" \
+            -f body="${PR_BODY}" \
             --jq '.data.createPullRequest.pullRequest')
-          PR_URL=$(echo "$PR_RESULT" | jq -r '.url')
-          PR_NODE_ID=$(echo "$PR_RESULT" | jq -r '.id')
+          PR_URL=$(echo "${PR_RESULT}" | jq -r '.url')
+          PR_NODE_ID=$(echo "${PR_RESULT}" | jq -r '.id')
 
-          echo "Created pull request: $PR_URL"
+          echo "Created pull request: ${PR_URL}"
           echo "PR_URL=${PR_URL}" >> "${GITHUB_ENV}"
           echo "PR_NODE_ID=${PR_NODE_ID}" >> "${GITHUB_ENV}"
           PR_SUMMARY_CELL="[${PR_TITLE}](${PR_URL})"
@@ -211,10 +211,10 @@ runs:
         OS_VERSION=$(grep 'OS_VERSION=' '${{ inputs.WORKING_DIRECTORY }}/distributions/LibreELEC/version' | cut -d'"' -f2)
         COMMIT_MSG=$(git -C '${{ inputs.WORKING_DIRECTORY }}' log -1 --format="%s")
         LABELS='${{ inputs.LABELS }}'
-        if [[ -n "$OS_VERSION" ]]; then
+        if [[ -n "${OS_VERSION}" ]]; then
           LABELS="${LABELS},LE ${OS_VERSION}"
         fi
-        if echo "$COMMIT_MSG" | grep -qE 'addon \([0-9]+\)$'; then
+        if echo "${COMMIT_MSG}" | grep -qE 'addon \([0-9]+\)$'; then
           LABELS="${LABELS},ADDONS"
         fi
 
@@ -222,7 +222,7 @@ runs:
         TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
         TARGET_NAME="${TARGET_REPOSITORY##*/}"
 
-        LABEL_NAMES_JSON=$(echo "$LABELS" | tr ',' '\n' | jq -R . | jq -s .)
+        LABEL_NAMES_JSON=$(echo "${LABELS}" | tr ',' '\n' | jq -R . | jq -s .)
 
         ALL_LABELS=$(gh api graphql -f query='
           query($owner: String!, $name: String!) {
@@ -232,11 +232,11 @@ runs:
               }
             }
           }' \
-          -f owner="$TARGET_OWNER" \
-          -f name="$TARGET_NAME" \
+          -f owner="${TARGET_OWNER}" \
+          -f name="${TARGET_NAME}" \
           --jq '.data.repository.labels.nodes')
 
-        LABEL_IDS_JSON=$(echo "$ALL_LABELS" | jq --argjson names "$LABEL_NAMES_JSON" \
+        LABEL_IDS_JSON=$(echo "${ALL_LABELS}" | jq --argjson names "${LABEL_NAMES_JSON}" \
           '[.[] | select(.name | IN($names[])) | .id]')
 
         jq -n \
@@ -246,7 +246,7 @@ runs:
               labelIds: $labelIds
             }) { clientMutationId }
           }' \
-          --arg labelableId "$PR_NODE_ID" \
-          --argjson labelIds "$LABEL_IDS_JSON" \
+          --arg labelableId "${PR_NODE_ID}" \
+          --argjson labelIds "${LABEL_IDS_JSON}" \
           '{query: $query, variables: {labelableId: $labelableId, labelIds: $labelIds}}' \
         | gh api graphql --input -

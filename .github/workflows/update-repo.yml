@@ -35,16 +35,16 @@ jobs:
         env:
           REPO: ${{ github.event.inputs.repository }}
         run: |
-          echo "Selected repo: $REPO"
-          REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
-          case "$REPO" in
+          echo "Selected repo: ${REPO}"
+          REPO_NAME=$(echo "${REPO}" | cut -d'/' -f2)
+          case "${REPO}" in
             "LibreELEC/service.libreelec.settings")
               REPO_NAME="LibreELEC-settings"
               ;;
           esac
           updated_packages="${REPO_NAME}"
-          pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0] })')
-          echo "matrix=$pair" >> "${GITHUB_OUTPUT}"
+          pair=$(echo "${updated_packages}" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0] })')
+          echo "matrix=${pair}" >> "${GITHUB_OUTPUT}"
       - name: Job summary
         shell: bash
         run: |
