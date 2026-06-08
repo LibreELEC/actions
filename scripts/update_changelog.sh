@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2022-present Team LibreELEC (https://libreelec.tv)
+
 # abort at error
 set -e
 
@@ -35,7 +38,12 @@ EOF
     var_hash="$(grep -oP '(?<=^"[0-9-]{10} )[0-9a-f]{7}' <<<"$line")"
 
     # output line
-    echo "<tr><td>$var_date ($var_hash):</td><td><a href=\"https://github.com/LibreELEC/LibreELEC.tv/pull/${var_pr//#/}\" target="_blank" rel="noopener noreferrer">${var_pr}</a></td><td>${var_message}</td></tr>"
+    url="https://github.com/LibreELEC/LibreELEC.tv/pull/${var_pr//#/}"
+    row="<tr><td>$var_date ($var_hash):</td>"
+    row+="<td><a href=\"$url\" target=\"_blank\""
+    row+=" rel=\"noopener noreferrer\">${var_pr}</a></td>"
+    row+="<td>${var_message}</td></tr>"
+    echo "$row"
   done <<<"$gh_output"
 
   # html footer

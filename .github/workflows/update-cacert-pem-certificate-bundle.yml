@@ -13,6 +13,7 @@ jobs:
   update-cacert-pem-certificate-bundle:
     name: Update cacert.pem certificate bundle
     runs-on: ubuntu-latest
+    if: github.repository == 'LibreELEC/actions'
     env:
       CERTDATA_OWNER: mozilla-firefox
       CERTDATA_REPO: firefox
