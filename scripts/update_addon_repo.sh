@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # set version to use
 # check for format 9.2.0 instead of 9.2
 if [[ "$1" =~ ^[0-9]{1,2}.[0-9]{1,3}.[0-9]{1,3}$ ]]; then
