@@ -19,6 +19,7 @@ on:
 jobs:
   clean_img:
     runs-on: [self-hosted, scripts]
+    if: github.repository == 'LibreELEC/actions'
 
     steps:
       - name: log variables
