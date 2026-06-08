@@ -45,6 +45,7 @@ rsync_log () {
   printf "*Updated Add-ons* \n"
 
   # list Add-ons
+  # shellcheck disable=SC2034  # addon names the field for readability; it is not used in the loop body
   while IFS="/" read -r project platform addon filename; do
     if [[ $project_rsync != $project$platform ]]; then
       printf '%s %s %s' "\n*$project" "$platform" "($REPO_VERSION) *\n"   # some crap due the slack function escape text
@@ -120,6 +121,7 @@ done
 # rename and move files to files
 for PROJECT in "$PATH_STAGING"/*.zip; do
   PROJECT=$(basename "$PROJECT")
+  # shellcheck disable=SC2034  # var1 documents the field layout; it is not used further
   var1=$(echo "$PROJECT" | cut -d- -f1 )                             # 9.0
   var2=$(echo "$PROJECT" | cut -d- -f2 )                             # Generic
   var3=$(echo "$PROJECT" | cut -d- -f3 )                             # Could be either ARCH (x86_64) or legacy
