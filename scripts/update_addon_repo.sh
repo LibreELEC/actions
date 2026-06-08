@@ -116,13 +116,13 @@ for PROJECT in "$PATH_STAGING"/*.zip; do
     else
       # remove files that fail at checksum test
       mv "$PROJECT" "$PROJECT"-ohohhhhh
-      slack "*WARNING:* $(basename "$PROJECT") wrong checksum \n"
+      slack "*WARNING:* ${PROJECT##*/} wrong checksum \n"
     fi
 done
 
 # rename and move files to files
 for PROJECT in "$PATH_STAGING"/*.zip; do
-  PROJECT=$(basename "$PROJECT")
+  PROJECT="${PROJECT##*/}"
   # shellcheck disable=SC2034  # var1 documents the field layout; it is not used further
   var1=$(echo "$PROJECT" | cut -d- -f1 )                             # 9.0
   var2=$(echo "$PROJECT" | cut -d- -f2 )                             # Generic
