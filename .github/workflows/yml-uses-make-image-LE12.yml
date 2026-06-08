@@ -122,7 +122,7 @@ jobs:
           sed -i -e 's/LIBREELEC_VERSION="devel"/LIBREELEC_VERSION="${{ inputs.gitref }}"/' distributions/LibreELEC/version
           echo "OFFICIAL=\"yes\"" >> distributions/LibreELEC/version
           echo "building official ${{ inputs.gitref }}"
-          if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> "$GITHUB_ENV"; fi
+          if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> "${GITHUB_ENV}"; fi
 
       - name: Create docker image for build - tools/docker/jammy
         run: |
@@ -140,8 +140,8 @@ jobs:
         run: |
           cd LibreELEC.tv
           # set the build_dir=/build
-          echo "build_dir=/build" >> "$GITHUB_ENV"
-          echo "CCACHE_DISABLE=1" >> "$GITHUB_ENV"
+          echo "build_dir=/build" >> "${GITHUB_ENV}"
+          echo "CCACHE_DISABLE=1" >> "${GITHUB_ENV}"
 
       - name: Prepare the LibreELEC.tv directory - use /build-root and /target
         if: inputs.ephemeral == 'no_ephemeral'
@@ -150,7 +150,7 @@ jobs:
           # create links that will be used from within the docker containers
           [ ! -h target ] && ln -s /target .
           # set the build_dir=/build-root - for NON ephemeral builds
-          echo "build_dir=/build-root" >> "$GITHUB_ENV"
+          echo "build_dir=/build-root" >> "${GITHUB_ENV}"
 
       - name: Display environment
         if: inputs.debug == 'debug'

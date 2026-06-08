@@ -44,16 +44,16 @@ jobs:
           esac
           updated_packages="${REPO_NAME}"
           pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0] })')
-          echo "matrix=$pair" >> "$GITHUB_OUTPUT"
+          echo "matrix=$pair" >> "${GITHUB_OUTPUT}"
       - name: Job summary
         shell: bash
         run: |
-          echo "### 📌 Updating these Packages" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 📌 Updating these Packages" >> "${GITHUB_STEP_SUMMARY}"
           {
             echo "| Package |"
             echo "|---------|"
             echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) |"'
-          } >> "$GITHUB_STEP_SUMMARY"
+          } >> "${GITHUB_STEP_SUMMARY}"
   call-package-update:
     needs: check-repo-update
     runs-on: ubuntu-24.04

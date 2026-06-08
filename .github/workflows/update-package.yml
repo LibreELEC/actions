@@ -38,16 +38,16 @@ jobs:
           # shellcheck disable=SC2046
           updated_packages=$(AUTO_UPDATE=yes tools/update-scan $(cat ../actions/packages_for_autoupdate.txt))
           pair=$(echo "$updated_packages" | jq -Rn -c '[inputs | split(" ")] | map({ name: .[0], version: .[2] })')
-          echo "matrix=$pair" >> "$GITHUB_OUTPUT"
+          echo "matrix=$pair" >> "${GITHUB_OUTPUT}"
       - name: Job summary
         shell: bash
         run: |
-          echo "### 📌 Updating these Packages" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 📌 Updating these Packages" >> "${GITHUB_STEP_SUMMARY}"
           {
             echo "| Package | Version |"
             echo "|---------|---------|"
             echo '${{ steps.set-matrix.outputs.matrix }}' | jq -r '.[] | "| \(.name) | \(.version) |"'
-          } >> "$GITHUB_STEP_SUMMARY"
+          } >> "${GITHUB_STEP_SUMMARY}"
   call-package-update:
     if: ${{ github.event.inputs.TEST_RUN == 'false' }}
     needs: check-package-update

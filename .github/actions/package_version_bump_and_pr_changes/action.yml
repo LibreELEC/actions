@@ -63,7 +63,7 @@ runs:
     - name: Get GitHub App User ID
       id: get-user-id
       shell: bash
-      run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "${GITHUB_OUTPUT}"
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
@@ -121,10 +121,10 @@ runs:
 
         if git ls-remote --exit-code --heads fork "$BRANCH" >/dev/null 2>&1; then
           echo "Branch '$BRANCH' already exists on fork. This change was already pushed before."
-          echo "CHANGE_ALREADY_PUSHED=true" >> "$GITHUB_ENV"
+          echo "CHANGE_ALREADY_PUSHED=true" >> "${GITHUB_ENV}"
         else
           git push fork "$BRANCH"
-          echo "CHANGE_ALREADY_PUSHED=false" >> "$GITHUB_ENV"
+          echo "CHANGE_ALREADY_PUSHED=false" >> "${GITHUB_ENV}"
         fi
 
     - name: Create Pull Request via GraphQL
@@ -190,17 +190,17 @@ runs:
           PR_NODE_ID=$(echo "$PR_RESULT" | jq -r '.id')
 
           echo "Created pull request: $PR_URL"
-          echo "PR_URL=${PR_URL}" >> "$GITHUB_ENV"
-          echo "PR_NODE_ID=${PR_NODE_ID}" >> "$GITHUB_ENV"
+          echo "PR_URL=${PR_URL}" >> "${GITHUB_ENV}"
+          echo "PR_NODE_ID=${PR_NODE_ID}" >> "${GITHUB_ENV}"
           PR_SUMMARY_CELL="[${PR_TITLE}](${PR_URL})"
         fi
 
-        echo "### 📌 Pull Request Status" >> "$GITHUB_STEP_SUMMARY"
+        echo "### 📌 Pull Request Status" >> "${GITHUB_STEP_SUMMARY}"
         {
           echo "| Package | Pull Request |"
           echo "|---------|--------------|"
           echo "| ${PKG} | ${PR_SUMMARY_CELL} |"
-        } >> "$GITHUB_STEP_SUMMARY"
+        } >> "${GITHUB_STEP_SUMMARY}"
 
     - name: Add labels to Pull Request
       if: env.CHANGE_ALREADY_PUSHED != 'true'
