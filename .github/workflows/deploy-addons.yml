@@ -1,4 +1,4 @@
-name: tools-update-addon-repo
+name: "Deploy: Addons"
 on:
   workflow_dispatch:
     inputs:

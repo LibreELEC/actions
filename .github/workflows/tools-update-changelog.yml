@@ -1,4 +1,4 @@
-name: tools-update-changelog
+name: "z: Update changelog"
 on:
   workflow_dispatch:
   schedule:

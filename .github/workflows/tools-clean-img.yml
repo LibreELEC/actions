@@ -1,4 +1,4 @@
-name: clean-img
+name: "z: Clean test images"
 on:
   workflow_run:
     workflows:

@@ -26,25 +26,25 @@ EOF
 
   while IFS= read -r line; do
     # PR link
-    var_pr="$(grep -oE '#[0-9]+' <<<"$line")"
+    var_pr="$(grep -oE '#[0-9]+' <<<"${line}")"
 
     # PR message
-    var_message="$(grep -oP '(?<=\\n\\n)(.*)(?=\")' <<<"$line" || true)"
+    var_message="$(grep -oP '(?<=\\n\\n)(.*)(?=\")' <<<"${line}" || true)"
 
     # PR date at merge
-    var_date="$(grep -oP '(?<=^")[0-9-]{10}' <<<"$line")"
+    var_date="$(grep -oP '(?<=^")[0-9-]{10}' <<<"${line}")"
 
     # git shorthash
-    var_hash="$(grep -oP '(?<=^"[0-9-]{10} )[0-9a-f]{7}' <<<"$line")"
+    var_hash="$(grep -oP '(?<=^"[0-9-]{10} )[0-9a-f]{7}' <<<"${line}")"
 
     # output line
     url="https://github.com/LibreELEC/LibreELEC.tv/pull/${var_pr//#/}"
-    row="<tr><td>$var_date ($var_hash):</td>"
-    row+="<td><a href=\"$url\" target=\"_blank\""
+    row="<tr><td>${var_date} (${var_hash}):</td>"
+    row+="<td><a href=\"${url}\" target=\"_blank\""
     row+=" rel=\"noopener noreferrer\">${var_pr}</a></td>"
     row+="<td>${var_message}</td></tr>"
-    echo "$row"
-  done <<<"$gh_output"
+    echo "${row}"
+  done <<<"${gh_output}"
 
   # html footer
   cat <<EOF

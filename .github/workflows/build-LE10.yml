@@ -1,4 +1,4 @@
-name: build-LE10
+name: "LE 10: Build images"
 on:
   workflow_dispatch:
     inputs:
@@ -64,7 +64,7 @@ jobs:
         if: ${{ github.event_name == 'schedule' }}
         run: |
           cd LibreELEC.tv
-          test -z "$(git rev-list --after='24 hours' HEAD)" && echo "should_run=false" >> "$GITHUB_OUTPUT"
+          test -z "$(git rev-list --after='24 hours' HEAD)" && echo "should_run=false" >> "${GITHUB_OUTPUT}"
           exit 0
 
   # Allwinner

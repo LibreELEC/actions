@@ -1,4 +1,4 @@
-name: tools-cleanup-images
+name: "z: Cleanup images archive"
 on:
   workflow_dispatch:
   schedule:
