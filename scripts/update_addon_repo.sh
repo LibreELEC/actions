@@ -47,10 +47,11 @@ rsync_log () {
   printf "*Updated Add-ons* \n"
 
   # list Add-ons
-  # shellcheck disable=SC2034  # addon names the field for readability; it is not used in the loop body
+  # shellcheck disable=SC2034  # addon: kept for readability, unused in loop body
   while IFS="/" read -r project platform addon filename; do
     if [[ $project_rsync != $project$platform ]]; then
-      printf '%s %s %s' "\n*$project" "$platform" "($REPO_VERSION) *\n"   # some crap due the slack function escape text
+      # some crap due the slack function escape text
+      printf '%s %s %s' "\n*$project" "$platform" "($REPO_VERSION) *\n"
       printf ' %s' "${filename%.*}\n"
     else
       printf ' %s' "${filename%.*}\n"
@@ -75,8 +76,10 @@ create_addon_xml(){
       ARCH_XML="$ARCH_XML</addons>"
       echo -e "$ARCH_XML" > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml"
       gzip -f "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml"
-      md5sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.md5"
-      sha256sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.sha256"
+      md5sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" \
+        | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.md5"
+      sha256sum "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz" \
+        | cut -f1 -d ' ' > "$PATH_ADDON_REPO/$PROJECT/$ARCH/addons.xml.gz.sha256"
     done < <(find "$PATH_ADDON_REPO/$PROJECT" -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
   done < <(find "$PATH_ADDON_REPO" -mindepth 1 -maxdepth 1 -type d -printf '%f\n')
 }
