@@ -1,4 +1,4 @@
-name: Update repositories
+name: "Update: Repos"
 on:
   workflow_dispatch:
     inputs:

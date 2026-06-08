@@ -1,4 +1,4 @@
-name: build-LE10
+name: "LE 10: Build images"
 on:
   workflow_dispatch:
     inputs:

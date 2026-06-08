@@ -1,4 +1,4 @@
-name: build-LE12-2-addons
+name: "LE 12.2: Build addons"
 on:
   workflow_dispatch:
     inputs:

@@ -1,4 +1,4 @@
-name: build-LE12-2
+name: "LE 12.2: Build images"
 on:
   workflow_dispatch:
     inputs:

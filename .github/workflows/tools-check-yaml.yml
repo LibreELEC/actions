@@ -1,4 +1,4 @@
-name: tools-check-yaml
+name: "z: Check YAML"
 on:
   pull_request:
     branches: [main]

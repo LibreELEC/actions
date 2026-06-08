@@ -1,7 +1,7 @@
 # Originally from:
 # https://github.com/Slicer/Slicer/blob/main/.github/workflows/update-slicer-certificate-bundle.yml
 # Author: Jean-Christophe Fillion-Robin
-name: Update cacert.pem certificate bundle
+name: "z: Update cacert.pem"
 
 on:
   schedule:

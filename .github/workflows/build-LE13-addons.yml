@@ -1,4 +1,4 @@
-name: build-LE13-addons
+name: "LE 13: Build addons"
 on:
   workflow_dispatch:
     inputs:

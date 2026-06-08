@@ -1,4 +1,4 @@
-name: build-LE11-addons
+name: "LE 11: Build addons"
 on:
   workflow_dispatch:
     inputs:
