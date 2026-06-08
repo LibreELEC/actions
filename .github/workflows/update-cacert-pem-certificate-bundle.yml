@@ -145,6 +145,7 @@ jobs:
               }
             }' --jq '.data.repository.id')
 
+          # shellcheck disable=SC2016
           PR_RESULT=$(gh api graphql -f query='
           mutation($repo: ID!, $headRepo: ID!, $head: String!, $base: String!, $title: String!, $body: String!) {
             createPullRequest(input: {
@@ -193,6 +194,7 @@ jobs:
 
           LABEL_NAMES_JSON=$(echo "$LABELS" | tr ',' '\n' | jq -R . | jq -s .)
 
+          # shellcheck disable=SC2016
           ALL_LABELS=$(gh api graphql -f query='
             query($owner: String!, $name: String!) {
               repository(owner: $owner, name: $name) {
