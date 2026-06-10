@@ -228,6 +228,28 @@ jobs:
           path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
           if-no-files-found: ignore
 
+      - name: Notify failed image builds
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
+          SLACK_CHANNEL: ${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}
+        run: |
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then exit 0; fi
+          if [ "${{ inputs.ephemeral }}" = "ephemeral" ]; then
+            joblog="LibreELEC.tv/${{ env.TARGETBUILDDIR }}/.threads/joblog"
+          else
+            joblog="${BASEDIR}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog"
+          fi
+          failed=$(grep ^FAIL "${joblog}" 2>/dev/null | awk '{ print $5 }' | tr ':' '_' || true)
+          if [ -z "${failed}" ]; then exit 0; fi
+          text="*Build failures - ${{ env.PROJECT }}.${{ env.ARCH }} (${LE_DISTRO_VERSION}):*\n"
+          while IFS= read -r pkg; do
+            text+="${pkg}\n"
+          done <<< "${failed}"
+          json="{\"channel\": \"${SLACK_CHANNEL}\","
+          json+=" \"username\": \"ADDON Bot\", \"icon_emoji\": \"ghost\","
+          json+=" \"attachments\": [{\"color\": \"danger\", \"text\": \"${text}\"}]}"
+          curl -s -d "payload=${json}" "${SLACK_WEBHOOK_URL}"
+
       - name: Clean up - remove docker image tag
         if: always()
         run: |
