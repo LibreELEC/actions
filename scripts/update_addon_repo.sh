@@ -95,6 +95,9 @@ if [ ! -d "${PATH_STAGING}" ]; then
   exit 0;
 fi
 
+# exit cleanly if no add-on zips are staged
+compgen -G "${PATH_STAGING}*.zip" > /dev/null 2>&1 || exit 0
+
 # preparing folder
 mkdir -p "${PATH_TARGET}" "${PATH_ADDON_REPO}"
 
