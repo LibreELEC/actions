@@ -41,7 +41,7 @@ slack () {
   fi
   escapedText=$(echo "${text}" | sed 's/"/\"/g' | sed "s/'/\'/g" )
   json="{\"channel\": \"${slack_channel}\", \"username\":\"${username}\", \"icon_emoji\":\"ghost\", \"attachments\":[{\"color\":\"${color}\" , \"text\": \"${escapedText}\"}]}"
-  curl -s -d "payload=${json}" "${slack_webhook_url}"
+  curl -s -d "payload=${json}" "${slack_webhook_url}" || true
 }
 
 # pretty up the rsync log
@@ -159,7 +159,7 @@ done
 
 # rsync to repo folder
 mkdir -p "${PATH_ADDON_REPO}"
-rsync --ignore-existing -vrh "${PATH_TARGET}"/* "${PATH_ADDON_REPO}" | grep .zip > "${PATH_LOG}"
+rsync --ignore-existing -vrh "${PATH_TARGET}"/* "${PATH_ADDON_REPO}" | grep .zip > "${PATH_LOG}" || true
 
 # create addon.xml
 create_addon_xml
