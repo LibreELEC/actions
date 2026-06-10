@@ -230,6 +230,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Clean up - remove docker image tag
+        if: always()
         run: |
           cd LibreELEC.tv
           docker image rm -f gh-${{ github.run_id }}
