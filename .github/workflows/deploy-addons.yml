@@ -2,11 +2,17 @@ name: "Deploy: Addons"
 on:
   workflow_dispatch:
     inputs:
-      input_addon-version:
-        description: "Add-on version to update"
-        default: 12.2.0
+      release:
+        description: "LE release to deploy addons for"
         required: true
-        type: string
+        type: choice
+        default: "LE 13"
+        options:
+          - "LE 10"
+          - "LE 11"
+          - "LE 12"
+          - "LE 12.2"
+          - "LE 13"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,9 +27,25 @@ jobs:
           fetch-depth: 1
           repository: "${{ github.repository_owner }}/actions"
           path: "actions"
+      - name: Determine addon version
+        id: version
+        run: |
+          case "${{ github.event.inputs.release }}" in
+            "LE 10")   branch="libreelec-10.0" ;;
+            "LE 11")   branch="libreelec-11.0" ;;
+            "LE 12")   branch="libreelec-12.0" ;;
+            "LE 12.2") branch="libreelec-12.2" ;;
+            "LE 13")   branch="master" ;;
+          esac
+          addon_version=$(curl -s "https://raw.githubusercontent.com/LibreELEC/LibreELEC.tv/${branch}/distributions/LibreELEC/version" \
+            | grep -oP 'ADDON_VERSION="\K[^"]+')
+          echo "addon_version=${addon_version}" >> "${GITHUB_OUTPUT}"
       - name: Update Add-on repository
         run: |
-          echo "Updating Add-on version ${{ github.event.inputs.input_addon-version }}"
+          echo "Updating Add-on version ${{ steps.version.outputs.addon_version }}"
           cd "actions/"
           ssh ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }} -p ${{ secrets.ADDONS_HOST_PORT }} \
-            "bash -s" < ./scripts/update_addon_repo.sh "${{ github.event.inputs.input_addon-version }}" "${{ secrets.ADDONS_REPO_WEBHOOK_URL }}" "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
+            "bash -s" < ./scripts/update_addon_repo.sh \
+              "${{ steps.version.outputs.addon_version }}" \
+              "${{ secrets.ADDONS_REPO_WEBHOOK_URL }}" \
+              "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
