@@ -240,16 +240,29 @@ jobs:
           else
             joblog="${BASEDIR}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog"
           fi
-          failed=$(grep ^FAIL "${joblog}" 2>/dev/null | awk '{ print $5 }' | tr ':' '_' || true)
-          if [ -z "${failed}" ]; then exit 0; fi
-          text="*Build failures - ${{ env.PROJECT }}.${{ env.ARCH }} (${LE_DISTRO_VERSION}):*\n"
-          while IFS= read -r pkg; do
-            text+="${pkg}\n"
-          done <<< "${failed}"
+          failed_lines=$(grep ^FAIL "${joblog}" 2>/dev/null || true)
+          if [ -z "${failed_lines}" ]; then exit 0; fi
+          artifactdir="$(dirname "$(dirname "${joblog}")")/artifact"
+          device="${{ env.DEVICE }}"
+          title="${{ env.PROJECT }}${device:+.${device}}.${{ env.ARCH }}"
+          text="*Build failures - ${title} (${LE_DISTRO_VERSION}):*\n"
+          while IFS= read -r line; do
+            step=$(echo "${line}" | awk '{ print $2 }')
+            pkg=$(echo "${line}" | awk '{ print $5 }')
+            logpath=$(echo "${line}" | awk '{ print $12 }')
+            pkgsafe="${pkg//:/_}"
+            logfile="${artifactdir}/${{ env.TARGETBUILDDIR }}-${pkgsafe}-$(basename "${logpath}")"
+            text+="step ${step} ${pkg}\n"
+            if [ -f "${logfile}" ]; then
+              reason=$(grep -ohE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" "${logfile}" | tail -1)
+              [ -n "${reason}" ] && text+="reason for failure - ${reason}\n"
+            fi
+          done <<< "${failed_lines}"
+          text+="<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
           json="{\"channel\": \"${SLACK_CHANNEL}\","
           json+=" \"username\": \"ADDON Bot\", \"icon_emoji\": \"ghost\","
           json+=" \"attachments\": [{\"color\": \"danger\", \"text\": \"${text}\"}]}"
-          curl -s -d "payload=${json}" "${SLACK_WEBHOOK_URL}"
+          curl -s -d "payload=${json}" "${SLACK_WEBHOOK_URL}" || true
 
       - name: Clean up - remove docker image tag
         if: always()
