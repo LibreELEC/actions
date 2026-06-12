@@ -242,7 +242,9 @@ jobs:
             echo "has_failures=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          total=$(wc -l < "${joblog}" | tr -d ' ')
+          planfile="${joblog%/joblog}/plan.json"
+          total=$(python3 -c "import json; print(len(json.load(open('${planfile}'))))" 2>/dev/null)
+          [ -z "${total}" ] && total=$(wc -l < "${joblog}" | tr -d ' ')
           artifactdir="$(dirname "$(dirname "${joblog}")")/artifact"
           device="${{ env.DEVICE }}"
           title="${{ env.PROJECT }}${device:+.${device}}.${{ env.ARCH }}"
