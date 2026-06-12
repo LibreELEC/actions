@@ -229,6 +229,7 @@ jobs:
           fi
           failed_lines=$(grep ^FAIL "${joblog}" 2>/dev/null || true)
           if [ -z "${failed_lines}" ]; then exit 0; fi
+          total=$(wc -l < "${joblog}" | tr -d ' ')
           artifactdir="$(dirname "$(dirname "${joblog}")")/artifact"
           device="${{ env.DEVICE }}"
           title="${{ env.PROJECT }}${device:+.${device}}.${{ env.ARCH }}"
@@ -239,7 +240,7 @@ jobs:
             logpath=$(echo "${line}" | awk '{ print $12 }')
             pkgsafe="${pkg//:/_}"
             logfile="${artifactdir}/${{ env.TARGETBUILDDIR }}-${pkgsafe}-$(basename "${logpath}")"
-            text+="step ${step} ${pkg}\n"
+            text+="step [${step}/${total}] ${pkg}\n"
             if [ -f "${logfile}" ]; then
               reason=$(grep -ohE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" "${logfile}" | tail -1)
               [ -n "${reason}" ] && text+="reason for failure - ${reason}\n"
