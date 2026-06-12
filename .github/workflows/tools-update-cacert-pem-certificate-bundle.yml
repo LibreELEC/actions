@@ -11,9 +11,13 @@ on:
 
 jobs:
   update-cacert-pem-certificate-bundle:
-    name: Update cacert.pem certificate bundle
+    name: Update cacert.pem certificate bundle (${{ matrix.branch }})
     runs-on: ubuntu-latest
     if: github.repository == 'LibreELEC/actions'
+    strategy:
+      matrix:
+        branch: [master, libreelec-12.2]
+      fail-fast: false
     env:
       CERTDATA_OWNER: mozilla-firefox
       CERTDATA_REPO: firefox
@@ -34,7 +38,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: LibreELEC/LibreELEC.tv
-          ref: master
+          ref: ${{ matrix.branch }}
           token: ${{ steps.app-token.outputs.token }}
           path: ${{ env.WORKING_DIRECTORY }}
           fetch-depth: 1
@@ -89,7 +93,7 @@ jobs:
           AUTHORDATE='${{ steps.latest_certdata.outputs.authordate }}'
           SHA='${{ steps.latest_certdata.outputs.sha }}'
           DOWNLOAD_URL='${{ steps.latest_certdata.outputs.download_url }}'
-          BRANCH="pr-automated/cacert.pem-${AUTHORDATE}"
+          BRANCH="pr-automated/cacert.pem-${{ matrix.branch }}-${AUTHORDATE}"
 
           if git diff --quiet; then
             echo "No changes to cacert.pem — skipping PR."
@@ -166,7 +170,7 @@ jobs:
             -f repo="${REPO_ID}" \
             -f headRepo="${HEAD_REPO_ID}" \
             -f head="${BRANCH}" \
-            -f base="master" \
+            -f base="${{ matrix.branch }}" \
             -f title="${PR_TITLE}" \
             -f body="${PR_BODY}" \
             --jq '.data.createPullRequest.pullRequest')
