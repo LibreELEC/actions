@@ -230,28 +230,28 @@ jobs:
           path: ${{ env.BASEDIR }}/build-root/${{ env.TARGETBUILDDIR }}/artifact/
           if-no-files-found: ignore
 
-      - name: Notify failed image builds
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
-          SLACK_CHANNEL: ${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}
+      - name: Collect failed image build information
+        id: failures
         run: |
-          if [ -z "${SLACK_WEBHOOK_URL}" ]; then exit 0; fi
           if [ "${{ inputs.ephemeral }}" = "ephemeral" ]; then
             joblog="LibreELEC.tv/${{ env.TARGETBUILDDIR }}/.threads/joblog"
           else
             joblog="${BASEDIR}/build-root/${{ env.TARGETBUILDDIR }}/.threads/joblog"
           fi
           failed_lines=$(grep ^FAIL "${joblog}" 2>/dev/null || true)
-          if [ -z "${failed_lines}" ]; then exit 0; fi
+          if [ -z "${failed_lines}" ]; then
+            echo "has_failures=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           total=$(wc -l < "${joblog}" | tr -d ' ')
           artifactdir="$(dirname "$(dirname "${joblog}")")/artifact"
           device="${{ env.DEVICE }}"
           title="${{ env.PROJECT }}${device:+.${device}}.${{ env.ARCH }}"
           text="*Build failures - ${title} (${LE_DISTRO_VERSION}):*\n"
           while IFS= read -r line; do
-            step=$(echo "${line}" | awk '{ print $2 }')
-            pkg=$(echo "${line}" | awk '{ print $5 }')
-            logpath=$(echo "${line}" | awk '{ print $12 }')
+            step=$(awk '{ print $2 }' <<< "${line}")
+            pkg=$(awk '{ print $5 }' <<< "${line}")
+            logpath=$(awk '{ print $12 }' <<< "${line}")
             pkgsafe="${pkg//:/_}"
             logfile="${artifactdir}/${{ env.TARGETBUILDDIR }}-${pkgsafe}-$(basename "${logpath}")"
             text+="step [${step}/${total}] ${pkg}\n"
@@ -261,10 +261,26 @@ jobs:
             fi
           done <<< "${failed_lines}"
           text+="<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
-          json="{\"channel\": \"${SLACK_CHANNEL}\","
-          json+=" \"username\": \"ADDON Bot\", \"icon_emoji\": \"ghost\","
-          json+=" \"attachments\": [{\"color\": \"danger\", \"text\": \"${text}\"}]}"
-          curl -s -d "payload=${json}" "${SLACK_WEBHOOK_URL}" || true
+          {
+            echo "has_failures=true"
+            echo "text<<EOF"
+            echo "${text}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Notify failed image builds
+        if: steps.failures.outputs.has_failures == 'true'
+        uses: slackapi/slack-github-action@v3
+        with:
+          webhook: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            username: "ADDON Bot"
+            icon_emoji: ":ghost:"
+            channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
+            attachments:
+              - color: danger
+                text: "${{ steps.failures.outputs.text }}"
 
       - name: Clean up - remove docker image tag
         if: always()
