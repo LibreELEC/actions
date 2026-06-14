@@ -269,9 +269,16 @@ jobs:
             username: "ADDON Bot"
             icon_emoji: ":ghost:"
             channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
-            attachments:
-              - color: danger
-                text: "${{ steps.failures.outputs.text }}"
+            blocks:
+              - type: header
+                text:
+                  type: plain_text
+                  text: ":red_circle: Build failures"
+                  emoji: true
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: "${{ steps.failures.outputs.text }}"
 
       - name: Clean up - remove docker image tag
         if: always()
