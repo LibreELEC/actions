@@ -27,6 +27,7 @@ jobs:
           fetch-depth: 1
           repository: "${{ github.repository_owner }}/actions"
           path: "actions"
+
       - name: Determine addon version
         id: version
         run: |
@@ -40,12 +41,89 @@ jobs:
           addon_version=$(curl -s "https://raw.githubusercontent.com/LibreELEC/LibreELEC.tv/${branch}/distributions/LibreELEC/version" \
             | grep -oP 'ADDON_VERSION="\K[^"]+')
           echo "addon_version=${addon_version}" >> "${GITHUB_OUTPUT}"
+
       - name: Update Add-on repository
+        id: result
         run: |
-          echo "Updating Add-on version ${{ steps.version.outputs.addon_version }}"
-          cd "actions/"
-          ssh ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }} -p ${{ secrets.ADDONS_HOST_PORT }} \
-            "bash -s" < ./scripts/update_addon_repo.sh \
-              "${{ steps.version.outputs.addon_version }}" \
-              "${{ secrets.ADDONS_REPO_WEBHOOK_URL }}" \
-              "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
+          output=$(ssh ${{ secrets.ADDONS_HOST_USERNAME }}@${{ secrets.ADDONS_HOST }} \
+            -p ${{ secrets.ADDONS_HOST_PORT }} \
+            "bash -s" < ./actions/scripts/update_addon_repo.sh \
+            "${{ steps.version.outputs.addon_version }}" || true)
+          [ -z "${output}" ] && exit 0
+          {
+            echo "json<<EOF"
+            echo "${output}"
+            echo "EOF"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Format Slack messages
+        id: fmt
+        if: steps.result.outputs.json != ''
+        env:
+          RESULT_JSON: ${{ steps.result.outputs.json }}
+        run: |
+          python3 - << 'PYEOF'
+          import json, os
+
+          data = json.loads(os.environ.get('RESULT_JSON', '{}'))
+          version = data.get('version', '')
+          warnings = data.get('warnings', [])
+          architectures = data.get('architectures', [])
+          error = data.get('error', '')
+          out = os.environ['GITHUB_OUTPUT']
+
+          has_warnings = bool(error or warnings)
+          has_updates = bool(architectures)
+
+          warning_parts = []
+          if error:
+            warning_parts.append(f'*ERROR*: {error}')
+          if warnings:
+            warning_parts.append(f'*WARNING* wrong checksums ({len(warnings)} files):')
+            warning_parts.extend(f'  {w}' for w in warnings)
+          warnings_text = r'\n'.join(warning_parts)
+
+          arch_texts = []
+          for arch in architectures:
+            label = arch.get('label', '')
+            addons = arch.get('addons', [])
+            lines = [f'*Updated Add-ons - {label} ({version})*'] + [f' {a}' for a in addons]
+            arch_texts.append(r'\n'.join(lines))
+          updates_text = r'\n\n'.join(arch_texts)
+
+          with open(out, 'a') as f:
+            f.write(f'has_warnings={"true" if has_warnings else "false"}\n')
+            f.write(f'has_updates={"true" if has_updates else "false"}\n')
+            if has_warnings:
+              f.write(f'warnings_text<<EOF\n{warnings_text}\nEOF\n')
+            if has_updates:
+              f.write(f'updates_text<<EOF\n{updates_text}\nEOF\n')
+          PYEOF
+
+      - name: Notify warnings
+        if: steps.fmt.outputs.has_warnings == 'true'
+        uses: slackapi/slack-github-action@v3
+        with:
+          webhook: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            username: "ADDON Bot"
+            icon_emoji: ":ghost:"
+            channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
+            attachments:
+              - color: danger
+                text: "${{ steps.fmt.outputs.warnings_text }}"
+
+      - name: Notify updates
+        if: steps.fmt.outputs.has_updates == 'true'
+        uses: slackapi/slack-github-action@v3
+        with:
+          webhook: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            username: "ADDON Bot"
+            icon_emoji: ":ghost:"
+            channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
+            attachments:
+              - color: good
+                text: "${{ steps.fmt.outputs.updates_text }}"
