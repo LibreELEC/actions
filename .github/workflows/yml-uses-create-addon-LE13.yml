@@ -226,7 +226,7 @@ jobs:
           fi
           failed_lines=$(grep ^FAIL "${joblog}" 2>/dev/null || true)
           if [ -z "${failed_lines}" ]; then
-            echo "has_failures=false" >> "$GITHUB_OUTPUT"
+            echo "has_failures=false" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
           planfile="${joblog%/joblog}/plan.json"
@@ -257,7 +257,7 @@ jobs:
             echo "text<<EOF"
             echo "${text}"
             echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Notify failed addon builds
         if: steps.failures.outputs.has_failures == 'true'
