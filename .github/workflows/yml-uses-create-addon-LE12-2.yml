@@ -244,7 +244,10 @@ jobs:
             logfile="${artifactdir}/${{ env.TARGETBUILDDIR }}-${pkgsafe}-$(basename "${logpath}")"
             text+="step [${step}/${total}] ${pkg}\n"
             if [ -f "${logfile}" ]; then
-              reason=$(grep -ohE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" "${logfile}" | tail -1)
+              reason=$(tail -200 "${logfile}" | grep -ohE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" | tail -1)
+              if [ -z "${reason}" ]; then
+                reason=$(tail -200 "${logfile}" | grep -oE "cannot stat '[^']+'" | tail -1 | sed "s|cannot stat '||;s|.*/||;s|'||")
+              fi
               [ -n "${reason}" ] && text+="reason for failure - ${reason}\n"
             fi
           done <<< "${failed_lines}"
