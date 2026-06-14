@@ -17,10 +17,6 @@ else
   exit 1
 fi
 
-# slack variables
-slack_webhook_url="$2"
-slack_channel="$3"
-
 # variables
 PATH_STAGING="/var/www/addon-upload/${REPO_VERSION}/"
 PATH_TARGET="/var/www/addon-temp/${REPO_VERSION}"
@@ -29,38 +25,52 @@ PATH_ADDON_REPO="/var/www/addons/${REPO_VERSION}"
 
 #### functions
 
-# slack notification function
-slack () {
-  username="ADDON Bot"
-  color="good" #good, warning, danger or HEX value
-  text=$*
-  if [[ ${text} == "" ]]; then
-    while IFS= read -r line; do
-      text="${text}${line}\n"
-    done
-  fi
-  escapedText=$(echo "${text}" | sed 's/"/\"/g' | sed "s/'/\'/g" )
-  json="{\"channel\": \"${slack_channel}\", \"username\":\"${username}\", \"icon_emoji\":\"ghost\", \"attachments\":[{\"color\":\"${color}\" , \"text\": \"${escapedText}\"}]}"
-  curl -s -d "payload=${json}" "${slack_webhook_url}" || true
+# emit JSON result to stdout for GHA to consume and post to Slack
+emit_result() {
+  local error_msg="${1:-}"
+  ERROR_MSG="${error_msg}" REPO_VERSION="${REPO_VERSION}" \
+  python3 - "${PATH_LOG}" "${BAD_CHECKSUMS_FILE}" << 'PYEOF'
+import json, sys, os
+
+version = os.environ.get('REPO_VERSION', '')
+error_msg = os.environ.get('ERROR_MSG', '')
+log_path, warnings_path = sys.argv[1], sys.argv[2]
+
+warnings = []
+try:
+    with open(warnings_path) as f:
+        warnings = [line.strip() for line in f if line.strip()]
+except (FileNotFoundError, OSError):
+    pass
+
+addons_by_arch = {}
+arch_order = []
+try:
+    with open(log_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.split('/')
+            if len(parts) >= 4:
+                key = f'{parts[0]} {parts[1]}'
+                if key not in addons_by_arch:
+                    addons_by_arch[key] = []
+                    arch_order.append(key)
+                filename = parts[-1]
+                addons_by_arch[key].append(filename[:-4] if filename.endswith('.zip') else filename)
+except (FileNotFoundError, OSError):
+    pass
+
+result = {
+    'version': version,
+    'warnings': warnings,
+    'architectures': [{'label': k, 'addons': addons_by_arch[k]} for k in arch_order],
 }
-
-# pretty up the rsync log
-rsync_log () {
-  # header text
-  printf "*Updated Add-ons* \n"
-
-  # list Add-ons
-  # shellcheck disable=SC2034  # addon: kept for readability, unused in loop body
-  while IFS="/" read -r project platform addon filename; do
-    if [[ ${project_rsync} != ${project}${platform} ]]; then
-      # some crap due the slack function escape text
-      printf '%s %s %s' "\n*${project}" "${platform}" "(${REPO_VERSION}) *\n"
-      printf ' %s' "${filename%.*}\n"
-    else
-      printf ' %s' "${filename%.*}\n"
-    fi
-    project_rsync=${project}${platform}
-  done < "${PATH_LOG}"
+if error_msg:
+    result['error'] = error_msg
+print(json.dumps(result))
+PYEOF
 }
 
 # create addon.xml
@@ -89,10 +99,13 @@ create_addon_xml(){
 
 ###############
 
+BAD_CHECKSUMS_FILE=$(mktemp)
+trap 'rm -f "${BAD_CHECKSUMS_FILE}"' EXIT
+
 # check if jenkins addons are available
 if [ ! -d "${PATH_STAGING}" ]; then
-  slack "*WARNING*: no jenkins addons folder exist"
-  exit 0;
+  emit_result "no staging folder for ${REPO_VERSION}"
+  exit 0
 fi
 
 # exit cleanly if no add-on zips are staged
@@ -103,8 +116,8 @@ mkdir -p "${PATH_TARGET}" "${PATH_ADDON_REPO}"
 
 # check for enough free disk space
 if [[ $(df "${PATH_ADDON_REPO}" | awk 'END {print $4}') -lt 6000000 ]]; then
-  slack "*WARNING*: not enough storage is available\n\`\`\`$(df "${PATH_ADDON_REPO}")\`\`\`"
-  exit 0;
+  emit_result "not enough storage ($(df -h "${PATH_ADDON_REPO}" | awk 'END {print $4}') free)"
+  exit 0
 fi
 
 # kill log
@@ -117,16 +130,15 @@ touch "${PATH_LOG}"
 # create target dir
 mkdir -p "${PATH_TARGET}"
 
-# check for sha256sum
+# check for sha256sum - collect failures instead of posting one-per-file
 for PROJECT in "${PATH_STAGING}"/*.zip; do
   cd "${PATH_STAGING}" || exit
-    if sha256sum --status -c "${PROJECT}.sha256" 2>&1; then
-      continue;
-    else
-      # remove files that fail at checksum test
-      mv "${PROJECT}" "${PROJECT}"-ohohhhhh
-      slack "*WARNING:* ${PROJECT##*/} wrong checksum \n"
-    fi
+  if sha256sum --status -c "${PROJECT}.sha256" 2>&1; then
+    continue
+  else
+    mv "${PROJECT}" "${PROJECT}"-ohohhhhh
+    echo "${PROJECT##*/}" >> "${BAD_CHECKSUMS_FILE}"
+  fi
 done
 
 # rename and move files to files
@@ -164,9 +176,7 @@ rsync --ignore-existing -vrh "${PATH_TARGET}"/* "${PATH_ADDON_REPO}" | grep .zip
 # create addon.xml
 create_addon_xml
 
-# post to slack
-if [ -s "${PATH_LOG}" ]; then
-  slack "$(rsync_log)"
-fi
+# emit JSON result for GHA
+emit_result
 
 exit 0
