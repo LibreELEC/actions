@@ -247,7 +247,7 @@ jobs:
           artifactdir="$(dirname "$(dirname "${joblog}")")/artifact"
           device="${{ env.DEVICE }}"
           title="${{ env.PROJECT }}${device:+.${device}}.${{ env.ARCH }}"
-          text="*Build failures - ${title} (${LE_DISTRO_VERSION}):*\n"
+          text="*${title}* (${LE_DISTRO_VERSION})\n"
           while IFS= read -r line; do
             step=$(awk '{ print $2 }' <<< "${line}")
             pkg=$(awk '{ print $5 }' <<< "${line}")
