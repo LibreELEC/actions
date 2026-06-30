@@ -340,3 +340,24 @@ jobs:
                 "${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:${{ secrets.NIGHTLY_UPLOAD_PATH }}/${{ env.LE_DISTRO_VERSION }}/${{ env.PROJECT }}/${uboot_device}/"
             done
           fi
+
+      - name: Notify job failure
+        if: failure()
+        uses: slackapi/slack-github-action@v3
+        with:
+          webhook: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            username: "ADDON Bot"
+            icon_emoji: ":ghost:"
+            channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
+            blocks:
+              - type: header
+                text:
+                  type: plain_text
+                  text: ":red_circle: Job failed"
+                  emoji: true
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: "*${{ inputs.group }}*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
