@@ -22,10 +22,19 @@ jobs:
           scp -P ${{ secrets.NIGHTLY_HOST_PORT }} actions/scripts/remote/release-scripts/prune-archive.py \
             ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }}:/tmp
 
+          # Baseline: keep 200 days of nightlies for all projects.
           # LE12.2
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
             "python3 /tmp/prune-archive.py -i /var/www/test/12.2/ -k 200 -d"
-
           # LE13
           ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
             "python3 /tmp/prune-archive.py -i /var/www/test/13.0/ -k 200 -d"
+
+          # Allwinner, Amlogic and Rockchip build many device images and use
+          # the most disk space: keep only 3 months (~90 days) for these.
+          # LE12.2
+          ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
+            "for p in Allwinner Amlogic Rockchip; do if [ -d /var/www/test/12.2/\$p ]; then python3 /tmp/prune-archive.py -i /var/www/test/12.2/\$p/ -k 90 -d; fi; done"
+          # LE13
+          ssh ${{ secrets.NIGHTLY_HOST_USERNAME }}@${{ secrets.NIGHTLY_HOST }} -p ${{ secrets.NIGHTLY_HOST_PORT }} \
+            "for p in Allwinner Amlogic Rockchip; do if [ -d /var/www/test/13.0/\$p ]; then python3 /tmp/prune-archive.py -i /var/www/test/13.0/\$p/ -k 90 -d; fi; done"
