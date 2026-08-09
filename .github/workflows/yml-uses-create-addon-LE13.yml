@@ -169,7 +169,7 @@ jobs:
                           -e ARCH=${{ env.ARCH }} \
                           -e DEVICE=${{ env.DEVICE }} \
                           -e ADDON_JENKINS=yes \
-                          -e ONELOG=no -e LOGCOMBINE=fail \
+                          -e ONELOG=no -e LOGCOMBINE=fail -e DISABLE_COLORS=yes \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
@@ -248,7 +248,13 @@ jobs:
               if echo "${logtail}" | grep -qE "^FAILED:|command not found"; then
                 reason="BUILD"
               else
-                reason=$(echo "${logtail}" | grep -ohE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" | tail -1)
+                op=$(grep -oE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" "${logfile}" | tail -1)
+                subpkg=$(grep -oE "UNPACK[[:space:]]+[^[:space:]]+" "${logfile}" | tail -1 | awk '{ print $2 }')
+                reason="${op}${subpkg:+ ${subpkg}}"
+                if [ "${op}" = "APPLY PATCH" ]; then
+                  patch=$(grep "APPLY PATCH" "${logfile}" | tail -1 | awk '{ print $NF }')
+                  reason="${reason}${patch:+ (${patch})}"
+                fi
               fi
               if [ -z "${reason}" ]; then
                 reason=$(echo "${logtail}" | grep -oE "cannot stat '[^']+'" | tail -1 | sed "s|cannot stat '||;s|.*/||;s|'||")

@@ -181,7 +181,7 @@ jobs:
                           -e PROJECT=${{ env.PROJECT }} \
                           -e ARCH=${{ env.ARCH }} \
                           -e DEVICE=${{ env.DEVICE }} \
-                          -e ONELOG=no -e LOGCOMBINE=fail \
+                          -e ONELOG=no -e LOGCOMBINE=fail -e DISABLE_COLORS=yes \
                           -e BUILD_DIR=${{ env.build_dir }} \
                           -e BUILD_PERIODIC=${{ env.BUILD_PERIODIC }} \
                           -e CCACHE_DISABLE=${{ env.CCACHE_DISABLE }} \
@@ -256,7 +256,13 @@ jobs:
             logfile="${artifactdir}/${{ env.TARGETBUILDDIR }}-${pkgsafe}-$(basename "${logpath}")"
             text+="step [${step}/${total}] ${pkg}\n"
             if [ -f "${logfile}" ]; then
-              reason=$(grep -ohE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" "${logfile}" | tail -1)
+              op=$(grep -oE "APPLY PATCH|CONFIGURE|CMAKE|UNPACK" "${logfile}" | tail -1)
+              subpkg=$(grep -oE "UNPACK[[:space:]]+[^[:space:]]+" "${logfile}" | tail -1 | awk '{ print $2 }')
+              reason="${op}${subpkg:+ ${subpkg}}"
+              if [ "${op}" = "APPLY PATCH" ]; then
+                patch=$(grep "APPLY PATCH" "${logfile}" | tail -1 | awk '{ print $NF }')
+                reason="${reason}${patch:+ (${patch})}"
+              fi
               [ -n "${reason}" ] && text+="reason for failure - ${reason}\n"
             fi
           done <<< "${failed_lines}"
