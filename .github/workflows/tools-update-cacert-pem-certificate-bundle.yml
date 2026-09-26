@@ -64,26 +64,46 @@ jobs:
       - name: Get sha and canonical download url for latest version of certdata.txt file
         id: latest_certdata
         run: |
-          sha=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}/commits?path=${{ env.CERTDATA_PATH }}&sha=main&per_page=1" | jq ".[0] | .sha" -r)
-          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
+          commit=$(curl -fsSL --retry 3 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}/commits?path=${{ env.CERTDATA_PATH }}&sha=main&per_page=1")
 
-          authordate=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}/commits?path=${{ env.CERTDATA_PATH }}&sha=main&per_page=1" | \
-            jq ".[0] | .commit.author.date" -r | cut -f 1 -d T)
+          sha=$(echo "${commit}" | jq -r ".[0].sha")
+          authordate=$(echo "${commit}" | jq -r ".[0].commit.author.date" | cut -f 1 -d T)
+          if [[ ! "${sha}" =~ ^[0-9a-f]{40}$ ]] || [[ ! "${authordate}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "::error::Could not look up the latest certdata.txt commit (sha='${sha}', date='${authordate}')"
+            exit 1
+          fi
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
           echo "authordate=${authordate}" >> "${GITHUB_OUTPUT}"
 
-          download_url="https://github.com/${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}/blob/${sha}/${{ env.CERTDATA_PATH }}?raw=true"
+          download_url="https://raw.githubusercontent.com/${{ env.CERTDATA_OWNER }}/${{ env.CERTDATA_REPO }}/${sha}/${{ env.CERTDATA_PATH }}"
           echo "download_url=${download_url}" >> "${GITHUB_OUTPUT}"
 
       - name: Download certdata.txt, generate and update cacert.pem
         working-directory: ${{ env.WORKING_DIRECTORY }}/packages/security/openssl/cert
         run: |
-          curl -L# -o certdata.txt ${{ steps.latest_certdata.outputs.download_url }}
-          curl -L# -o mk-ca-bundle.pl https://raw.githubusercontent.com/curl/curl/master/scripts/mk-ca-bundle.pl
+          curl -fsSL --retry 3 -o certdata.txt '${{ steps.latest_certdata.outputs.download_url }}'
+          curl -fsSL --retry 3 -o mk-ca-bundle.pl https://raw.githubusercontent.com/curl/curl/master/scripts/mk-ca-bundle.pl
+
+          # a failed download can still return a page, so check it is really certdata.txt
+          if ! grep -q 'CKO_CERTIFICATE' certdata.txt; then
+            echo "::error::Downloaded certdata.txt does not contain any certificates"
+            head -c 500 certdata.txt
+            exit 1
+          fi
+
           chmod 755 mk-ca-bundle.pl
           ./mk-ca-bundle.pl -n cacert.pem
           rm certdata.txt mk-ca-bundle.pl
+
+          # never open a PR that empties or guts the bundle
+          count=$(grep -c 'BEGIN CERTIFICATE' cacert.pem || true)
+          if [[ "${count}" -lt 100 ]]; then
+            echo "::error::Generated cacert.pem has only ${count} certificates, refusing to update"
+            git checkout -- cacert.pem
+            exit 1
+          fi
+          echo "Generated cacert.pem with ${count} certificates"
 
       - name: Commit and push branch to fork
         working-directory: ${{ env.WORKING_DIRECTORY }}
