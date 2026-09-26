@@ -26,6 +26,7 @@ on:
           - H3.arm
           - H5.aarch64
           - H6.aarch64
+          - H616.aarch64
           - R40.arm
           - AMLGX.aarch64
           - Generic.x86_64
@@ -175,6 +176,31 @@ jobs:
       arch: aarch64
       device: H6
       targetbuilddir: build.LibreELEC-H6.aarch64-13.0-devel
+      buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
+      ccachecachesize: 10G
+      version: "13.0"
+      file_extension: img.gz,tar
+    secrets: inherit
+  H616_aarch64-13_0:
+    name: "H616.aarch64 13.0"
+    # Only run if there has been a commit in the last 24 hours
+    needs: check_date
+    if: |
+      ( needs.check_date.outputs.should_run != 'false' )
+        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'H616.aarch64' || github.event_name == 'schedule' )
+    uses: ./.github/workflows/yml-uses-make-image-LE13.yml
+    with:
+      clean_le: no_clean_le
+      debug: debug
+      ephemeral: ephemeral
+      upload: upload
+      buildcmd: "make image"
+      gitref: ${{ github.event.inputs.gitref_to_build || 'master' }}
+      group: H616_aarch64-13_0
+      project: Allwinner
+      arch: aarch64
+      device: H616
+      targetbuilddir: build.LibreELEC-H616.aarch64-13.0-devel
       buildperiodic: ${{ github.event.inputs.le_periodic_version || 'nightly' }}
       ccachecachesize: 10G
       version: "13.0"
