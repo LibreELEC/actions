@@ -75,29 +75,45 @@ jobs:
           has_warnings = bool(error or warnings)
           has_updates = bool(architectures)
 
+          def header(text):
+            return {'type': 'header', 'text': {'type': 'plain_text', 'text': text, 'emoji': True}}
+
+          # Slack rejects a section with more than 3000 characters of text,
+          # so split long lists at line breaks into several sections.
+          def sections(lines, limit=3000):
+            chunks = [[]]
+            size = 0
+            for line in lines:
+              if chunks[-1] and size + 1 + len(line) > limit:
+                chunks.append([])
+                size = 0
+              chunks[-1].append(line[:limit])
+              size += len(line) + 1
+            return [{'type': 'section', 'text': {'type': 'mrkdwn', 'text': '\n'.join(c)}}
+                    for c in chunks]
+
           warning_parts = []
           if error:
             warning_parts.append(f'*ERROR*: {error}')
           if warnings:
             warning_parts.append(f'*WARNING* wrong checksums ({len(warnings)} files):')
             warning_parts.extend(f'  {w}' for w in warnings)
-          warnings_text = r'\n'.join(warning_parts)
+          warnings_blocks = [header(':warning: Warnings')] + sections(warning_parts)
 
-          arch_texts = []
+          updates_blocks = [header(':large_green_circle: Updated Add-ons')]
           for arch in architectures:
             label = arch.get('label', '')
             addons = arch.get('addons', [])
             lines = [f'*Updated Add-ons - {label} ({version})*'] + [f' {a}' for a in addons]
-            arch_texts.append(r'\n'.join(lines))
-          updates_text = r'\n\n'.join(arch_texts)
+            updates_blocks += sections(lines)
 
           with open(out, 'a') as f:
             f.write(f'has_warnings={"true" if has_warnings else "false"}\n')
             f.write(f'has_updates={"true" if has_updates else "false"}\n')
             if has_warnings:
-              f.write(f'warnings_text<<EOF\n{warnings_text}\nEOF\n')
+              f.write(f'warnings_blocks={json.dumps(warnings_blocks)}\n')
             if has_updates:
-              f.write(f'updates_text<<EOF\n{updates_text}\nEOF\n')
+              f.write(f'updates_blocks={json.dumps(updates_blocks)}\n')
           PYEOF
 
       - name: Notify warnings
@@ -106,20 +122,12 @@ jobs:
         with:
           webhook: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
           webhook-type: incoming-webhook
+          errors: true
           payload: |
             username: "ADDON Bot"
             icon_emoji: ":ghost:"
             channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
-            blocks:
-              - type: header
-                text:
-                  type: plain_text
-                  text: ":warning: Warnings"
-                  emoji: true
-              - type: section
-                text:
-                  type: mrkdwn
-                  text: "${{ steps.fmt.outputs.warnings_text }}"
+            blocks: ${{ steps.fmt.outputs.warnings_blocks }}
 
       - name: Notify updates
         if: steps.fmt.outputs.has_updates == 'true'
@@ -127,17 +135,9 @@ jobs:
         with:
           webhook: ${{ secrets.ADDONS_REPO_WEBHOOK_URL }}
           webhook-type: incoming-webhook
+          errors: true
           payload: |
             username: "ADDON Bot"
             icon_emoji: ":ghost:"
             channel: "${{ secrets.ADDONS_REPO_WEBHOOK_CHANNEL }}"
-            blocks:
-              - type: header
-                text:
-                  type: plain_text
-                  text: ":large_green_circle: Updated Add-ons"
-                  emoji: true
-              - type: section
-                text:
-                  type: mrkdwn
-                  text: "${{ steps.fmt.outputs.updates_text }}"
+            blocks: ${{ steps.fmt.outputs.updates_blocks }}
