@@ -58,3 +58,4 @@ fi
 
 # 5. Write output
 echo "${parsed_json}" >"${TMP_FILE}"
+mv "${TMP_FILE}" "${OUTPUT_FILE}"
