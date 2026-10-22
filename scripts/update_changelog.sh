@@ -50,12 +50,24 @@ if ! parsed_json="$(echo "${raw_response}" | jq -e '{
   exit 1
 fi
 
-# 4. Verify parsed JSON is valid and contains entries
+# 4. Fetch missing descriptions from GitHub Pull Request API
+if missing_prs="$(echo "${parsed_json}" | jq -r '.entries[] | select(.description == "" or (.description | test("^\\s*$"))) | .pull_request' 2>/dev/null)" && [ -n "${missing_prs}" ]; then
+  while IFS= read -r pr; do
+    [ -z "${pr}" ] && continue
+    if pr_title="$(curl "${CURL_ARGS[@]}" "https://api.github.com/repos/LibreELEC/LibreELEC.tv/pulls/${pr}" 2>/dev/null | jq -re '.title' 2>/dev/null)" && [ -n "${pr_title}" ]; then
+      parsed_json="$(echo "${parsed_json}" | jq --argjson pr "${pr}" --arg title "${pr_title}" '
+        .entries |= map(if .pull_request == $pr then .description = $title else . end)
+      ')"
+    fi
+  done <<<"${missing_prs}"
+fi
+
+# 5. Verify parsed JSON is valid and contains entries
 if ! echo "${parsed_json}" | jq -e '.entries | type == "array" and length > 0' >/dev/null 2>&1; then
   echo "Error: Parsed changelog contains no valid entries. Existing changelog unchanged." >&2
   exit 1
 fi
 
-# 5. Write output
+# 6. Write output
 echo "${parsed_json}" >"${TMP_FILE}"
 mv "${TMP_FILE}" "${OUTPUT_FILE}"
