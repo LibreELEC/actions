@@ -8,6 +8,7 @@ on:
         type: choice
         options:
           - LibreELEC/amlogic-boot-fip
+          - LibreELEC/amvdec-tee
           - LibreELEC/brcmfmac_sdio-firmware
           - LibreELEC/dt-overlays
           - LibreELEC/dvb-firmware
