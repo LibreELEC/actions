@@ -399,7 +399,7 @@ jobs:
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3288.arm' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'RK3288.arm' )
     uses: ./.github/workflows/yml-uses-make-image-LE13.yml
     with:
       clean_le: no_clean_le
@@ -424,7 +424,7 @@ jobs:
     needs: check_date
     if: |
       ( needs.check_date.outputs.should_run != 'false' )
-        && ( github.event.inputs.target == 'all' || github.event.inputs.target == 'RK3328.aarch64' || github.event_name == 'schedule' )
+        && ( github.event.inputs.target == 'RK3328.aarch64' )
     uses: ./.github/workflows/yml-uses-make-image-LE13.yml
     with:
       clean_le: no_clean_le
