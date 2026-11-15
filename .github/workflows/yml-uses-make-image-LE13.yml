@@ -118,7 +118,11 @@ jobs:
         if: inputs.buildperiodic == 'official'
         run: |
           cd LibreELEC.tv
-          sed -i -e 's/LIBREELEC_VERSION="devel"/LIBREELEC_VERSION="${{ inputs.gitref }}"/' distributions/LibreELEC/version
+          sed -i -e 's/DISTRO_VERSION="devel"/DISTRO_VERSION="${{ inputs.gitref }}"/' distributions/LibreELEC/version
+          if ! grep -q 'DISTRO_VERSION="${{ inputs.gitref }}"' distributions/LibreELEC/version; then
+            echo "failed to set DISTRO_VERSION in distributions/LibreELEC/version"
+            exit 1
+          fi
           echo "OFFICIAL=\"yes\"" >> distributions/LibreELEC/version
           echo "building official ${{ inputs.gitref }}"
           if [ "${{ inputs.project }}" = "RPi" ]; then echo "NOOBS=\"noobs\"" >> "${GITHUB_ENV}"; fi
