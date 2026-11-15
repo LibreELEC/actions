@@ -1,0 +1,258 @@
+name: "z: Change addon version"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ADDON_VERSION:
+        description: New ADDON_VERSION (x.y.z); leave empty to bump the last number by one
+        required: false
+        default: ""
+      BASE_BRANCH:
+        description: Branch to bump and PR base branch on the target repository
+        required: true
+        type: choice
+        default: master
+        options:
+          - master
+          - libreelec-12.2
+
+concurrency:
+  group: change-addon-version-${{ github.event.inputs.BASE_BRANCH }}
+  cancel-in-progress: false
+
+jobs:
+  change-addon-version:
+    name: Change addon version (${{ github.event.inputs.BASE_BRANCH }})
+    runs-on: ubuntu-24.04
+    if: github.repository == 'LibreELEC/actions'
+    env:
+      BASE_BRANCH: ${{ github.event.inputs.BASE_BRANCH }}
+      INPUT_ADDON_VERSION: ${{ github.event.inputs.ADDON_VERSION }}
+      FORK_REPOSITORY: LibreELEC/pr-le
+      TARGET_REPOSITORY: LibreELEC/LibreELEC.tv
+      WORKING_DIRECTORY: pr-le
+      VERSION_FILE: distributions/LibreELEC/version
+    steps:
+      - name: Create GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: LibreELEC
+
+      - name: Checkout LibreELEC.tv
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ env.TARGET_REPOSITORY }}
+          ref: ${{ env.BASE_BRANCH }}
+          token: ${{ steps.app-token.outputs.token }}
+          path: ${{ env.WORKING_DIRECTORY }}
+          fetch-depth: 1
+
+      - name: Configure fork remote
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          git remote rename origin upstream
+          git remote add fork "https://github.com/${FORK_REPOSITORY}.git"
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "${GITHUB_OUTPUT}"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure git
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+
+      - name: Work out the new addon version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          CURRENT_VERSION=$(grep -oP '(?<=ADDON_VERSION=").*(?=")' "${VERSION_FILE}")
+          if [[ ! "${CURRENT_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Could not read ADDON_VERSION from ${VERSION_FILE} (got '${CURRENT_VERSION}')"
+            exit 1
+          fi
+
+          # same default as tools/change_addon_version: x.y.z -> x.y.(z+1)
+          NEW_VERSION="${INPUT_ADDON_VERSION// /}"
+          if [[ -z "${NEW_VERSION}" ]]; then
+            NEW_VERSION="${CURRENT_VERSION%.*}.$((${CURRENT_VERSION##*.} + 1))"
+          fi
+
+          if [[ ! "${NEW_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::ADDON_VERSION '${NEW_VERSION}' is not of the form x.y.z"
+            exit 1
+          fi
+          # refuse a no-op or a downgrade
+          if [[ "$(printf '%s\n%s\n' "${CURRENT_VERSION}" "${NEW_VERSION}" | sort -V | tail -n 1)" != "${NEW_VERSION}" ]] ||
+             [[ "${NEW_VERSION}" == "${CURRENT_VERSION}" ]]; then
+            echo "::error::ADDON_VERSION ${NEW_VERSION} is not newer than the current ${CURRENT_VERSION} on ${BASE_BRANCH}"
+            exit 1
+          fi
+
+          echo "Changing ADDON_VERSION on ${BASE_BRANCH}: ${CURRENT_VERSION} -> ${NEW_VERSION}"
+          echo "CURRENT_VERSION=${CURRENT_VERSION}" >> "${GITHUB_ENV}"
+          echo "NEW_VERSION=${NEW_VERSION}" >> "${GITHUB_ENV}"
+
+      - name: Run tools/change_addon_version
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          BASE_SHA=$(git rev-parse HEAD)
+          echo "BASE_SHA=${BASE_SHA}" >> "${GITHUB_ENV}"
+
+          ./tools/change_addon_version "${NEW_VERSION}"
+
+          # the tool exits 0 even when a step fails, so check its result here
+          RESULT_VERSION=$(grep -oP '(?<=ADDON_VERSION=").*(?=")' "${VERSION_FILE}")
+          if [[ "${RESULT_VERSION}" != "${NEW_VERSION}" ]]; then
+            echo "::error::${VERSION_FILE} has ADDON_VERSION '${RESULT_VERSION}', expected '${NEW_VERSION}'"
+            exit 1
+          fi
+          if ! git diff --quiet HEAD || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+            echo "::error::tools/change_addon_version left uncommitted changes"
+            git status --short
+            exit 1
+          fi
+          if [[ "$(git rev-list --count "${BASE_SHA}..HEAD")" -lt 1 ]]; then
+            echo "::error::tools/change_addon_version created no commits"
+            exit 1
+          fi
+
+          echo "Commits created:"
+          git log --oneline "${BASE_SHA}..HEAD"
+          git diff --stat "${BASE_SHA}..HEAD" | tail -n 1
+
+      - name: Push branch to fork
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: |
+          BRANCH="pr-automated/addon-version-${BASE_BRANCH}-${NEW_VERSION}"
+          echo "BRANCH=${BRANCH}" >> "${GITHUB_ENV}"
+
+          git checkout -b "${BRANCH}"
+
+          if git ls-remote --exit-code --heads fork "${BRANCH}" >/dev/null 2>&1; then
+            echo "Branch '${BRANCH}' already exists on fork. This change was already pushed before."
+            echo "SKIP_PR=true" >> "${GITHUB_ENV}"
+          else
+            git push fork "${BRANCH}"
+            echo "SKIP_PR=false" >> "${GITHUB_ENV}"
+          fi
+
+      - name: Create Pull Request via GraphQL
+        if: env.SKIP_PR != 'true'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          FORK_OWNER="${FORK_REPOSITORY%%/*}"
+          FORK_NAME="${FORK_REPOSITORY##*/}"
+          TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+          TARGET_NAME="${TARGET_REPOSITORY##*/}"
+          PR_TITLE="distro: bump ADDON_VERSION to ${NEW_VERSION}"
+          PR_BODY="$(
+            echo "Bump ADDON_VERSION from ${CURRENT_VERSION} to ${NEW_VERSION} with \`tools/change_addon_version\`."
+            echo
+            echo "Commits:"
+            git log --reverse --format='- %s' "${BASE_SHA}..HEAD"
+          )"
+
+          REPO_ID=$(gh api graphql -f query='
+            query {
+              repository(owner: "'"${TARGET_OWNER}"'", name: "'"${TARGET_NAME}"'") {
+                id
+              }
+            }' --jq '.data.repository.id')
+
+          HEAD_REPO_ID=$(gh api graphql -f query='
+            query {
+              repository(owner: "'"${FORK_OWNER}"'", name: "'"${FORK_NAME}"'") {
+                id
+              }
+            }' --jq '.data.repository.id')
+
+          # shellcheck disable=SC2016
+          PR_RESULT=$(gh api graphql -f query='
+          mutation($repo: ID!, $headRepo: ID!, $head: String!, $base: String!, $title: String!, $body: String!) {
+            createPullRequest(input: {
+              repositoryId: $repo,
+              headRepositoryId: $headRepo,
+              baseRefName: $base,
+              headRefName: $head,
+              title: $title,
+              body: $body
+            }) {
+              pullRequest {
+                id
+                url
+              }
+            }
+          }' \
+            -f repo="${REPO_ID}" \
+            -f headRepo="${HEAD_REPO_ID}" \
+            -f head="${BRANCH}" \
+            -f base="${BASE_BRANCH}" \
+            -f title="${PR_TITLE}" \
+            -f body="${PR_BODY}" \
+            --jq '.data.createPullRequest.pullRequest')
+
+          PR_URL=$(echo "${PR_RESULT}" | jq -r '.url')
+          PR_NODE_ID=$(echo "${PR_RESULT}" | jq -r '.id')
+
+          echo "Created pull request: ${PR_URL}"
+          echo "PR_URL=${PR_URL}" >> "${GITHUB_ENV}"
+          echo "PR_NODE_ID=${PR_NODE_ID}" >> "${GITHUB_ENV}"
+
+          {
+            echo "### 📌 Pull Request Status"
+            echo "| Branch | Version | Pull Request |"
+            echo "|--------|---------|--------------|"
+            echo "| ${BASE_BRANCH} | ${CURRENT_VERSION} → ${NEW_VERSION} | [${PR_TITLE}](${PR_URL}) |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Add labels to Pull Request
+        if: env.SKIP_PR != 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          OS_VERSION=$(grep 'OS_VERSION=' "${WORKING_DIRECTORY}/${VERSION_FILE}" | cut -d'"' -f2)
+          LABELS="ADDONS,BOT"
+          if [[ -n "${OS_VERSION}" ]]; then
+            LABELS="${LABELS},LE ${OS_VERSION}"
+          fi
+
+          TARGET_OWNER="${TARGET_REPOSITORY%%/*}"
+          TARGET_NAME="${TARGET_REPOSITORY##*/}"
+
+          LABEL_NAMES_JSON=$(echo "${LABELS}" | tr ',' '\n' | jq -R . | jq -s .)
+
+          # shellcheck disable=SC2016
+          ALL_LABELS=$(gh api graphql -f query='
+            query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                labels(first: 100) {
+                  nodes { id name }
+                }
+              }
+            }' \
+            -f owner="${TARGET_OWNER}" \
+            -f name="${TARGET_NAME}" \
+            --jq '.data.repository.labels.nodes')
+
+          LABEL_IDS_JSON=$(echo "${ALL_LABELS}" | jq --argjson names "${LABEL_NAMES_JSON}" \
+            '[.[] | select(.name | IN($names[])) | .id]')
+
+          jq -n \
+            --arg query 'mutation($labelableId: ID!, $labelIds: [ID!]!) {
+              addLabelsToLabelable(input: {
+                labelableId: $labelableId
+                labelIds: $labelIds
+              }) { clientMutationId }
+            }' \
+            --arg labelableId "${PR_NODE_ID}" \
+            --argjson labelIds "${LABEL_IDS_JSON}" \
+            '{query: $query, variables: {labelableId: $labelableId, labelIds: $labelIds}}' \
+          | gh api graphql --input -
